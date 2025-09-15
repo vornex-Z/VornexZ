@@ -199,7 +199,7 @@ const Dashboard = () => {
         return { icon: ArrowUp, className: 'blue' };
       case 'pix':
         return { 
-          icon: PixIcon, 
+          icon: (props) => <PixIcon {...props} size={28} />, 
           className: 'teal' 
         };
       default:
