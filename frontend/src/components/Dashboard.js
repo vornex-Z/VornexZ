@@ -24,16 +24,19 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component
+// Updated PIX Icon Component based on the provided image
 const PixIcon = ({ size = 24 }) => (
   <svg 
     width={size} 
     height={size} 
-    viewBox="0 0 24 24" 
+    viewBox="0 0 100 100" 
     fill="currentColor"
     className="pix-icon"
   >
-    <path d="M12 0L15.09 3.09L21 3L18.91 6.09L22 12L18.91 17.91L21 21L15.09 20.91L12 24L8.91 20.91L3 21L5.09 17.91L2 12L5.09 6.09L3 3L8.91 3.09L12 0ZM12 4.5L10.5 6L6 6L7.5 7.5L6 12L7.5 16.5L6 18L10.5 18L12 19.5L13.5 18L18 18L16.5 16.5L18 12L16.5 7.5L18 6L13.5 6L12 4.5Z"/>
+    <path d="M50 5 C70 5, 95 30, 95 50 C95 70, 70 95, 50 95 C30 95, 5 70, 5 50 C5 30, 30 5, 50 5 Z M25 35 C25 25, 35 25, 35 25 L65 25 C75 25, 75 35, 75 35 L75 40 C75 40, 70 45, 65 45 L35 45 C30 45, 25 40, 25 40 Z M75 65 C75 75, 65 75, 65 75 L35 75 C25 75, 25 65, 25 65 L25 60 C25 60, 30 55, 35 55 L65 55 C70 55, 75 60, 75 60 Z M35 25 L35 35 C35 40, 40 45, 45 45 L55 45 C60 45, 65 40, 65 35 L65 25 M65 75 L65 65 C65 60, 60 55, 55 55 L45 55 C40 55, 35 60, 35 65 L35 75"/>
+    <path d="M30 20 C35 15, 45 15, 50 20 C55 15, 65 15, 70 20 C75 25, 75 35, 70 40 L60 50 L70 60 C75 65, 75 75, 70 80 C65 85, 55 85, 50 80 C45 85, 35 85, 30 80 C25 75, 25 65, 30 60 L40 50 L30 40 C25 35, 25 25, 30 20 Z" 
+          fill="currentColor" 
+          opacity="0.9"/>
   </svg>
 );
 
@@ -277,7 +280,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="flex justify-between items-center p-6 pb-4">
         <h1 className="text-2xl font-bold text-white">
-          Vornex<span className="text-teal-400">ZPay</span>
+          VornexZ<span className="text-teal-400">Pay</span>
         </h1>
         <div className="relative">
           <button

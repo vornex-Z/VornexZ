@@ -22,7 +22,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const success = await login(formData.email, formData.senha);
+    await login(formData.email, formData.senha);
     setLoading(false);
   };
 
@@ -39,7 +39,7 @@ const Login = () => {
         {/* Logo */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-white mb-2">
-            Vornex<span className="text-teal-400">ZPay</span>
+            VornexZ<span className="text-teal-400">Pay</span>
           </h1>
         </div>
 

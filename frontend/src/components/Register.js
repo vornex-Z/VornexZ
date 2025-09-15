@@ -81,7 +81,7 @@ const Register = () => {
     }
 
     setLoading(true);
-    const success = await register(formData);
+    await register(formData);
     setLoading(false);
   };
 
@@ -91,7 +91,7 @@ const Register = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">
-            Vornex<span className="text-teal-400">ZPay</span>
+            VornexZ<span className="text-teal-400">Pay</span>
           </h1>
         </div>
 

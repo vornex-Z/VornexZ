@@ -2,7 +2,6 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { Toaster } from './components/ui/sonner';
-import { toast } from 'sonner';
 import './App.css';
 
 // Components
@@ -60,10 +59,8 @@ const AuthProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${access_token}` }
       });
       setUser(userResponse.data);
-      toast.success('Login realizado com sucesso!');
       return true;
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erro ao fazer login');
       return false;
     }
   };
@@ -71,10 +68,8 @@ const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       await axios.post(`${API}/auth/register`, userData);
-      toast.success('Conta criada com sucesso! Faça login para continuar.');
       return true;
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erro ao criar conta');
       return false;
     }
   };
@@ -82,7 +77,6 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    toast.success('Logout realizado com sucesso!');
   };
 
   const value = {
@@ -125,7 +119,6 @@ function App() {
             <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
         </Router>
-        <Toaster position="top-right" />
       </AuthProvider>
     </div>
   );
