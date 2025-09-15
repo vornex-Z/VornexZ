@@ -15,12 +15,12 @@ import { Textarea } from "./components/ui/textarea";
 import { toast } from "sonner";
 
 // Icons
-import { Sparkles, Zap, Shield, Globe, Edit, Plus, Trash2, Upload, LogOut, Eye } from "lucide-react";
+import { Sparkles, Zap, Shield, Globe, Edit, Plus, Trash2, Upload, LogOut, Eye, Rocket, Brain, Atom } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// StarField Component for animated background
+// Enhanced StarField Component with dense star field
 const StarField = () => {
   useEffect(() => {
     const canvas = document.getElementById('starfield');
@@ -31,16 +31,18 @@ const StarField = () => {
     canvas.height = window.innerHeight;
     
     const stars = [];
-    const numStars = 200;
+    const numStars = 800; // Increased for denser star field
     
-    // Create stars
+    // Create stars with different sizes and speeds
     for (let i = 0; i < numStars; i++) {
       stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        size: Math.random() * 2,
-        speed: Math.random() * 0.5 + 0.1,
-        opacity: Math.random() * 0.8 + 0.2
+        size: Math.random() * 3 + 0.5,
+        speed: Math.random() * 0.8 + 0.1,
+        opacity: Math.random() * 0.9 + 0.1,
+        twinkle: Math.random() * Math.PI * 2,
+        twinkleSpeed: Math.random() * 0.02 + 0.01
       });
     }
     
@@ -48,23 +50,36 @@ const StarField = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       stars.forEach(star => {
-        // Move star
+        // Move star vertically
         star.y += star.speed;
-        if (star.y > canvas.height) {
-          star.y = 0;
+        if (star.y > canvas.height + 10) {
+          star.y = -10;
           star.x = Math.random() * canvas.width;
         }
         
-        // Draw star
-        ctx.fillStyle = `rgba(139, 92, 246, ${star.opacity})`;
+        // Update twinkle
+        star.twinkle += star.twinkleSpeed;
+        const twinkleOpacity = star.opacity * (0.3 + 0.7 * (Math.sin(star.twinkle) + 1) / 2);
+        
+        // Draw star with enhanced glow
+        ctx.fillStyle = `rgba(255, 255, 255, ${twinkleOpacity})`;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+        ctx.shadowBlur = star.size * 2;
+        
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fill();
         
-        // Add subtle glow
-        ctx.shadowColor = '#8B5CF6';
-        ctx.shadowBlur = 10;
-        ctx.fill();
+        // Add purple glow for some stars
+        if (star.size > 2) {
+          ctx.fillStyle = `rgba(139, 92, 246, ${twinkleOpacity * 0.3})`;
+          ctx.shadowColor = '#8B5CF6';
+          ctx.shadowBlur = star.size * 4;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size * 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        
         ctx.shadowBlur = 0;
       });
       
@@ -83,6 +98,87 @@ const StarField = () => {
   }, []);
   
   return <canvas id="starfield" className="fixed inset-0 -z-10" />;
+};
+
+// Molecular Background Component
+const MolecularBackground = () => {
+  useEffect(() => {
+    const canvas = document.getElementById('molecular-bg');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const molecules = [];
+    const numMolecules = 50;
+    
+    // Create molecular points
+    for (let i = 0; i < numMolecules; i++) {
+      molecules.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 2 + 1
+      });
+    }
+    
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw molecules
+      molecules.forEach(molecule => {
+        molecule.x += molecule.vx;
+        molecule.y += molecule.vy;
+        
+        // Wrap around edges
+        if (molecule.x < 0) molecule.x = canvas.width;
+        if (molecule.x > canvas.width) molecule.x = 0;
+        if (molecule.y < 0) molecule.y = canvas.height;
+        if (molecule.y > canvas.height) molecule.y = 0;
+        
+        // Draw molecule
+        ctx.fillStyle = 'rgba(139, 92, 246, 0.6)';
+        ctx.beginPath();
+        ctx.arc(molecule.x, molecule.y, molecule.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      // Draw connections between nearby molecules
+      for (let i = 0; i < molecules.length; i++) {
+        for (let j = i + 1; j < molecules.length; j++) {
+          const dx = molecules[i].x - molecules[j].x;
+          const dy = molecules[i].y - molecules[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 150) {
+            const opacity = (150 - distance) / 150 * 0.2;
+            ctx.strokeStyle = `rgba(139, 92, 246, ${opacity})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(molecules[i].x, molecules[i].y);
+            ctx.lineTo(molecules[j].x, molecules[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return <canvas id="molecular-bg" className="fixed inset-0 -z-20" />;
 };
 
 // Auth Context
@@ -174,11 +270,12 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
       <StarField />
+      <MolecularBackground />
       
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-purple-500/20">
+      <header className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-purple-400/30">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
             {config.logo_url && (
               <img 
                 src={`${BACKEND_URL}${config.logo_url}`} 
@@ -187,59 +284,72 @@ const Home = () => {
               />
             )}
             <div className="text-2xl font-bold">
-              <span className="text-white cyberpunk-text">VornexZ</span>
-              <span className="text-teal-400 cyberpunk-text">Pay</span>
+              <span className="cyberpunk-logo-text bg-gradient-to-r from-purple-300 via-purple-100 to-white bg-clip-text text-transparent">
+                VornexZ
+              </span>
             </div>
           </div>
           <nav className="hidden md:flex space-x-8">
-            <a href="#home" className="hover:text-purple-400 transition-colors">Início</a>
-            <a href="#about" className="hover:text-purple-400 transition-colors">Sobre</a>
-            <a href="#companies" className="hover:text-purple-400 transition-colors">Empresas</a>
-            <a href="#contact" className="hover:text-purple-400 transition-colors">Contato</a>
+            <a href="#home" className="nav-link">Início</a>
+            <a href="#about" className="nav-link">Sobre</a>
+            <a href="#companies" className="nav-link">Empresas</a>
+            <a href="#contact" className="nav-link">Contato</a>
           </nav>
         </div>
       </header>
       
       {/* Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center relative pt-20">
-        <div className="text-center z-10">
-          <div className="cyberpunk-logo mb-8">
-            <h1 className="text-8xl md:text-9xl font-bold mb-4">
-              <span className="text-white glow-text">VornexZ</span>
-              <span className="text-teal-400 glow-text-teal">Pay</span>
+        <div className="text-center z-10 max-w-4xl mx-auto px-6">
+          <div className="space-logo mb-12">
+            <h1 className="text-8xl md:text-9xl font-bold mb-6">
+              <span className="main-logo-text">VornexZ</span>
             </h1>
+            <div className="cosmic-subtitle">
+              <Atom className="inline-block mr-3 h-8 w-8" />
+              <span className="text-2xl">CONSTRUINDO O FUTURO</span>
+              <Atom className="inline-block ml-3 h-8 w-8" />
+            </div>
           </div>
-          <p className="text-2xl md:text-3xl mb-8 text-gray-300">
-            {content.hero?.content || "O Futuro dos Pagamentos Começa Aqui"}
+          <p className="text-2xl md:text-3xl mb-12 text-gray-200 leading-relaxed">
+            {content.hero?.content || "A holding que transforma visões futuristas em realidade através de tecnologias revolucionárias"}
           </p>
           <Button 
             size="lg" 
-            className="cyberpunk-button text-lg px-8 py-4"
+            className="cosmic-button text-lg px-10 py-6"
             onClick={() => document.getElementById('companies').scrollIntoView({ behavior: 'smooth' })}
           >
-            <Sparkles className="mr-2 h-5 w-5" />
-            Explorar Nossas Empresas
+            <Rocket className="mr-3 h-6 w-6" />
+            Explorar o Futuro
+            <Sparkles className="ml-3 h-6 w-6" />
           </Button>
         </div>
         
-        {/* Floating geometric shapes */}
+        {/* Floating cosmic elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="floating-shape shape-1"></div>
-          <div className="floating-shape shape-2"></div>
-          <div className="floating-shape shape-3"></div>
+          <div className="cosmic-orb orb-1"></div>
+          <div className="cosmic-orb orb-2"></div>
+          <div className="cosmic-orb orb-3"></div>
+          <div className="cosmic-ring ring-1"></div>
+          <div className="cosmic-ring ring-2"></div>
         </div>
       </section>
       
       {/* About Section */}
-      <section id="about" className="py-20 relative">
+      <section id="about" className="py-24 relative">
         <div className="container mx-auto px-6">
-          <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-5xl font-bold mb-8 cyberpunk-text">
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="text-6xl font-bold mb-12 cosmic-heading">
               {content.about?.title || "Sobre a VornexZ"}
             </h2>
-            <div className="cyber-card p-8">
-              <p className="text-xl text-gray-300 leading-relaxed">
-                {content.about?.content || "A VornexZ é uma holding criada para acumular empresas inovadoras em diferentes áreas, todas unidas por uma visão futurista e disruptiva."}
+            <div className="space-card p-12">
+              <div className="flex items-center justify-center mb-8">
+                <Brain className="h-16 w-16 text-purple-400 mr-4" />
+                <Atom className="h-20 w-20 text-white" />
+                <Rocket className="h-16 w-16 text-purple-400 ml-4" />
+              </div>
+              <p className="text-xl text-gray-200 leading-relaxed">
+                {content.about?.content || "A VornexZ é uma holding visionária que acumula e desenvolve empresas inovadoras em diferentes setores tecnológicos. Unimos mentes brilhantes e recursos para criar soluções que moldam o futuro da humanidade através da ciência, tecnologia e inovação disruptiva."}
               </p>
             </div>
           </div>
@@ -247,30 +357,36 @@ const Home = () => {
       </section>
       
       {/* Companies Section */}
-      <section id="companies" className="py-20 relative">
+      <section id="companies" className="py-24 relative">
         <div className="container mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center mb-16 cyberpunk-text">Nossas Empresas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h2 className="text-6xl font-bold text-center mb-20 cosmic-heading">Nossas Empresas</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
             {companies.map((company, index) => (
-              <div key={company.id} className="holographic-card" style={{ animationDelay: `${index * 0.1}s` }}>
-                <div className="p-6">
-                  {company.logo_url && (
-                    <img 
-                      src={`${BACKEND_URL}${company.logo_url}`} 
-                      alt={company.name}
-                      className="h-16 w-16 mx-auto mb-4 rounded-lg"
-                    />
-                  )}
-                  <h3 className="text-2xl font-bold mb-3 text-center cyberpunk-text">{company.name}</h3>
-                  <p className="text-gray-300 text-center mb-4">{company.description}</p>
+              <div key={company.id} className="space-company-card" style={{ animationDelay: `${index * 0.2}s` }}>
+                <div className="p-8">
+                  <div className="text-center mb-6">
+                    {company.logo_url ? (
+                      <img 
+                        src={`${BACKEND_URL}${company.logo_url}`} 
+                        alt={company.name}
+                        className="h-20 w-20 mx-auto mb-6 rounded-xl border-2 border-purple-400/50"
+                      />
+                    ) : (
+                      <div className="h-20 w-20 mx-auto mb-6 rounded-xl border-2 border-purple-400/50 flex items-center justify-center bg-gradient-to-br from-purple-600/20 to-purple-800/20">
+                        <Atom className="h-10 w-10 text-purple-300" />
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4 text-center cosmic-text">{company.name}</h3>
+                  <p className="text-gray-300 text-center mb-6 leading-relaxed">{company.description}</p>
                   {company.category && (
-                    <Badge className="mx-auto block w-fit cyber-badge">{company.category}</Badge>
+                    <Badge className="space-badge mx-auto block w-fit mb-4">{company.category}</Badge>
                   )}
                   {company.website && (
-                    <Button variant="outline" size="sm" className="w-full mt-4 cyber-button" asChild>
+                    <Button variant="outline" size="sm" className="w-full cosmic-outline-button" asChild>
                       <a href={company.website} target="_blank" rel="noopener noreferrer">
                         <Globe className="mr-2 h-4 w-4" />
-                        Visitar Site
+                        Explorar
                       </a>
                     </Button>
                   )}
@@ -282,22 +398,24 @@ const Home = () => {
       </section>
       
       {/* Differentials Section */}
-      <section id="differentials" className="py-20 relative">
+      <section id="differentials" className="py-24 relative">
         <div className="container mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center mb-16 cyberpunk-text">
+          <h2 className="text-6xl font-bold text-center mb-20 cosmic-heading">
             {content.differentials?.title || "Nossos Diferenciais"}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
             {[
-              { icon: Sparkles, title: "Inovação", desc: "Tecnologias de vanguarda" },
-              { icon: Shield, title: "Acessibilidade", desc: "Soluções para todos" },  
-              { icon: Zap, title: "Tecnologia", desc: "Ferramentas avançadas" },
-              { icon: Globe, title: "Futuro Sustentável", desc: "Visão de longo prazo" }
+              { icon: Atom, title: "Inovação Quântica", desc: "Tecnologias de vanguarda que transcendem limitações" },
+              { icon: Shield, title: "Visão Futurista", desc: "Soluções pensadas para as próximas décadas" },  
+              { icon: Brain, title: "Inteligência Avançada", desc: "IA e machine learning de última geração" },
+              { icon: Rocket, title: "Expansão Cósmica", desc: "Alcance e impacto em escala universal" }
             ].map((item, index) => (
-              <div key={index} className="cyber-card text-center p-6" style={{ animationDelay: `${index * 0.1}s` }}>
-                <item.icon className="h-12 w-12 mx-auto mb-4 text-purple-400" />
-                <h3 className="text-xl font-bold mb-2 cyberpunk-text">{item.title}</h3>
-                <p className="text-gray-300">{item.desc}</p>
+              <div key={index} className="space-differential-card" style={{ animationDelay: `${index * 0.15}s` }}>
+                <div className="cosmic-icon-wrapper mb-6">
+                  <item.icon className="h-12 w-12 cosmic-icon" />
+                </div>
+                <h3 className="text-xl font-bold mb-3 cosmic-text">{item.title}</h3>
+                <p className="text-gray-300 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -305,20 +423,19 @@ const Home = () => {
       </section>
       
       {/* Footer */}
-      <footer className="py-12 border-t border-purple-500/20 bg-black/50">
+      <footer className="py-16 border-t border-purple-400/30 bg-black/70 backdrop-blur-sm">
         <div className="container mx-auto px-6 text-center">
-          <div className="text-2xl font-bold mb-4">
-            <span className="text-white cyberpunk-text">VornexZ</span>
-            <span className="text-teal-400 cyberpunk-text">Pay</span>
+          <div className="text-3xl font-bold mb-6">
+            <span className="cosmic-logo-footer">VornexZ</span>
           </div>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-400 mb-8 text-lg">
             {content.footer?.content || "© 2025 VornexZ — Construindo o futuro, empresa por empresa."}
           </p>
-          <div className="flex justify-center space-x-6">
-            <a href="#home" className="hover:text-purple-400 transition-colors">Início</a>
-            <a href="#about" className="hover:text-purple-400 transition-colors">Sobre</a>
-            <a href="#companies" className="hover:text-purple-400 transition-colors">Empresas</a>
-            <a href="/admin" className="hover:text-purple-400 transition-colors">Admin</a>
+          <div className="flex justify-center space-x-8">
+            <a href="#home" className="footer-link">Início</a>
+            <a href="#about" className="footer-link">Sobre</a>
+            <a href="#companies" className="footer-link">Empresas</a>
+            <a href="/admin" className="footer-link">Admin</a>
           </div>
         </div>
       </footer>
@@ -346,37 +463,38 @@ const AdminLogin = () => {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden">
       <StarField />
-      <Card className="w-full max-w-md cyber-card">
+      <MolecularBackground />
+      <Card className="w-full max-w-md space-admin-card">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl cyberpunk-text">Admin Login</CardTitle>
-          <CardDescription>Acesse o painel administrativo</CardDescription>
+          <CardTitle className="text-3xl cosmic-text">Admin Portal</CardTitle>
+          <CardDescription className="text-purple-300">Acessar painel de controle VornexZ</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-purple-200">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="cyber-input"
+                className="space-input"
               />
             </div>
             <div>
-              <Label htmlFor="password">Senha</Label>
+              <Label htmlFor="password" className="text-purple-200">Senha</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="cyber-input"
+                className="space-input"
               />
             </div>
-            <Button type="submit" className="w-full cyberpunk-button" disabled={loading}>
-              {loading ? "Entrando..." : "Entrar"}
+            <Button type="submit" className="w-full cosmic-button" disabled={loading}>
+              {loading ? "Conectando..." : "Acessar"}
             </Button>
           </form>
         </CardContent>
@@ -432,7 +550,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-2xl cyberpunk-text">Carregando...</div>
+        <div className="text-2xl cosmic-text">Carregando sistema...</div>
       </div>
     );
   }
@@ -440,19 +558,20 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-black text-white relative">
       <StarField />
+      <MolecularBackground />
       
       {/* Header */}
-      <header className="bg-black/90 backdrop-blur-md border-b border-purple-500/20 p-4">
+      <header className="bg-black/90 backdrop-blur-md border-b border-purple-400/30 p-4">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold cyberpunk-text">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold cosmic-text">VornexZ Control Center</h1>
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm" asChild className="cyber-button">
+            <Button variant="outline" size="sm" asChild className="cosmic-outline-button">
               <a href="/" target="_blank">
                 <Eye className="mr-2 h-4 w-4" />
                 Ver Site
               </a>
             </Button>
-            <Button variant="outline" size="sm" onClick={handleLogout} className="cyber-button">
+            <Button variant="outline" size="sm" onClick={handleLogout} className="cosmic-outline-button">
               <LogOut className="mr-2 h-4 w-4" />
               Sair
             </Button>
@@ -462,7 +581,7 @@ const AdminDashboard = () => {
       
       <div className="container mx-auto p-6">
         <Tabs defaultValue="companies" className="space-y-6">
-          <TabsList className="cyber-tabs">
+          <TabsList className="space-tabs">
             <TabsTrigger value="companies">Empresas</TabsTrigger>
             <TabsTrigger value="content">Conteúdo</TabsTrigger>
             <TabsTrigger value="config">Configurações</TabsTrigger>
@@ -485,7 +604,7 @@ const AdminDashboard = () => {
   );
 };
 
-// Companies Manager Component
+// Companies Manager Component (same implementation as before, just with space styling)
 const CompaniesManager = ({ companies, onUpdate }) => {
   const [editingCompany, setEditingCompany] = useState(null);
   const [formData, setFormData] = useState({
@@ -543,66 +662,66 @@ const CompaniesManager = ({ companies, onUpdate }) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold cyberpunk-text">Gerenciar Empresas</h2>
+        <h2 className="text-3xl font-bold cosmic-text">Gerenciar Empresas</h2>
         <Button onClick={() => {
           setEditingCompany(null);
           setFormData({ name: "", description: "", website: "", category: "", logo_url: "" });
-        }} className="cyberpunk-button">
+        }} className="cosmic-button">
           <Plus className="mr-2 h-4 w-4" />
           Nova Empresa
         </Button>
       </div>
       
       {/* Form */}
-      <Card className="cyber-card">
+      <Card className="space-admin-card">
         <CardHeader>
-          <CardTitle>{editingCompany ? "Editar Empresa" : "Nova Empresa"}</CardTitle>
+          <CardTitle className="cosmic-text">{editingCompany ? "Editar Empresa" : "Nova Empresa"}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Nome</Label>
+                <Label htmlFor="name" className="text-purple-200">Nome</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   required
-                  className="cyber-input"
+                  className="space-input"
                 />
               </div>
               <div>
-                <Label htmlFor="category">Categoria</Label>
+                <Label htmlFor="category" className="text-purple-200">Categoria</Label>
                 <Input
                   id="category"
                   value={formData.category}
                   onChange={(e) => setFormData({...formData, category: e.target.value})}
-                  className="cyber-input"
+                  className="space-input"
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="description">Descrição</Label>
+              <Label htmlFor="description" className="text-purple-200">Descrição</Label>
               <Textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                 required
-                className="cyber-input"
+                className="space-input"
               />
             </div>
             <div>
-              <Label htmlFor="website">Website</Label>
+              <Label htmlFor="website" className="text-purple-200">Website</Label>
               <Input
                 id="website"
                 type="url"
                 value={formData.website}
                 onChange={(e) => setFormData({...formData, website: e.target.value})}
-                className="cyber-input"
+                className="space-input"
               />
             </div>
             <div className="flex space-x-2">
-              <Button type="submit" className="cyberpunk-button">
+              <Button type="submit" className="cosmic-button">
                 {editingCompany ? "Atualizar" : "Criar"}
               </Button>
               {editingCompany && (
@@ -613,7 +732,7 @@ const CompaniesManager = ({ companies, onUpdate }) => {
                     setEditingCompany(null);
                     setFormData({ name: "", description: "", website: "", category: "", logo_url: "" });
                   }}
-                  className="cyber-button"
+                  className="cosmic-outline-button"
                 >
                   Cancelar
                 </Button>
@@ -626,22 +745,22 @@ const CompaniesManager = ({ companies, onUpdate }) => {
       {/* Companies List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {companies.map((company) => (
-          <Card key={company.id} className="cyber-card">
+          <Card key={company.id} className="space-admin-card">
             <CardContent className="p-4">
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-lg cyberpunk-text">{company.name}</h3>
+                <h3 className="font-bold text-lg cosmic-text">{company.name}</h3>
                 <div className="flex space-x-2">
-                  <Button size="sm" variant="outline" onClick={() => handleEdit(company)} className="cyber-button">
+                  <Button size="sm" variant="outline" onClick={() => handleEdit(company)} className="cosmic-outline-button">
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleDelete(company)} className="cyber-button text-red-400">
+                  <Button size="sm" variant="outline" onClick={() => handleDelete(company)} className="cosmic-outline-button text-red-400">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
               <p className="text-gray-300 text-sm mb-2">{company.description}</p>
               {company.category && (
-                <Badge className="cyber-badge mb-2">{company.category}</Badge>
+                <Badge className="space-badge mb-2">{company.category}</Badge>
               )}
               {company.website && (
                 <a href={company.website} target="_blank" rel="noopener noreferrer" 
@@ -657,7 +776,7 @@ const CompaniesManager = ({ companies, onUpdate }) => {
   );
 };
 
-// Content Manager Component
+// Content Manager Component (same implementation as before)
 const ContentManager = ({ content, onUpdate }) => {
   const [editingSection, setEditingSection] = useState(null);
   const [formData, setFormData] = useState({ title: "", content: "" });
@@ -695,42 +814,42 @@ const ContentManager = ({ content, onUpdate }) => {
   
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold cyberpunk-text">Gerenciar Conteúdo</h2>
+      <h2 className="text-3xl font-bold cosmic-text">Gerenciar Conteúdo</h2>
       
       {editingSection && (
-        <Card className="cyber-card">
+        <Card className="space-admin-card">
           <CardHeader>
-            <CardTitle>Editando: {sections.find(s => s.key === editingSection)?.name}</CardTitle>
+            <CardTitle className="cosmic-text">Editando: {sections.find(s => s.key === editingSection)?.name}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="title">Título</Label>
+                <Label htmlFor="title" className="text-purple-200">Título</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
-                  className="cyber-input"
+                  className="space-input"
                 />
               </div>
               <div>
-                <Label htmlFor="content">Conteúdo</Label>
+                <Label htmlFor="content" className="text-purple-200">Conteúdo</Label>
                 <Textarea
                   id="content"
                   value={formData.content}
                   onChange={(e) => setFormData({...formData, content: e.target.value})}
                   required
                   rows={4}
-                  className="cyber-input"
+                  className="space-input"
                 />
               </div>
               <div className="flex space-x-2">
-                <Button type="submit" className="cyberpunk-button">Salvar</Button>
+                <Button type="submit" className="cosmic-button">Salvar</Button>
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => setEditingSection(null)}
-                  className="cyber-button"
+                  className="cosmic-outline-button"
                 >
                   Cancelar
                 </Button>
@@ -742,11 +861,11 @@ const ContentManager = ({ content, onUpdate }) => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {sections.map((section) => (
-          <Card key={section.key} className="cyber-card">
+          <Card key={section.key} className="space-admin-card">
             <CardHeader>
               <div className="flex justify-between items-center">
-                <CardTitle>{section.name}</CardTitle>
-                <Button size="sm" onClick={() => handleEdit(section.key)} className="cyber-button">
+                <CardTitle className="cosmic-text">{section.name}</CardTitle>
+                <Button size="sm" onClick={() => handleEdit(section.key)} className="cosmic-outline-button">
                   <Edit className="h-4 w-4" />
                 </Button>
               </div>
@@ -755,9 +874,9 @@ const ContentManager = ({ content, onUpdate }) => {
               {content[section.key] && (
                 <div className="space-y-2">
                   {content[section.key].title && (
-                    <p><strong>Título:</strong> {content[section.key].title}</p>
+                    <p className="text-purple-200"><strong>Título:</strong> {content[section.key].title}</p>
                   )}
-                  <p><strong>Conteúdo:</strong> {content[section.key].content}</p>
+                  <p className="text-gray-300"><strong>Conteúdo:</strong> {content[section.key].content}</p>
                 </div>
               )}
             </CardContent>
@@ -799,32 +918,32 @@ const ConfigManager = ({ config, onUpdate }) => {
   
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold cyberpunk-text">Configurações do Site</h2>
+      <h2 className="text-3xl font-bold cosmic-text">Configurações do Sistema</h2>
       
-      <Card className="cyber-card">
+      <Card className="space-admin-card">
         <CardHeader>
-          <CardTitle>Logo do Site</CardTitle>
+          <CardTitle className="cosmic-text">Logo VornexZ</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {config.logo_url && (
             <div>
-              <p className="mb-2">Logo atual:</p>
+              <p className="mb-2 text-purple-200">Logo atual:</p>
               <img 
                 src={`${BACKEND_URL}${config.logo_url}`} 
                 alt="Logo atual" 
-                className="h-20 w-auto border border-purple-500/20 rounded"
+                className="h-20 w-auto border border-purple-400/30 rounded"
               />
             </div>
           )}
           <div>
-            <Label htmlFor="logo">Novo Logo</Label>
+            <Label htmlFor="logo" className="text-purple-200">Novo Logo</Label>
             <Input
               id="logo"
               type="file"
               accept="image/*"
               onChange={handleLogoUpload}
               disabled={uploading}
-              className="cyber-input"
+              className="space-input"
             />
             {uploading && <p className="text-sm text-purple-400">Fazendo upload...</p>}
           </div>
@@ -841,7 +960,7 @@ const ProtectedRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-2xl cyberpunk-text">Carregando...</div>
+        <div className="text-2xl cosmic-text">Inicializando sistema...</div>
       </div>
     );
   }
