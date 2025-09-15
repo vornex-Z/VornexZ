@@ -24,35 +24,31 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component - Recreating the exact design from the provided image
+// PIX Icon Component - Official PIX logo design
 const PixIcon = ({ size = 24 }) => (
   <svg 
     width={size} 
     height={size} 
-    viewBox="0 0 200 200" 
+    viewBox="0 0 100 100" 
     fill="currentColor"
     className="pix-icon"
-    style={{ display: 'inline-block' }}
   >
-    {/* PIX icon based on the provided teal diamond-like design */}
-    {/* Top diamond section */}
-    <path d="M100 20 C120 20, 140 30, 150 50 C160 70, 140 90, 120 90 L80 90 C60 90, 40 70, 50 50 C60 30, 80 20, 100 20 Z" 
+    {/* Official PIX logo - 4 rounded diamond shapes forming the characteristic pattern */}
+    {/* Top section */}
+    <path d="M50 5 C35 5, 25 15, 25 25 C25 35, 30 40, 35 42 L42 45 C45 47, 50 47, 50 47 C50 47, 55 47, 58 45 L65 42 C70 40, 75 35, 75 25 C75 15, 65 5, 50 5 Z" 
           fill="currentColor"/>
     
-    {/* Left diamond section */}
-    <path d="M20 100 C20 80, 30 60, 50 50 C70 40, 90 60, 90 80 L90 120 C90 140, 70 160, 50 150 C30 140, 20 120, 20 100 Z" 
+    {/* Right section */}
+    <path d="M95 50 C95 35, 85 25, 75 25 C65 25, 60 30, 58 35 L55 42 C53 45, 53 50, 53 50 C53 50, 53 55, 55 58 L58 65 C60 70, 65 75, 75 75 C85 75, 95 65, 95 50 Z" 
           fill="currentColor"/>
     
-    {/* Right diamond section */}
-    <path d="M180 100 C180 120, 170 140, 150 150 C130 160, 110 140, 110 120 L110 80 C110 60, 130 40, 150 50 C170 60, 180 80, 180 100 Z" 
+    {/* Bottom section */}
+    <path d="M50 95 C65 95, 75 85, 75 75 C75 65, 70 60, 65 58 L58 55 C55 53, 50 53, 50 53 C50 53, 45 53, 42 55 L35 58 C30 60, 25 65, 25 75 C25 85, 35 95, 50 95 Z" 
           fill="currentColor"/>
     
-    {/* Bottom diamond section */}
-    <path d="M100 180 C80 180, 60 170, 50 150 C40 130, 60 110, 80 110 L120 110 C140 110, 160 130, 150 150 C140 170, 120 180, 100 180 Z" 
+    {/* Left section */}
+    <path d="M5 50 C5 65, 15 75, 25 75 C35 75, 40 70, 42 65 L45 58 C47 55, 47 50, 47 50 C47 50, 47 45, 45 42 L42 35 C40 30, 35 25, 25 25 C15 25, 5 35, 5 50 Z" 
           fill="currentColor"/>
-    
-    {/* Center connecting piece creating the characteristic "X" or cross pattern */}
-    <circle cx="100" cy="100" r="25" fill="transparent" stroke="currentColor" strokeWidth="20"/>
   </svg>
 );
 
