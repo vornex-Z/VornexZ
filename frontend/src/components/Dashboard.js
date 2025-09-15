@@ -24,7 +24,7 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Updated PIX Icon Component based on the provided image
+// PIX Icon Component based on the provided image
 const PixIcon = ({ size = 24 }) => (
   <svg 
     width={size} 
@@ -33,10 +33,21 @@ const PixIcon = ({ size = 24 }) => (
     fill="currentColor"
     className="pix-icon"
   >
-    <path d="M50 5 C70 5, 95 30, 95 50 C95 70, 70 95, 50 95 C30 95, 5 70, 5 50 C5 30, 30 5, 50 5 Z M25 35 C25 25, 35 25, 35 25 L65 25 C75 25, 75 35, 75 35 L75 40 C75 40, 70 45, 65 45 L35 45 C30 45, 25 40, 25 40 Z M75 65 C75 75, 65 75, 65 75 L35 75 C25 75, 25 65, 25 65 L25 60 C25 60, 30 55, 35 55 L65 55 C70 55, 75 60, 75 60 Z M35 25 L35 35 C35 40, 40 45, 45 45 L55 45 C60 45, 65 40, 65 35 L65 25 M65 75 L65 65 C65 60, 60 55, 55 55 L45 55 C40 55, 35 60, 35 65 L35 75"/>
-    <path d="M30 20 C35 15, 45 15, 50 20 C55 15, 65 15, 70 20 C75 25, 75 35, 70 40 L60 50 L70 60 C75 65, 75 75, 70 80 C65 85, 55 85, 50 80 C45 85, 35 85, 30 80 C25 75, 25 65, 30 60 L40 50 L30 40 C25 35, 25 25, 30 20 Z" 
-          fill="currentColor" 
-          opacity="0.9"/>
+    {/* Main PIX logo shape - 4 rounded rectangles forming the characteristic shape */}
+    <path d="M50 10 Q60 10 65 15 Q70 20 70 30 L70 40 Q70 50 65 55 Q60 60 50 60 L40 60 Q30 60 25 55 Q20 50 20 40 L20 30 Q20 20 25 15 Q30 10 40 10 Z" 
+          fill="currentColor"/>
+    <path d="M50 40 Q60 40 65 45 Q70 50 70 60 L70 70 Q70 80 65 85 Q60 90 50 90 L40 90 Q30 90 25 85 Q20 80 20 70 L20 60 Q20 50 25 45 Q30 40 40 40 Z" 
+          fill="currentColor"/>
+    <path d="M10 50 Q10 40 15 35 Q20 30 30 30 L40 30 Q50 30 55 35 Q60 40 60 50 L60 60 Q60 70 55 75 Q50 80 40 80 L30 80 Q20 80 15 75 Q10 70 10 60 Z" 
+          fill="currentColor"/>
+    <path d="M40 50 Q40 40 45 35 Q50 30 60 30 L70 30 Q80 30 85 35 Q90 40 90 50 L90 60 Q90 70 85 75 Q80 80 70 80 L60 80 Q50 80 45 75 Q40 70 40 60 Z" 
+          fill="currentColor"/>
+    
+    {/* Central intersection creating the characteristic PIX pattern */}
+    <path d="M35 35 Q45 35 50 40 Q55 45 55 55 Q55 65 50 70 Q45 75 35 75 Q25 75 20 70 Q15 65 15 55 Q15 45 20 40 Q25 35 35 35 Z" 
+          fill="currentColor" opacity="0.3"/>
+    <path d="M65 35 Q75 35 80 40 Q85 45 85 55 Q85 65 80 70 Q75 75 65 75 Q55 75 50 70 Q45 65 45 55 Q45 45 50 40 Q55 35 65 35 Z" 
+          fill="currentColor" opacity="0.3"/>
   </svg>
 );
 
