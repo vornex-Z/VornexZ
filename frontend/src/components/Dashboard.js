@@ -86,7 +86,7 @@ const Dashboard = () => {
     },
     { 
       id: 'pix', 
-      icon: PixIcon, 
+      icon: (props) => <PixIcon {...props} size={32} />, 
       label: 'PIX', 
       className: 'teal',
       onClick: () => alert('Funcionalidade em desenvolvimento - PIX')
