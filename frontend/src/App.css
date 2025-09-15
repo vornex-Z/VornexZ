@@ -18,6 +18,22 @@ body {
   min-height: 100vh;
 }
 
+/* Hide scrollbars globally */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+*::-webkit-scrollbar { /* WebKit */
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
 /* Glassmorphism effect */
 .glass-card {
   background: rgba(255, 255, 255, 0.1);
@@ -33,25 +49,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-}
-
-/* Custom scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
 }
 
 /* Input styles */
@@ -241,25 +238,6 @@ body {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .action-button {
-    width: 60px;
-    height: 60px;
-    font-size: 12px;
-  }
-  
-  .user-menu {
-    right: 10px;
-    min-width: 260px;
-  }
-  
-  .glass-card {
-    margin: 20px;
-    border-radius: 20px;
-  }
-}
-
 /* Loading animation */
 .loading-spinner {
   width: 40px;
@@ -355,4 +333,304 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.card-item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 16px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.1"><circle cx="20" cy="20" r="10" fill="white"/><circle cx="80" cy="80" r="15" fill="white"/><circle cx="70" cy="20" r="8" fill="white"/></svg>');
+  pointer-events: none;
+}
+
+/* Responsive Design */
+
+/* TV/Large Screens (1920px+) */
+@media (min-width: 1920px) {
+  .balance-display {
+    font-size: 64px;
+  }
+  
+  .action-button {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .glass-card {
+    padding: 48px;
+  }
+  
+  .glass-card-dashboard {
+    padding: 48px;
+  }
+}
+
+/* Desktop (1024px - 1919px) */
+@media (min-width: 1024px) and (max-width: 1919px) {
+  .balance-display {
+    font-size: 48px;
+  }
+  
+  .action-button {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .balance-display {
+    font-size: 36px;
+  }
+  
+  .action-button {
+    width: 60px;
+    height: 60px;
+    font-size: 12px;
+  }
+  
+  .glass-card {
+    margin: 16px;
+    padding: 24px;
+  }
+  
+  .glass-card-dashboard {
+    padding: 24px;
+  }
+  
+  .user-menu {
+    right: 16px;
+    min-width: 250px;
+  }
+  
+  .transaction-item {
+    padding: 12px;
+  }
+  
+  .transaction-icon {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+/* Mobile Large (425px - 767px) */
+@media (min-width: 425px) and (max-width: 767px) {
+  .balance-display {
+    font-size: 28px;
+  }
+  
+  .action-button {
+    width: 50px;
+    height: 50px;
+    font-size: 10px;
+  }
+  
+  .glass-card {
+    margin: 12px;
+    padding: 20px;
+  }
+  
+  .glass-card-dashboard {
+    padding: 20px;
+  }
+  
+  .user-menu {
+    right: 12px;
+    min-width: 240px;
+  }
+  
+  .transaction-item {
+    padding: 10px;
+  }
+  
+  .transaction-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+  }
+  
+  .modal-content {
+    padding: 24px;
+    width: 95%;
+  }
+}
+
+/* Mobile Medium (375px - 424px) */
+@media (min-width: 375px) and (max-width: 424px) {
+  .balance-display {
+    font-size: 24px;
+  }
+  
+  .action-button {
+    width: 45px;
+    height: 45px;
+    font-size: 9px;
+  }
+  
+  .glass-card {
+    margin: 10px;
+    padding: 16px;
+  }
+  
+  .glass-card-dashboard {
+    padding: 16px;
+  }
+  
+  .premium-badge {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+/* Mobile Small (320px - 374px) */
+@media (max-width: 374px) {
+  .balance-display {
+    font-size: 20px;
+  }
+  
+  .action-button {
+    width: 40px;
+    height: 40px;
+    font-size: 8px;
+  }
+  
+  .glass-card {
+    margin: 8px;
+    padding: 12px;
+  }
+  
+  .glass-card-dashboard {
+    padding: 12px;
+  }
+  
+  .user-menu {
+    right: 8px;
+    min-width: 220px;
+  }
+  
+  .transaction-item {
+    padding: 8px;
+  }
+  
+  .transaction-icon {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+  }
+  
+  .modal-content {
+    padding: 16px;
+    width: 98%;
+  }
+}
+
+/* Grid adjustments for different screen sizes */
+@media (min-width: 1920px) {
+  .action-buttons-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1919px) {
+  .action-buttons-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .action-buttons-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .action-buttons-grid {
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    gap: 8px;
+  }
+}
+
+/* Orientation adjustments */
+@media (orientation: landscape) and (max-height: 600px) {
+  .balance-display {
+    font-size: 24px;
+  }
+  
+  .glass-card-dashboard {
+    padding: 16px;
+  }
+  
+  .action-button {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .glass-card, .glass-card-dashboard {
+    backdrop-filter: blur(30px);
+  }
 }

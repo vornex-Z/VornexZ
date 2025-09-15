@@ -6,7 +6,6 @@ import {
   Clock, 
   User, 
   CreditCard, 
-  Gift, 
   Heart, 
   Headphones, 
   LogOut,
@@ -16,7 +15,8 @@ import {
   Crown,
   Eye,
   EyeOff,
-  Filter
+  Filter,
+  X
 } from 'lucide-react';
 import { useAuth } from '../App';
 import axios from 'axios';
@@ -24,9 +24,23 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// PIX Icon Component
+const PixIcon = ({ size = 24 }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+    className="pix-icon"
+  >
+    <path d="M12 0L15.09 3.09L21 3L18.91 6.09L22 12L18.91 17.91L21 21L15.09 20.91L12 24L8.91 20.91L3 21L5.09 17.91L2 12L5.09 6.09L3 3L8.91 3.09L12 0ZM12 4.5L10.5 6L6 6L7.5 7.5L6 12L7.5 16.5L6 18L10.5 18L12 19.5L13.5 18L18 18L16.5 16.5L18 12L16.5 7.5L18 6L13.5 6L12 4.5Z"/>
+  </svg>
+);
+
 const Dashboard = () => {
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showCardsModal, setShowCardsModal] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [showBalance, setShowBalance] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -57,11 +71,7 @@ const Dashboard = () => {
     },
     { 
       id: 'pix', 
-      icon: () => (
-        <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-          <path d="M12 2L13.09 8.26L20 7L14.74 12.26L20 17.52L13.09 16.26L12 22L10.91 16.26L4 17.52L9.26 12.26L4 7L10.91 8.26L12 2Z"/>
-        </svg>
-      ), 
+      icon: PixIcon, 
       label: 'PIX', 
       className: 'teal',
       onClick: () => alert('Funcionalidade em desenvolvimento - PIX')
@@ -125,19 +135,10 @@ const Dashboard = () => {
       icon: CreditCard,
       label: 'Cartões Virtuais',
       description: 'Gerencie seus cartões de débito virtuais',
-      onClick: () => alert('Funcionalidade em desenvolvimento')
-    },
-    {
-      icon: Gift,
-      label: 'Cashback Inteligente',
-      description: 'Veja seu cashback e categorias',
-      onClick: () => alert('Funcionalidade em desenvolvimento')
-    },
-    {
-      icon: Clock,
-      label: 'Assistente IA',
-      description: 'Análises e insights financeiros',
-      onClick: () => alert('Funcionalidade em desenvolvimento')
+      onClick: () => {
+        setShowCardsModal(true);
+        setShowUserMenu(false);
+      }
     },
     {
       icon: Heart,
@@ -183,17 +184,93 @@ const Dashboard = () => {
         return { icon: ArrowUp, className: 'blue' };
       case 'pix':
         return { 
-          icon: () => (
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-              <path d="M12 2L13.09 8.26L20 7L14.74 12.26L20 17.52L13.09 16.26L12 22L10.91 16.26L4 17.52L9.26 12.26L4 7L10.91 8.26L12 2Z"/>
-            </svg>
-          ), 
+          icon: PixIcon, 
           className: 'teal' 
         };
       default:
         return { icon: Clock, className: 'blue' };
     }
   };
+
+  const mockCards = [
+    {
+      id: 1,
+      number: '**** **** **** 1234',
+      name: user?.nome_completo || 'João Santos Silva',
+      expiry: '12/28',
+      status: 'Ativo',
+      limit: 5000.00,
+      spent: 1250.00
+    },
+    {
+      id: 2,
+      number: '**** **** **** 5678',
+      name: user?.nome_completo || 'João Santos Silva',
+      expiry: '08/27',
+      status: 'Bloqueado',
+      limit: 2000.00,
+      spent: 0.00
+    }
+  ];
+
+  const CardsModal = () => (
+    <div className="modal-overlay" onClick={() => setShowCardsModal(false)}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">Cartões Virtuais</h2>
+          <button 
+            onClick={() => setShowCardsModal(false)}
+            className="text-gray-500 hover:text-gray-700"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        
+        <div className="space-y-4">
+          {mockCards.map(card => (
+            <div key={card.id} className="card-item">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <p className="text-lg font-semibold">{card.number}</p>
+                  <p className="text-sm opacity-80">{card.name}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm">Válido até</p>
+                  <p className="font-semibold">{card.expiry}</p>
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm opacity-80">Status</p>
+                  <p className={`font-semibold ${card.status === 'Ativo' ? 'text-green-300' : 'text-red-300'}`}>
+                    {card.status}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm opacity-80">Limite</p>
+                  <p className="font-semibold">{formatCurrency(card.limit)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm opacity-80">Gasto</p>
+                  <p className="font-semibold">{formatCurrency(card.spent)}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="mt-6 flex space-x-3">
+          <button className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all">
+            Criar Novo Cartão
+          </button>
+          <button className="flex-1 bg-gray-100 text-gray-800 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition-all">
+            Gerenciar Cartões
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
@@ -293,7 +370,7 @@ const Dashboard = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-9 gap-4 mb-8">
+        <div className="action-buttons-grid grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-9 gap-4 mb-8">
           {actionButtons.map((button) => (
             <div key={button.id} className="flex flex-col items-center">
               <button
@@ -322,7 +399,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+          <div className="space-y-2 max-h-96 overflow-y-auto">
             {transactions.length === 0 ? (
               <div className="text-center py-8">
                 <Clock size={48} className="text-white/30 mx-auto mb-4" />
@@ -367,6 +444,9 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Cards Modal */}
+      {showCardsModal && <CardsModal />}
     </div>
   );
 };
