@@ -473,21 +473,21 @@ const Home = () => {
           
           {/* Footer Social Icons */}
           <div className="flex justify-center space-x-4">
-            <a href="https://facebook.com/vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+            <div className="footer-social-icon inactive">
               <Facebook className="h-5 w-5" />
-            </a>
-            <a href="https://instagram.com/vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+            </div>
+            <div className="footer-social-icon inactive">
               <Instagram className="h-5 w-5" />
-            </a>
-            <a href="https://youtube.com/@vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+            </div>
+            <div className="footer-social-icon inactive">
               <Youtube className="h-5 w-5" />
-            </a>
-            <a href="https://linkedin.com/company/vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+            </div>
+            <div className="footer-social-icon inactive">
               <Linkedin className="h-5 w-5" />
-            </a>
-            <a href="mailto:contato@vornexz.com" className="footer-social-icon">
+            </div>
+            <div className="footer-social-icon inactive">
               <Mail className="h-5 w-5" />
-            </a>
+            </div>
           </div>
         </div>
       </footer>
