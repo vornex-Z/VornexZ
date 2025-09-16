@@ -174,6 +174,13 @@ body {
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.social-button.inactive {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .social-button.facebook {
@@ -182,7 +189,7 @@ body {
   border-color: rgba(24, 119, 242, 0.3);
 }
 
-.social-button.facebook:hover {
+.social-button.facebook:hover:not(.inactive) {
   background: linear-gradient(135deg, rgba(24, 119, 242, 0.3), rgba(24, 119, 242, 0.2));
   box-shadow: 0 0 25px rgba(24, 119, 242, 0.4);
   transform: translateY(-2px);
@@ -194,7 +201,7 @@ body {
   border-color: rgba(225, 48, 108, 0.3);
 }
 
-.social-button.instagram:hover {
+.social-button.instagram:hover:not(.inactive) {
   background: linear-gradient(135deg, rgba(225, 48, 108, 0.3), rgba(225, 48, 108, 0.2));
   box-shadow: 0 0 25px rgba(225, 48, 108, 0.4);
   transform: translateY(-2px);
@@ -206,7 +213,7 @@ body {
   border-color: rgba(255, 0, 0, 0.3);
 }
 
-.social-button.youtube:hover {
+.social-button.youtube:hover:not(.inactive) {
   background: linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(255, 0, 0, 0.2));
   box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
   transform: translateY(-2px);
@@ -218,7 +225,7 @@ body {
   border-color: rgba(0, 119, 181, 0.3);
 }
 
-.social-button.linkedin:hover {
+.social-button.linkedin:hover:not(.inactive) {
   background: linear-gradient(135deg, rgba(0, 119, 181, 0.3), rgba(0, 119, 181, 0.2));
   box-shadow: 0 0 25px rgba(0, 119, 181, 0.4);
   transform: translateY(-2px);
@@ -230,7 +237,7 @@ body {
   border-color: rgba(139, 92, 246, 0.3);
 }
 
-.social-button.email:hover {
+.social-button.email:hover:not(.inactive) {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.2));
   box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
   transform: translateY(-2px);
@@ -249,14 +256,33 @@ body {
   color: #a78bfa;
   transition: all 0.3s ease;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.footer-social-icon:hover {
+.footer-social-icon.inactive {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.footer-social-icon:hover:not(.inactive) {
   background: rgba(139, 92, 246, 0.2);
   border-color: #8b5cf6;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+}
+
+/* Inactive Button Styles */
+.inactive-button {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.inactive-button:hover {
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* Space Card Styles */
