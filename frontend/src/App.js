@@ -430,26 +430,26 @@ const Home = () => {
           
           {/* Social Media Links */}
           <div className="flex justify-center space-x-6 mb-12">
-            <a href="https://facebook.com/vornexz" target="_blank" rel="noopener noreferrer" className="social-button facebook">
+            <div className="social-button facebook inactive">
               <Facebook className="h-6 w-6" />
               <span>Facebook</span>
-            </a>
-            <a href="https://instagram.com/vornexz" target="_blank" rel="noopener noreferrer" className="social-button instagram">
+            </div>
+            <div className="social-button instagram inactive">
               <Instagram className="h-6 w-6" />
               <span>Instagram</span>
-            </a>
-            <a href="https://youtube.com/@vornexz" target="_blank" rel="noopener noreferrer" className="social-button youtube">
+            </div>
+            <div className="social-button youtube inactive">
               <Youtube className="h-6 w-6" />
               <span>YouTube</span>
-            </a>
-            <a href="https://linkedin.com/company/vornexz" target="_blank" rel="noopener noreferrer" className="social-button linkedin">
+            </div>
+            <div className="social-button linkedin inactive">
               <Linkedin className="h-6 w-6" />
               <span>LinkedIn</span>
-            </a>
-            <a href="mailto:contato@vornexz.com" className="social-button email">
+            </div>
+            <div className="social-button email inactive">
               <Mail className="h-6 w-6" />
               <span>Email</span>
-            </a>
+            </div>
           </div>
         </div>
       </section>
