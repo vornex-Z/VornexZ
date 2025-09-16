@@ -15,7 +15,7 @@ import { Textarea } from "./components/ui/textarea";
 import { toast } from "sonner";
 
 // Icons
-import { Sparkles, Zap, Shield, Globe, Edit, Plus, Trash2, Upload, LogOut, Eye, Rocket, Brain, Atom } from "lucide-react";
+import { Sparkles, Zap, Shield, Globe, Edit, Plus, Trash2, Upload, LogOut, Eye, Rocket, Brain, Atom, Mail, Facebook, Instagram, Youtube, Linkedin } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -31,7 +31,7 @@ const StarField = () => {
     canvas.height = window.innerHeight;
     
     const stars = [];
-    const numStars = 800; // Increased for denser star field
+    const numStars = 800; // Dense star field
     
     // Create stars with different sizes and speeds
     for (let i = 0; i < numStars; i++) {
@@ -307,7 +307,7 @@ const Home = () => {
             </h1>
             <div className="cosmic-subtitle">
               <Atom className="inline-block mr-3 h-8 w-8" />
-              <span className="text-2xl">CONSTRUINDO O FUTURO</span>
+              <span className="text-2xl">O FUTURO É AGORA</span>
               <Atom className="inline-block ml-3 h-8 w-8" />
             </div>
           </div>
@@ -325,20 +325,18 @@ const Home = () => {
           </Button>
         </div>
         
-        {/* Floating cosmic elements */}
+        {/* Floating cosmic elements (removed circles) */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="cosmic-orb orb-1"></div>
           <div className="cosmic-orb orb-2"></div>
           <div className="cosmic-orb orb-3"></div>
-          <div className="cosmic-ring ring-1"></div>
-          <div className="cosmic-ring ring-2"></div>
         </div>
       </section>
       
       {/* About Section */}
       <section id="about" className="py-24 relative">
         <div className="container mx-auto px-6">
-          <div className="max-w-5xl mx-auto text-center">
+          <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-6xl font-bold mb-12 cosmic-heading">
               {content.about?.title || "Sobre a VornexZ"}
             </h2>
@@ -349,7 +347,7 @@ const Home = () => {
                 <Rocket className="h-16 w-16 text-purple-400 ml-4" />
               </div>
               <p className="text-xl text-gray-200 leading-relaxed">
-                {content.about?.content || "A VornexZ é uma holding visionária que acumula e desenvolve empresas inovadoras em diferentes setores tecnológicos. Unimos mentes brilhantes e recursos para criar soluções que moldam o futuro da humanidade através da ciência, tecnologia e inovação disruptiva."}
+                {content.about?.content || "A VornexZ representa o avanço definitivo na evolução empresarial do século XXI. Como holding visionária, consolidamos e desenvolvemos empresas que não apenas acompanham o futuro, mas o constroem ativamente."}
               </p>
             </div>
           </div>
@@ -422,6 +420,40 @@ const Home = () => {
         </div>
       </section>
       
+      {/* Contact Section */}
+      <section id="contact" className="py-24 relative">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-6xl font-bold mb-12 cosmic-heading">Contato</h2>
+          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+            Conecte-se conosco e faça parte do futuro. Siga nossas redes sociais e acompanhe as inovações que estão transformando o mundo.
+          </p>
+          
+          {/* Social Media Links */}
+          <div className="flex justify-center space-x-6 mb-12">
+            <a href="https://facebook.com/vornexz" target="_blank" rel="noopener noreferrer" className="social-button facebook">
+              <Facebook className="h-6 w-6" />
+              <span>Facebook</span>
+            </a>
+            <a href="https://instagram.com/vornexz" target="_blank" rel="noopener noreferrer" className="social-button instagram">
+              <Instagram className="h-6 w-6" />
+              <span>Instagram</span>
+            </a>
+            <a href="https://youtube.com/@vornexz" target="_blank" rel="noopener noreferrer" className="social-button youtube">
+              <Youtube className="h-6 w-6" />
+              <span>YouTube</span>
+            </a>
+            <a href="https://linkedin.com/company/vornexz" target="_blank" rel="noopener noreferrer" className="social-button linkedin">
+              <Linkedin className="h-6 w-6" />
+              <span>LinkedIn</span>
+            </a>
+            <a href="mailto:contato@vornexz.com" className="social-button email">
+              <Mail className="h-6 w-6" />
+              <span>Email</span>
+            </a>
+          </div>
+        </div>
+      </section>
+      
       {/* Footer */}
       <footer className="py-16 border-t border-purple-400/30 bg-black/70 backdrop-blur-sm">
         <div className="container mx-auto px-6 text-center">
@@ -431,11 +463,31 @@ const Home = () => {
           <p className="text-gray-400 mb-8 text-lg">
             {content.footer?.content || "© 2025 VornexZ — Construindo o futuro, empresa por empresa."}
           </p>
-          <div className="flex justify-center space-x-8">
+          <div className="flex justify-center space-x-8 mb-6">
             <a href="#home" className="footer-link">Início</a>
             <a href="#about" className="footer-link">Sobre</a>
             <a href="#companies" className="footer-link">Empresas</a>
+            <a href="#contact" className="footer-link">Contato</a>
             <a href="/admin" className="footer-link">Admin</a>
+          </div>
+          
+          {/* Footer Social Icons */}
+          <div className="flex justify-center space-x-4">
+            <a href="https://facebook.com/vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a href="https://instagram.com/vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+              <Instagram className="h-5 w-5" />
+            </a>
+            <a href="https://youtube.com/@vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+              <Youtube className="h-5 w-5" />
+            </a>
+            <a href="https://linkedin.com/company/vornexz" target="_blank" rel="noopener noreferrer" className="footer-social-icon">
+              <Linkedin className="h-5 w-5" />
+            </a>
+            <a href="mailto:contato@vornexz.com" className="footer-social-icon">
+              <Mail className="h-5 w-5" />
+            </a>
           </div>
         </div>
       </footer>

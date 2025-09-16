@@ -14,24 +14,24 @@ body {
   overflow-x: hidden;
 }
 
-/* Enhanced Scrollbar Styling */
+/* Hidden Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-  border-radius: 5px;
+  width: 0px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #8B5CF6, #6D28D9);
-  border-radius: 5px;
-  border: 1px solid #4C1D95;
+  background: transparent;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #7C3AED, #5B21B6);
+/* For Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* For Internet Explorer and Edge */
+body {
+  -ms-overflow-style: none;
 }
 
 /* Cosmic Typography */
@@ -159,6 +159,104 @@ body {
   color: white;
   border-color: #a78bfa;
   transform: translateY(-2px);
+}
+
+/* Social Media Buttons */
+.social-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-family: 'Orbitron', monospace;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 2px solid transparent;
+}
+
+.social-button.facebook {
+  background: linear-gradient(135deg, rgba(24, 119, 242, 0.2), rgba(24, 119, 242, 0.1));
+  color: #1877f2;
+  border-color: rgba(24, 119, 242, 0.3);
+}
+
+.social-button.facebook:hover {
+  background: linear-gradient(135deg, rgba(24, 119, 242, 0.3), rgba(24, 119, 242, 0.2));
+  box-shadow: 0 0 25px rgba(24, 119, 242, 0.4);
+  transform: translateY(-2px);
+}
+
+.social-button.instagram {
+  background: linear-gradient(135deg, rgba(225, 48, 108, 0.2), rgba(225, 48, 108, 0.1));
+  color: #e1306c;
+  border-color: rgba(225, 48, 108, 0.3);
+}
+
+.social-button.instagram:hover {
+  background: linear-gradient(135deg, rgba(225, 48, 108, 0.3), rgba(225, 48, 108, 0.2));
+  box-shadow: 0 0 25px rgba(225, 48, 108, 0.4);
+  transform: translateY(-2px);
+}
+
+.social-button.youtube {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(255, 0, 0, 0.1));
+  color: #ff0000;
+  border-color: rgba(255, 0, 0, 0.3);
+}
+
+.social-button.youtube:hover {
+  background: linear-gradient(135deg, rgba(255, 0, 0, 0.3), rgba(255, 0, 0, 0.2));
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.social-button.linkedin {
+  background: linear-gradient(135deg, rgba(0, 119, 181, 0.2), rgba(0, 119, 181, 0.1));
+  color: #0077b5;
+  border-color: rgba(0, 119, 181, 0.3);
+}
+
+.social-button.linkedin:hover {
+  background: linear-gradient(135deg, rgba(0, 119, 181, 0.3), rgba(0, 119, 181, 0.2));
+  box-shadow: 0 0 25px rgba(0, 119, 181, 0.4);
+  transform: translateY(-2px);
+}
+
+.social-button.email {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.1));
+  color: #8b5cf6;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.social-button.email:hover {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.2));
+  box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Footer Social Icons */
+.footer-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  color: #a78bfa;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.footer-social-icon:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: #8b5cf6;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
 }
 
 /* Space Card Styles */
@@ -353,7 +451,7 @@ body {
   border-radius: 12px;
 }
 
-/* Cosmic Elements */
+/* Cosmic Elements (removed circles) */
 .cosmic-orb {
   position: absolute;
   border-radius: 50%;
@@ -386,29 +484,6 @@ body {
   bottom: 30%;
   left: 60%;
   animation-delay: -16s;
-}
-
-.cosmic-ring {
-  position: absolute;
-  border: 2px solid rgba(139, 92, 246, 0.1);
-  border-radius: 50%;
-  animation: cosmicRingRotate 30s linear infinite;
-}
-
-.ring-1 {
-  width: 400px;
-  height: 400px;
-  top: 10%;
-  right: 10%;
-  animation-delay: 0s;
-}
-
-.ring-2 {
-  width: 300px;
-  height: 300px;
-  bottom: 20%;
-  left: 20%;
-  animation-delay: -15s;
 }
 
 .cosmic-icon-wrapper {
@@ -454,11 +529,6 @@ body {
   50% { transform: translateX(0px) translateY(-30px) rotate(180deg); }
   75% { transform: translateX(-20px) translateY(-15px) rotate(270deg); }
   100% { transform: translateX(0px) translateY(0px) rotate(360deg); }
-}
-
-@keyframes cosmicRingRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
 }
 
 /* Canvas Backgrounds */
@@ -509,11 +579,16 @@ html {
     transform: translateY(-8px);
   }
   
-  .cosmic-orb, .cosmic-ring {
+  .cosmic-orb {
     display: none;
   }
   
   .nav-link {
+    font-size: 0.9rem;
+  }
+  
+  .social-button {
+    padding: 10px 16px;
     font-size: 0.9rem;
   }
 }
@@ -530,6 +605,11 @@ html {
   .cosmic-subtitle {
     font-size: 1rem;
     letter-spacing: 2px;
+  }
+  
+  .social-button {
+    padding: 8px 12px;
+    font-size: 0.8rem;
   }
 }
 
