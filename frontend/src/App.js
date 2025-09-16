@@ -381,11 +381,9 @@ const Home = () => {
                     <Badge className="space-badge mx-auto block w-fit mb-4">{company.category}</Badge>
                   )}
                   {company.website && (
-                    <Button variant="outline" size="sm" className="w-full cosmic-outline-button" asChild>
-                      <a href={company.website} target="_blank" rel="noopener noreferrer">
-                        <Globe className="mr-2 h-4 w-4" />
-                        Explorar
-                      </a>
+                    <Button variant="outline" size="sm" className="w-full cosmic-outline-button inactive-button" disabled>
+                      <Globe className="mr-2 h-4 w-4" />
+                      Em Breve
                     </Button>
                   )}
                 </div>
