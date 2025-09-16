@@ -42,12 +42,15 @@ body {
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
   animation: logoBreath 4s ease-in-out infinite;
+  font-size: clamp(3rem, 8vw, 9rem);
+  line-height: 0.9;
 }
 
 .cyberpunk-logo-text {
   font-weight: 900;
   letter-spacing: 2px;
   text-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
 }
 
 .cosmic-text {
@@ -65,6 +68,8 @@ body {
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
   animation: headingGlow 3s ease-in-out infinite alternate;
+  font-size: clamp(2.5rem, 6vw, 6rem);
+  line-height: 1.1;
 }
 
 .cosmic-logo-footer {
@@ -73,14 +78,16 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 25px rgba(139, 92, 246, 0.5);
+  font-size: clamp(1.5rem, 3vw, 3rem);
 }
 
 .cosmic-subtitle {
   color: #c7d2fe;
   font-weight: 600;
-  letter-spacing: 4px;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
   text-transform: uppercase;
   animation: subtitlePulse 2s ease-in-out infinite;
+  font-size: clamp(1rem, 2vw, 2rem);
 }
 
 @keyframes logoBreath {
@@ -113,11 +120,14 @@ body {
   font-family: 'Orbitron', monospace;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: clamp(0.5px, 0.2vw, 1.5px);
   position: relative;
   overflow: hidden;
   transition: all 0.4s ease;
   box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+  font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+  padding: clamp(12px, 1.5vw, 24px) clamp(20px, 3vw, 40px);
+  border-radius: clamp(8px, 1vw, 12px);
 }
 
 .cosmic-button::before {
@@ -148,9 +158,12 @@ body {
   color: #c7d2fe;
   font-family: 'Orbitron', monospace;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: clamp(0.5px, 0.1vw, 1px);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  font-size: clamp(0.8rem, 1.2vw, 1rem);
+  padding: clamp(8px, 1vw, 16px) clamp(12px, 2vw, 24px);
+  border-radius: clamp(6px, 0.8vw, 10px);
 }
 
 .cosmic-outline-button:hover {
@@ -165,8 +178,8 @@ body {
 .social-button {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
+  gap: clamp(6px, 1vw, 12px);
+  padding: clamp(10px, 2vw, 16px) clamp(16px, 3vw, 24px);
   border-radius: 50px;
   font-family: 'Orbitron', monospace;
   font-weight: 600;
@@ -175,6 +188,7 @@ body {
   backdrop-filter: blur(10px);
   border: 2px solid transparent;
   cursor: pointer;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
 }
 
 .social-button.inactive {
@@ -248,8 +262,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: clamp(35px, 4vw, 45px);
+  height: clamp(35px, 4vw, 45px);
   border-radius: 50%;
   background: rgba(139, 92, 246, 0.1);
   border: 1px solid rgba(139, 92, 246, 0.3);
@@ -294,12 +308,13 @@ body {
   border: 2px solid transparent;
   border-image: linear-gradient(135deg, #8B5CF6, #7C3AED, #6D28D9) 1;
   backdrop-filter: blur(15px);
-  border-radius: 20px;
+  border-radius: clamp(12px, 2vw, 20px);
   box-shadow: 
     0 20px 60px rgba(139, 92, 246, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all 0.4s ease;
   animation: cardFloat 8s ease-in-out infinite;
+  padding: clamp(2rem, 4vw, 3rem);
 }
 
 .space-card:hover {
@@ -318,7 +333,7 @@ body {
   border: 2px solid transparent;
   border-image: linear-gradient(135deg, #8B5CF6, transparent, #8B5CF6) 1;
   backdrop-filter: blur(20px);
-  border-radius: 24px;
+  border-radius: clamp(16px, 2.5vw, 24px);
   position: relative;
   overflow: hidden;
   transition: all 0.5s ease;
@@ -358,8 +373,8 @@ body {
     rgba(139, 92, 246, 0.08) 100%);
   border: 1px solid rgba(139, 92, 246, 0.3);
   backdrop-filter: blur(12px);
-  border-radius: 16px;
-  padding: 2rem;
+  border-radius: clamp(12px, 2vw, 16px);
+  padding: clamp(1.5rem, 3vw, 2rem);
   text-align: center;
   transition: all 0.4s ease;
   animation: differentialFloat 12s ease-in-out infinite;
@@ -382,7 +397,7 @@ body {
     rgba(0, 0, 0, 0.95) 100%);
   border: 1px solid rgba(139, 92, 246, 0.4);
   backdrop-filter: blur(15px);
-  border-radius: 16px;
+  border-radius: clamp(12px, 2vw, 16px);
   box-shadow: 0 15px 35px rgba(139, 92, 246, 0.1);
 }
 
@@ -392,9 +407,11 @@ body {
   border: 2px solid rgba(139, 92, 246, 0.4);
   color: white;
   font-family: 'Orbitron', monospace;
-  border-radius: 12px;
+  border-radius: clamp(8px, 1.5vw, 12px);
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  padding: clamp(10px, 2vw, 16px);
 }
 
 .space-input:focus {
@@ -414,10 +431,10 @@ body {
   font-family: 'Orbitron', monospace;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: clamp(0.5px, 0.1vw, 1px);
   border-radius: 20px;
-  padding: 6px 16px;
-  font-size: 0.75rem;
+  padding: clamp(4px, 1vw, 8px) clamp(10px, 2vw, 16px);
+  font-size: clamp(0.65rem, 1vw, 0.75rem);
   box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
 }
 
@@ -425,9 +442,11 @@ body {
 .nav-link {
   color: #c7d2fe;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: clamp(0.5px, 0.1vw, 1px);
   transition: all 0.3s ease;
   position: relative;
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  padding: clamp(8px, 1.5vw, 12px);
 }
 
 .nav-link::after {
@@ -454,6 +473,8 @@ body {
   color: #9ca3af;
   font-weight: 500;
   transition: all 0.3s ease;
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  padding: clamp(6px, 1vw, 10px);
 }
 
 .footer-link:hover {
@@ -465,8 +486,8 @@ body {
 .space-tabs {
   background: rgba(0, 0, 0, 0.8);
   border: 2px solid rgba(139, 92, 246, 0.3);
-  border-radius: 16px;
-  padding: 6px;
+  border-radius: clamp(12px, 2vw, 16px);
+  padding: clamp(4px, 1vw, 6px);
   backdrop-filter: blur(10px);
 }
 
@@ -474,10 +495,10 @@ body {
   background: linear-gradient(135deg, #8B5CF6, #7C3AED);
   color: white;
   box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
-  border-radius: 12px;
+  border-radius: clamp(8px, 1.5vw, 12px);
 }
 
-/* Cosmic Elements (removed circles) */
+/* Cosmic Elements */
 .cosmic-orb {
   position: absolute;
   border-radius: 50%;
@@ -486,8 +507,8 @@ body {
 }
 
 .orb-1 {
-  width: 150px;
-  height: 150px;
+  width: clamp(100px, 15vw, 200px);
+  height: clamp(100px, 15vw, 200px);
   background: radial-gradient(circle, #8B5CF6, transparent);
   top: 20%;
   left: 10%;
@@ -495,8 +516,8 @@ body {
 }
 
 .orb-2 {
-  width: 200px;
-  height: 200px;
+  width: clamp(120px, 18vw, 250px);
+  height: clamp(120px, 18vw, 250px);
   background: radial-gradient(circle, #a78bfa, transparent);
   top: 60%;
   right: 15%;
@@ -504,8 +525,8 @@ body {
 }
 
 .orb-3 {
-  width: 120px;
-  height: 120px;
+  width: clamp(80px, 12vw, 160px);
+  height: clamp(80px, 12vw, 160px);
   background: radial-gradient(circle, #c7d2fe, transparent);
   bottom: 30%;
   left: 60%;
@@ -516,8 +537,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 80px;
-  height: 80px;
+  width: clamp(60px, 8vw, 80px);
+  height: clamp(60px, 8vw, 80px);
   margin: 0 auto;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(124, 58, 237, 0.1));
   border: 2px solid rgba(139, 92, 246, 0.3);
@@ -528,6 +549,8 @@ body {
 .cosmic-icon {
   color: #a78bfa;
   filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.6));
+  width: clamp(40px, 5vw, 48px);
+  height: clamp(40px, 5vw, 48px);
 }
 
 /* Animations */
@@ -591,37 +614,104 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Container Styles */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 3vw, 3rem);
+}
+
+/* Section Spacing */
+section {
+  padding: clamp(3rem, 8vw, 8rem) 0;
+}
+
+/* Grid Responsive */
+.responsive-grid-1 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.responsive-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.responsive-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.responsive-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+/* Mobile First Responsive Design */
+
+/* Extra Small Devices (Phones, 320px - 480px) */
+@media (max-width: 480px) {
   .main-logo-text {
-    font-size: 4rem;
+    font-size: 2.5rem;
+    line-height: 0.9;
   }
   
   .cosmic-heading {
-    font-size: 3rem;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
   }
   
-  .space-company-card:hover {
-    transform: translateY(-8px);
+  .cosmic-subtitle {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+  
+  .social-button {
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+  }
+  
+  .social-button span {
+    font-size: 0.7rem;
+  }
+  
+  .nav-link {
+    font-size: 0.8rem;
+    padding: 6px;
   }
   
   .cosmic-orb {
     display: none;
   }
   
-  .nav-link {
-    font-size: 0.9rem;
+  .space-card {
+    padding: 1.5rem;
   }
   
-  .social-button {
-    padding: 10px 16px;
-    font-size: 0.9rem;
+  .space-company-card:hover {
+    transform: translateY(-8px);
+  }
+  
+  header .container {
+    padding: 0 1rem;
+  }
+  
+  .cyberpunk-logo-text {
+    font-size: 1rem;
   }
 }
 
-@media (max-width: 480px) {
+/* Small Devices (Phones, 481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
   .main-logo-text {
-    font-size: 3rem;
+    font-size: 3.5rem;
   }
   
   .cosmic-heading {
@@ -629,24 +719,263 @@ html {
   }
   
   .cosmic-subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
     letter-spacing: 2px;
   }
   
   .social-button {
-    padding: 8px 12px;
-    font-size: 0.8rem;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+  }
+  
+  .responsive-grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+  
+  .space-differential-card {
+    padding: 1.5rem;
+  }
+  
+  .cyberpunk-logo-text {
+    font-size: 1.3rem;
   }
 }
 
-/* Loading Animation */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* Medium Devices (Tablets, 769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main-logo-text {
+    font-size: 5rem;
+  }
+  
+  .cosmic-heading {
+    font-size: 3.5rem;
+  }
+  
+  .cosmic-subtitle {
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+  }
+  
+  .social-button {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+  }
+  
+  .responsive-grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  
+  .responsive-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .cyberpunk-logo-text {
+    font-size: 1.6rem;
+  }
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
+/* Large Devices (Laptops/Desktops, 1025px - 1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .main-logo-text {
+    font-size: 7rem;
+  }
+  
+  .cosmic-heading {
+    font-size: 4.5rem;
+  }
+  
+  .cosmic-subtitle {
+    font-size: 1.6rem;
+    letter-spacing: 3px;
+  }
+  
+  .social-button {
+    padding: 14px 22px;
+    font-size: 1rem;
+  }
+  
+  .responsive-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  .cyberpunk-logo-text {
+    font-size: 1.8rem;
+  }
+}
+
+/* Extra Large Devices (Large Desktops, 1441px - 1920px) */
+@media (min-width: 1441px) and (max-width: 1920px) {
+  .main-logo-text {
+    font-size: 8rem;
+  }
+  
+  .cosmic-heading {
+    font-size: 5.5rem;
+  }
+  
+  .cosmic-subtitle {
+    font-size: 1.8rem;
+    letter-spacing: 4px;
+  }
+  
+  .social-button {
+    padding: 16px 24px;
+    font-size: 1.1rem;
+  }
+  
+  .cyberpunk-logo-text {
+    font-size: 2rem;
+  }
+}
+
+/* Ultra Large Devices (TVs and Large Monitors, 1921px+) */
+@media (min-width: 1921px) {
+  .main-logo-text {
+    font-size: 10rem;
+  }
+  
+  .cosmic-heading {
+    font-size: 7rem;
+  }
+  
+  .cosmic-subtitle {
+    font-size: 2.2rem;
+    letter-spacing: 5px;
+  }
+  
+  .social-button {
+    padding: 20px 30px;
+    font-size: 1.3rem;
+  }
+  
+  .space-card {
+    padding: 4rem;
+  }
+  
+  .space-differential-card {
+    padding: 3rem;
+  }
+  
+  .cyberpunk-logo-text {
+    font-size: 2.5rem;
+  }
+  
+  .cosmic-icon {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .cosmic-icon-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .cosmic-button:hover,
+  .cosmic-outline-button:hover,
+  .social-button:hover,
+  .footer-social-icon:hover,
+  .nav-link:hover,
+  .footer-link:hover {
+    transform: none;
+  }
+  
+  .space-card:hover,
+  .space-company-card:hover,
+  .space-differential-card:hover {
+    transform: none;
+  }
+  
+  /* Increase touch targets */
+  .nav-link {
+    padding: 12px;
+    margin: 4px;
+  }
+  
+  .social-button {
+    min-height: 48px;
+    min-width: 120px;
+  }
+  
+  .footer-social-icon {
+    min-width: 48px;
+    min-height: 48px;
+  }
+}
+
+/* High Density Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .main-logo-text,
+  .cosmic-heading,
+  .cosmic-text {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Landscape Mobile Orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  section {
+    padding: clamp(2rem, 5vh, 4rem) 0;
+  }
+  
+  .main-logo-text {
+    font-size: clamp(2rem, 8vh, 4rem);
+  }
+  
+  .cosmic-heading {
+    font-size: clamp(1.5rem, 6vh, 3rem);
+  }
+  
+  .cosmic-subtitle {
+    font-size: clamp(0.8rem, 3vh, 1.2rem);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .cosmic-orb,
+  #starfield,
+  #molecular-bg,
+  .social-button,
+  .footer-social-icon {
+    display: none;
+  }
+  
+  .main-logo-text,
+  .cosmic-heading,
+  .cosmic-text {
+    color: #000 !important;
+    background: none !important;
+    -webkit-text-fill-color: #000 !important;
+    text-shadow: none !important;
+  }
+  
+  .space-card,
+  .space-company-card,
+  .space-differential-card,
+  .space-admin-card {
+    border: 1px solid #ccc !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .cosmic-orb {
+    animation: none;
+  }
 }
 
 /* Fade In Animation */
@@ -677,6 +1006,6 @@ html {
     #8B5CF6,
     transparent
   );
-  margin: 3rem 0;
+  margin: clamp(2rem, 4vw, 3rem) 0;
   border-radius: 1px;
 }

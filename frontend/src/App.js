@@ -15,23 +15,36 @@ import { Textarea } from "./components/ui/textarea";
 import { toast } from "sonner";
 
 // Icons
-import { Sparkles, Zap, Shield, Globe, Edit, Plus, Trash2, Upload, LogOut, Eye, Rocket, Brain, Atom, Mail, Facebook, Instagram, Youtube, Linkedin } from "lucide-react";
+import { Sparkles, Zap, Shield, Globe, Edit, Plus, Trash2, Upload, LogOut, Eye, Rocket, Brain, Atom, Mail, Facebook, Instagram, Youtube, Linkedin, Menu, X } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Enhanced StarField Component with dense star field
+// Enhanced StarField Component with responsive particle count
 const StarField = () => {
   useEffect(() => {
     const canvas = document.getElementById('starfield');
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const updateCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    updateCanvasSize();
     
     const stars = [];
-    const numStars = 800; // Dense star field
+    // Responsive particle count based on screen size
+    const getParticleCount = () => {
+      const width = window.innerWidth;
+      if (width < 480) return 300; // Mobile
+      if (width < 768) return 500; // Tablet
+      if (width < 1024) return 600; // Small laptop
+      if (width < 1440) return 800; // Desktop
+      return 1000; // Large screens
+    };
+    
+    const numStars = getParticleCount();
     
     // Create stars with different sizes and speeds
     for (let i = 0; i < numStars; i++) {
@@ -89,8 +102,12 @@ const StarField = () => {
     animate();
     
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      updateCanvasSize();
+      // Regenerate stars for new canvas size
+      stars.forEach(star => {
+        if (star.x > canvas.width) star.x = Math.random() * canvas.width;
+        if (star.y > canvas.height) star.y = Math.random() * canvas.height;
+      });
     };
     
     window.addEventListener('resize', handleResize);
@@ -100,18 +117,30 @@ const StarField = () => {
   return <canvas id="starfield" className="fixed inset-0 -z-10" />;
 };
 
-// Molecular Background Component
+// Responsive Molecular Background Component
 const MolecularBackground = () => {
   useEffect(() => {
     const canvas = document.getElementById('molecular-bg');
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const updateCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    updateCanvasSize();
     
     const molecules = [];
-    const numMolecules = 50;
+    // Responsive molecule count
+    const getMoleculeCount = () => {
+      const width = window.innerWidth;
+      if (width < 480) return 20; // Mobile
+      if (width < 768) return 30; // Tablet  
+      if (width < 1024) return 40; // Small laptop
+      return 50; // Desktop+
+    };
+    
+    const numMolecules = getMoleculeCount();
     
     // Create molecular points
     for (let i = 0; i < numMolecules; i++) {
@@ -146,14 +175,15 @@ const MolecularBackground = () => {
       });
       
       // Draw connections between nearby molecules
+      const connectionDistance = window.innerWidth < 768 ? 100 : 150;
       for (let i = 0; i < molecules.length; i++) {
         for (let j = i + 1; j < molecules.length; j++) {
           const dx = molecules[i].x - molecules[j].x;
           const dy = molecules[i].y - molecules[j].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < 150) {
-            const opacity = (150 - distance) / 150 * 0.2;
+          if (distance < connectionDistance) {
+            const opacity = (connectionDistance - distance) / connectionDistance * 0.2;
             ctx.strokeStyle = `rgba(139, 92, 246, ${opacity})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -170,8 +200,12 @@ const MolecularBackground = () => {
     animate();
     
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      updateCanvasSize();
+      // Adjust molecule positions for new canvas size
+      molecules.forEach(molecule => {
+        if (molecule.x > canvas.width) molecule.x = Math.random() * canvas.width;
+        if (molecule.y > canvas.height) molecule.y = Math.random() * canvas.height;
+      });
     };
     
     window.addEventListener('resize', handleResize);
@@ -179,6 +213,45 @@ const MolecularBackground = () => {
   }, []);
   
   return <canvas id="molecular-bg" className="fixed inset-0 -z-20" />;
+};
+
+// Mobile Navigation Component
+const MobileNavigation = ({ isOpen, setIsOpen }) => {
+  return (
+    <>
+      {/* Mobile menu button */}
+      <button
+        className="md:hidden cosmic-outline-button p-2"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle menu"
+      >
+        {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+      </button>
+      
+      {/* Mobile menu overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="fixed inset-0 bg-black/80" onClick={() => setIsOpen(false)} />
+          <div className="fixed top-0 right-0 h-full w-64 bg-black/95 backdrop-blur-lg border-l border-purple-400/30 p-6">
+            <div className="flex justify-end mb-8">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="cosmic-outline-button p-2"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <nav className="flex flex-col space-y-6">
+              <a href="#home" className="nav-link text-xl" onClick={() => setIsOpen(false)}>Início</a>
+              <a href="#about" className="nav-link text-xl" onClick={() => setIsOpen(false)}>Sobre</a>
+              <a href="#companies" className="nav-link text-xl" onClick={() => setIsOpen(false)}>Empresas</a>
+              <a href="#contact" className="nav-link text-xl" onClick={() => setIsOpen(false)}>Contato</a>
+            </nav>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 // Auth Context
@@ -240,6 +313,7 @@ const Home = () => {
   const [companies, setCompanies] = useState([]);
   const [content, setContent] = useState({});
   const [config, setConfig] = useState({});
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   useEffect(() => {
     fetchPublicData();
@@ -280,52 +354,55 @@ const Home = () => {
               <img 
                 src={`${BACKEND_URL}${config.logo_url}`} 
                 alt="VornexZ Logo" 
-                className="h-10 w-auto"
+                className="h-8 md:h-10 w-auto"
               />
             )}
-            <div className="text-2xl font-bold">
-              <span className="cyberpunk-logo-text bg-gradient-to-r from-purple-300 via-purple-100 to-white bg-clip-text text-transparent">
-                VornexZ
-              </span>
+            <div className="cyberpunk-logo-text bg-gradient-to-r from-purple-300 via-purple-100 to-white bg-clip-text text-transparent">
+              VornexZ
             </div>
           </div>
+          
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             <a href="#home" className="nav-link">Início</a>
             <a href="#about" className="nav-link">Sobre</a>
             <a href="#companies" className="nav-link">Empresas</a>
             <a href="#contact" className="nav-link">Contato</a>
           </nav>
+          
+          {/* Mobile Navigation */}
+          <MobileNavigation isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
         </div>
       </header>
       
       {/* Hero Section */}
       <section id="home" className="min-h-screen flex items-center justify-center relative pt-20">
-        <div className="text-center z-10 max-w-4xl mx-auto px-6">
-          <div className="space-logo mb-12">
-            <h1 className="text-8xl md:text-9xl font-bold mb-6">
-              <span className="main-logo-text">VornexZ</span>
+        <div className="text-center z-10 max-w-6xl mx-auto px-6">
+          <div className="space-logo mb-8 md:mb-12">
+            <h1 className="main-logo-text mb-4 md:mb-6">
+              VornexZ
             </h1>
-            <div className="cosmic-subtitle">
-              <Atom className="inline-block mr-3 h-8 w-8" />
-              <span className="text-2xl">O FUTURO É AGORA</span>
-              <Atom className="inline-block ml-3 h-8 w-8" />
+            <div className="cosmic-subtitle mb-6 md:mb-8">
+              <Atom className="inline-block mr-2 md:mr-3 h-6 w-6 md:h-8 md:w-8" />
+              <span>O FUTURO É AGORA</span>
+              <Atom className="inline-block ml-2 md:ml-3 h-6 w-6 md:h-8 md:w-8" />
             </div>
           </div>
-          <p className="text-2xl md:text-3xl mb-12 text-gray-200 leading-relaxed">
+          <p className="text-lg md:text-2xl lg:text-3xl mb-8 md:mb-12 text-gray-200 leading-relaxed max-w-4xl mx-auto">
             {content.hero?.content || "A holding que transforma visões futuristas em realidade através de tecnologias revolucionárias"}
           </p>
           <Button 
             size="lg" 
-            className="cosmic-button text-lg px-10 py-6"
+            className="cosmic-button"
             onClick={() => document.getElementById('companies').scrollIntoView({ behavior: 'smooth' })}
           >
-            <Rocket className="mr-3 h-6 w-6" />
+            <Rocket className="mr-2 md:mr-3 h-5 w-5 md:h-6 md:w-6" />
             Explorar o Futuro
-            <Sparkles className="ml-3 h-6 w-6" />
+            <Sparkles className="ml-2 md:ml-3 h-5 w-5 md:h-6 md:w-6" />
           </Button>
         </div>
         
-        {/* Floating cosmic elements (removed circles) */}
+        {/* Floating cosmic elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="cosmic-orb orb-1"></div>
           <div className="cosmic-orb orb-2"></div>
@@ -334,19 +411,19 @@ const Home = () => {
       </section>
       
       {/* About Section */}
-      <section id="about" className="py-24 relative">
+      <section id="about" className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto text-center">
-            <h2 className="text-6xl font-bold mb-12 cosmic-heading">
+            <h2 className="cosmic-heading mb-8 md:mb-12">
               {content.about?.title || "Sobre a VornexZ"}
             </h2>
-            <div className="space-card p-12">
-              <div className="flex items-center justify-center mb-8">
-                <Brain className="h-16 w-16 text-purple-400 mr-4" />
-                <Atom className="h-20 w-20 text-white" />
-                <Rocket className="h-16 w-16 text-purple-400 ml-4" />
+            <div className="space-card">
+              <div className="flex items-center justify-center mb-6 md:mb-8 space-x-4">
+                <Brain className="h-12 w-12 md:h-16 md:w-16 text-purple-400" />
+                <Atom className="h-16 w-16 md:h-20 md:w-20 text-white" />
+                <Rocket className="h-12 w-12 md:h-16 md:w-16 text-purple-400" />
               </div>
-              <p className="text-xl text-gray-200 leading-relaxed">
+              <p className="text-base md:text-xl text-gray-200 leading-relaxed">
                 {content.about?.content || "A VornexZ representa o avanço definitivo na evolução empresarial do século XXI. Como holding visionária, consolidamos e desenvolvemos empresas que não apenas acompanham o futuro, mas o constroem ativamente."}
               </p>
             </div>
@@ -355,30 +432,30 @@ const Home = () => {
       </section>
       
       {/* Companies Section */}
-      <section id="companies" className="py-24 relative">
+      <section id="companies" className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6">
-          <h2 className="text-6xl font-bold text-center mb-20 cosmic-heading">Nossas Empresas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
+          <h2 className="cosmic-heading text-center mb-12 md:mb-20">Nossas Empresas</h2>
+          <div className="responsive-grid-3 max-w-6xl mx-auto">
             {companies.map((company, index) => (
               <div key={company.id} className="space-company-card" style={{ animationDelay: `${index * 0.2}s` }}>
-                <div className="p-8">
+                <div className="p-6 md:p-8">
                   <div className="text-center mb-6">
                     {company.logo_url ? (
                       <img 
                         src={`${BACKEND_URL}${company.logo_url}`} 
                         alt={company.name}
-                        className="h-20 w-20 mx-auto mb-6 rounded-xl border-2 border-purple-400/50"
+                        className="h-16 w-16 md:h-20 md:w-20 mx-auto mb-4 md:mb-6 rounded-xl border-2 border-purple-400/50"
                       />
                     ) : (
-                      <div className="h-20 w-20 mx-auto mb-6 rounded-xl border-2 border-purple-400/50 flex items-center justify-center bg-gradient-to-br from-purple-600/20 to-purple-800/20">
-                        <Atom className="h-10 w-10 text-purple-300" />
+                      <div className="h-16 w-16 md:h-20 md:w-20 mx-auto mb-4 md:mb-6 rounded-xl border-2 border-purple-400/50 flex items-center justify-center bg-gradient-to-br from-purple-600/20 to-purple-800/20">
+                        <Atom className="h-8 w-8 md:h-10 md:w-10 text-purple-300" />
                       </div>
                     )}
                   </div>
-                  <h3 className="text-3xl font-bold mb-4 text-center cosmic-text">{company.name}</h3>
-                  <p className="text-gray-300 text-center mb-6 leading-relaxed">{company.description}</p>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-center cosmic-text">{company.name}</h3>
+                  <p className="text-gray-300 text-center mb-4 md:mb-6 leading-relaxed text-sm md:text-base">{company.description}</p>
                   {company.category && (
-                    <Badge className="space-badge mx-auto block w-fit mb-4">{company.category}</Badge>
+                    <Badge className="space-badge mx-auto block w-fit mb-3 md:mb-4">{company.category}</Badge>
                   )}
                   {company.website && (
                     <Button variant="outline" size="sm" className="w-full cosmic-outline-button inactive-button" disabled>
@@ -394,12 +471,12 @@ const Home = () => {
       </section>
       
       {/* Differentials Section */}
-      <section id="differentials" className="py-24 relative">
+      <section id="differentials" className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6">
-          <h2 className="text-6xl font-bold text-center mb-20 cosmic-heading">
+          <h2 className="cosmic-heading text-center mb-12 md:mb-20">
             {content.differentials?.title || "Nossos Diferenciais"}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+          <div className="responsive-grid-4 max-w-7xl mx-auto">
             {[
               { icon: Atom, title: "Inovação Quântica", desc: "Tecnologias de vanguarda que transcendem limitações" },
               { icon: Shield, title: "Visão Futurista", desc: "Soluções pensadas para as próximas décadas" },  
@@ -407,11 +484,11 @@ const Home = () => {
               { icon: Rocket, title: "Expansão Cósmica", desc: "Alcance e impacto em escala universal" }
             ].map((item, index) => (
               <div key={index} className="space-differential-card" style={{ animationDelay: `${index * 0.15}s` }}>
-                <div className="cosmic-icon-wrapper mb-6">
-                  <item.icon className="h-12 w-12 cosmic-icon" />
+                <div className="cosmic-icon-wrapper mb-4 md:mb-6">
+                  <item.icon className="cosmic-icon" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 cosmic-text">{item.title}</h3>
-                <p className="text-gray-300 leading-relaxed">{item.desc}</p>
+                <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3 cosmic-text">{item.title}</h3>
+                <p className="text-gray-300 leading-relaxed text-sm md:text-base">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -419,33 +496,33 @@ const Home = () => {
       </section>
       
       {/* Contact Section */}
-      <section id="contact" className="py-24 relative">
+      <section id="contact" className="py-12 md:py-24 relative">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-6xl font-bold mb-12 cosmic-heading">Contato</h2>
-          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+          <h2 className="cosmic-heading mb-8 md:mb-12">Contato</h2>
+          <p className="text-lg md:text-xl text-gray-300 mb-8 md:mb-12 max-w-3xl mx-auto">
             Conecte-se conosco e faça parte do futuro. Siga nossas redes sociais e acompanhe as inovações que estão transformando o mundo.
           </p>
           
           {/* Social Media Links */}
-          <div className="flex justify-center space-x-6 mb-12">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mb-8 md:mb-12">
             <div className="social-button facebook inactive">
-              <Facebook className="h-6 w-6" />
+              <Facebook className="h-5 w-5 md:h-6 md:w-6" />
               <span>Facebook</span>
             </div>
             <div className="social-button instagram inactive">
-              <Instagram className="h-6 w-6" />
+              <Instagram className="h-5 w-5 md:h-6 md:w-6" />
               <span>Instagram</span>
             </div>
             <div className="social-button youtube inactive">
-              <Youtube className="h-6 w-6" />
+              <Youtube className="h-5 w-5 md:h-6 md:w-6" />
               <span>YouTube</span>
             </div>
             <div className="social-button linkedin inactive">
-              <Linkedin className="h-6 w-6" />
+              <Linkedin className="h-5 w-5 md:h-6 md:w-6" />
               <span>LinkedIn</span>
             </div>
             <div className="social-button email inactive">
-              <Mail className="h-6 w-6" />
+              <Mail className="h-5 w-5 md:h-6 md:w-6" />
               <span>Email</span>
             </div>
           </div>
@@ -453,15 +530,15 @@ const Home = () => {
       </section>
       
       {/* Footer */}
-      <footer className="py-16 border-t border-purple-400/30 bg-black/70 backdrop-blur-sm">
+      <footer className="py-12 md:py-16 border-t border-purple-400/30 bg-black/70 backdrop-blur-sm">
         <div className="container mx-auto px-6 text-center">
-          <div className="text-3xl font-bold mb-6">
-            <span className="cosmic-logo-footer">VornexZ</span>
+          <div className="cosmic-logo-footer mb-4 md:mb-6">
+            VornexZ
           </div>
-          <p className="text-gray-400 mb-8 text-lg">
+          <p className="text-gray-400 mb-6 md:mb-8 text-base md:text-lg">
             {content.footer?.content || "© 2025 VornexZ — Construindo o futuro, empresa por empresa."}
           </p>
-          <div className="flex justify-center space-x-8 mb-6">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-4 md:mb-6">
             <a href="#home" className="footer-link">Início</a>
             <a href="#about" className="footer-link">Sobre</a>
             <a href="#companies" className="footer-link">Empresas</a>
@@ -470,21 +547,21 @@ const Home = () => {
           </div>
           
           {/* Footer Social Icons */}
-          <div className="flex justify-center space-x-4">
+          <div className="flex justify-center gap-3 md:gap-4">
             <div className="footer-social-icon inactive">
-              <Facebook className="h-5 w-5" />
+              <Facebook className="h-4 w-4 md:h-5 md:w-5" />
             </div>
             <div className="footer-social-icon inactive">
-              <Instagram className="h-5 w-5" />
+              <Instagram className="h-4 w-4 md:h-5 md:w-5" />
             </div>
             <div className="footer-social-icon inactive">
-              <Youtube className="h-5 w-5" />
+              <Youtube className="h-4 w-4 md:h-5 md:w-5" />
             </div>
             <div className="footer-social-icon inactive">
-              <Linkedin className="h-5 w-5" />
+              <Linkedin className="h-4 w-4 md:h-5 md:w-5" />
             </div>
             <div className="footer-social-icon inactive">
-              <Mail className="h-5 w-5" />
+              <Mail className="h-4 w-4 md:h-5 md:w-5" />
             </div>
           </div>
         </div>
@@ -511,12 +588,12 @@ const AdminLogin = () => {
   };
   
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden p-4">
       <StarField />
       <MolecularBackground />
       <Card className="w-full max-w-md space-admin-card">
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl cosmic-text">Admin Portal</CardTitle>
+          <CardTitle className="text-2xl md:text-3xl cosmic-text">Admin Portal</CardTitle>
           <CardDescription className="text-purple-300">Acessar painel de controle VornexZ</CardDescription>
         </CardHeader>
         <CardContent>
@@ -600,7 +677,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-2xl cosmic-text">Carregando sistema...</div>
+        <div className="text-xl md:text-2xl cosmic-text">Carregando sistema...</div>
       </div>
     );
   }
@@ -612,8 +689,8 @@ const AdminDashboard = () => {
       
       {/* Header */}
       <header className="bg-black/90 backdrop-blur-md border-b border-purple-400/30 p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold cosmic-text">VornexZ Control Center</h1>
+        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <h1 className="text-xl md:text-2xl font-bold cosmic-text">VornexZ Control Center</h1>
           <div className="flex items-center space-x-4">
             <Button variant="outline" size="sm" asChild className="cosmic-outline-button">
               <a href="/" target="_blank">
@@ -629,9 +706,9 @@ const AdminDashboard = () => {
         </div>
       </header>
       
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-4 md:p-6">
         <Tabs defaultValue="companies" className="space-y-6">
-          <TabsList className="space-tabs">
+          <TabsList className="space-tabs w-full md:w-auto">
             <TabsTrigger value="companies">Empresas</TabsTrigger>
             <TabsTrigger value="content">Conteúdo</TabsTrigger>
             <TabsTrigger value="config">Configurações</TabsTrigger>
@@ -654,7 +731,7 @@ const AdminDashboard = () => {
   );
 };
 
-// Companies Manager Component (same implementation as before, just with space styling)
+// Companies Manager Component
 const CompaniesManager = ({ companies, onUpdate }) => {
   const [editingCompany, setEditingCompany] = useState(null);
   const [formData, setFormData] = useState({
@@ -711,12 +788,12 @@ const CompaniesManager = ({ companies, onUpdate }) => {
   
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold cosmic-text">Gerenciar Empresas</h2>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h2 className="text-2xl md:text-3xl font-bold cosmic-text">Gerenciar Empresas</h2>
         <Button onClick={() => {
           setEditingCompany(null);
           setFormData({ name: "", description: "", website: "", category: "", logo_url: "" });
-        }} className="cosmic-button">
+        }} className="cosmic-button w-full md:w-auto">
           <Plus className="mr-2 h-4 w-4" />
           Nova Empresa
         </Button>
@@ -770,8 +847,8 @@ const CompaniesManager = ({ companies, onUpdate }) => {
                 className="space-input"
               />
             </div>
-            <div className="flex space-x-2">
-              <Button type="submit" className="cosmic-button">
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+              <Button type="submit" className="cosmic-button flex-1">
                 {editingCompany ? "Atualizar" : "Criar"}
               </Button>
               {editingCompany && (
@@ -782,7 +859,7 @@ const CompaniesManager = ({ companies, onUpdate }) => {
                     setEditingCompany(null);
                     setFormData({ name: "", description: "", website: "", category: "", logo_url: "" });
                   }}
-                  className="cosmic-outline-button"
+                  className="cosmic-outline-button flex-1"
                 >
                   Cancelar
                 </Button>
@@ -793,7 +870,7 @@ const CompaniesManager = ({ companies, onUpdate }) => {
       </Card>
       
       {/* Companies List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="responsive-grid-3">
         {companies.map((company) => (
           <Card key={company.id} className="space-admin-card">
             <CardContent className="p-4">
@@ -814,7 +891,7 @@ const CompaniesManager = ({ companies, onUpdate }) => {
               )}
               {company.website && (
                 <a href={company.website} target="_blank" rel="noopener noreferrer" 
-                   className="text-purple-400 hover:text-purple-300 text-sm">
+                   className="text-purple-400 hover:text-purple-300 text-sm break-all">
                   {company.website}
                 </a>
               )}
@@ -826,7 +903,7 @@ const CompaniesManager = ({ companies, onUpdate }) => {
   );
 };
 
-// Content Manager Component (same implementation as before)
+// Content Manager Component
 const ContentManager = ({ content, onUpdate }) => {
   const [editingSection, setEditingSection] = useState(null);
   const [formData, setFormData] = useState({ title: "", content: "" });
@@ -864,7 +941,7 @@ const ContentManager = ({ content, onUpdate }) => {
   
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold cosmic-text">Gerenciar Conteúdo</h2>
+      <h2 className="text-2xl md:text-3xl font-bold cosmic-text">Gerenciar Conteúdo</h2>
       
       {editingSection && (
         <Card className="space-admin-card">
@@ -893,13 +970,13 @@ const ContentManager = ({ content, onUpdate }) => {
                   className="space-input"
                 />
               </div>
-              <div className="flex space-x-2">
-                <Button type="submit" className="cosmic-button">Salvar</Button>
+              <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+                <Button type="submit" className="cosmic-button flex-1">Salvar</Button>
                 <Button 
                   type="button" 
                   variant="outline" 
                   onClick={() => setEditingSection(null)}
-                  className="cosmic-outline-button"
+                  className="cosmic-outline-button flex-1"
                 >
                   Cancelar
                 </Button>
@@ -909,7 +986,7 @@ const ContentManager = ({ content, onUpdate }) => {
         </Card>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="responsive-grid-2">
         {sections.map((section) => (
           <Card key={section.key} className="space-admin-card">
             <CardHeader>
@@ -968,7 +1045,7 @@ const ConfigManager = ({ config, onUpdate }) => {
   
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold cosmic-text">Configurações do Sistema</h2>
+      <h2 className="text-2xl md:text-3xl font-bold cosmic-text">Configurações do Sistema</h2>
       
       <Card className="space-admin-card">
         <CardHeader>
@@ -981,7 +1058,7 @@ const ConfigManager = ({ config, onUpdate }) => {
               <img 
                 src={`${BACKEND_URL}${config.logo_url}`} 
                 alt="Logo atual" 
-                className="h-20 w-auto border border-purple-400/30 rounded"
+                className="h-16 md:h-20 w-auto border border-purple-400/30 rounded"
               />
             </div>
           )}
@@ -1010,7 +1087,7 @@ const ProtectedRoute = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="text-2xl cosmic-text">Inicializando sistema...</div>
+        <div className="text-xl md:text-2xl cosmic-text">Inicializando sistema...</div>
       </div>
     );
   }
