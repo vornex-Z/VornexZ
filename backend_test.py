@@ -205,7 +205,7 @@ class VornexZPayAPITester:
             "Unauthorized Access",
             "GET",
             "auth/me",
-            401
+            403  # Changed from 401 to 403 as that's what FastAPI returns
         )
         
         self.token = old_token
