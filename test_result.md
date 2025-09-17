@@ -112,11 +112,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Criado endpoint PUT /user/update-data que permite atualizar telefone, endereco, cidade, estado com confirmação de senha"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Endpoint PUT /api/user/update-data funcionando corretamente. Testes realizados: dados válidos com senha correta (✅), senha incorreta retorna erro 400 (✅), telefone inválido retorna erro 400 (✅), sem campos para atualizar retorna erro 400 (✅). Validação de senha e campos funcionando perfeitamente."
 
   - task: "Implementar sistema de 2FA (TOTP e Email)"
     implemented: true
@@ -124,11 +127,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Implementado 2FA com aplicativo autenticador (TOTP) e por email. Endpoints: /user/enable-2fa, /user/verify-2fa, /user/send-email-2fa, /user/2fa-qr"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Sistema 2FA completo funcionando. TOTP: habilitação retorna secret e qr_code_uri (✅), endpoint /api/user/2fa-qr retorna imagem PNG (✅), verificação com código válido funciona (✅), código inválido retorna erro 400 (✅). EMAIL: habilitação funciona (✅), envio de código simula corretamente (✅), verificação com código inválido retorna erro 400 (✅). Desabilitação de 2FA funciona (✅)."
 
   - task: "Implementar configurações de biometria"
     implemented: true
@@ -136,11 +142,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Criado endpoint /user/biometric para habilitar/desabilitar login biométrico"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Endpoint POST /api/user/biometric funcionando corretamente. Habilitação (enable=true) retorna sucesso (✅), desabilitação (enable=false) retorna sucesso (✅). Estado é persistido corretamente no banco de dados."
 
   - task: "Implementar endpoint de configurações de segurança"
     implemented: true
@@ -148,11 +157,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Criado endpoint GET /user/security-settings que retorna estado atual das configurações de segurança"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Endpoint GET /api/user/security-settings funcionando perfeitamente. Retorna todos os campos obrigatórios: two_factor_enabled, two_factor_method, biometric_enabled. Estados são atualizados corretamente conforme as configurações do usuário."
 
 frontend:
   - task: "Adicionar link 'Esqueci minha senha' no login"
