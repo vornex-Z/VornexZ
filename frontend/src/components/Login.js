@@ -99,6 +99,12 @@ const Login = () => {
             </button>
           </form>
 
+          <div className="mt-6 text-center">
+            <Link to="/help" className="text-teal-400 hover:text-teal-300 text-sm">
+              Esqueci minha senha ou tenho problemas para acessar
+            </Link>
+          </div>
+
           <div className="mt-8 text-center">
             <p className="text-gray-300 mb-6">
               Não tem uma conta?{' '}
