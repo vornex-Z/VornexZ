@@ -310,6 +310,199 @@ async def get_transactions(current_user: User = Depends(get_current_user)):
     transactions = await db.transactions.find({"user_id": current_user.id}).sort("created_at", -1).to_list(100)
     return [Transaction(**transaction) for transaction in transactions]
 
+@api_router.put("/user/update-data")
+async def update_user_data(update_data: UserUpdateData, current_user: User = Depends(get_current_user)):
+    # Verificar senha antes de permitir alterações
+    user_db = await db.users.find_one({"email": current_user.email})
+    if not verify_password(update_data.senha_confirmacao, user_db["senha"]):
+        raise HTTPException(status_code=400, detail="Senha incorreta")
+    
+    # Preparar dados para atualização
+    update_fields = {}
+    if update_data.telefone:
+        if not validate_phone(update_data.telefone):
+            raise HTTPException(status_code=400, detail="Telefone inválido")
+        update_fields["telefone"] = update_data.telefone
+    
+    if update_data.endereco:
+        update_fields["endereco"] = update_data.endereco
+    
+    if update_data.cidade:
+        update_fields["cidade"] = update_data.cidade
+    
+    if update_data.estado:
+        update_fields["estado"] = update_data.estado
+    
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="Nenhum campo para atualizar")
+    
+    # Atualizar no banco
+    await db.users.update_one(
+        {"email": current_user.email},
+        {"$set": update_fields}
+    )
+    
+    return {"message": "Dados atualizados com sucesso"}
+
+@api_router.post("/user/enable-2fa")
+async def enable_2fa(request: Enable2FARequest, current_user: User = Depends(get_current_user)):
+    if request.enable:
+        if request.method == "totp":
+            # Gerar segredo TOTP
+            secret = pyotp.random_base32()
+            totp = pyotp.TOTP(secret)
+            
+            # Atualizar usuário
+            await db.users.update_one(
+                {"email": current_user.email},
+                {"$set": {
+                    "two_factor_enabled": True,
+                    "two_factor_method": "totp",
+                    "totp_secret": secret
+                }}
+            )
+            
+            # Gerar QR Code
+            provisioning_uri = totp.provisioning_uri(
+                name=current_user.email,
+                issuer_name="VornexZPay"
+            )
+            
+            return {
+                "message": "2FA habilitado",
+                "method": "totp",
+                "secret": secret,
+                "qr_code_uri": provisioning_uri
+            }
+        
+        elif request.method == "email":
+            await db.users.update_one(
+                {"email": current_user.email},
+                {"$set": {
+                    "two_factor_enabled": True,
+                    "two_factor_method": "email"
+                }}
+            )
+            
+            return {
+                "message": "2FA por email habilitado",
+                "method": "email"
+            }
+    else:
+        # Desabilitar 2FA
+        await db.users.update_one(
+            {"email": current_user.email},
+            {"$set": {
+                "two_factor_enabled": False,
+                "two_factor_method": None,
+                "totp_secret": None
+            }}
+        )
+        
+        return {"message": "2FA desabilitado"}
+
+@api_router.get("/user/2fa-qr")
+async def get_2fa_qr(current_user: User = Depends(get_current_user)):
+    user_db = await db.users.find_one({"email": current_user.email})
+    
+    if not user_db.get("totp_secret"):
+        raise HTTPException(status_code=400, detail="2FA TOTP não configurado")
+    
+    totp = pyotp.TOTP(user_db["totp_secret"])
+    provisioning_uri = totp.provisioning_uri(
+        name=current_user.email,
+        issuer_name="VornexZPay"
+    )
+    
+    # Gerar QR Code
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(provisioning_uri)
+    qr.make(fit=True)
+    
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Converter para bytes
+    img_bytes = BytesIO()
+    img.save(img_bytes, format='PNG')
+    img_bytes.seek(0)
+    
+    return StreamingResponse(img_bytes, media_type="image/png")
+
+@api_router.post("/user/verify-2fa")
+async def verify_2fa(request: Verify2FARequest, current_user: User = Depends(get_current_user)):
+    user_db = await db.users.find_one({"email": current_user.email})
+    
+    if user_db.get("two_factor_method") == "totp":
+        totp = pyotp.TOTP(user_db["totp_secret"])
+        if totp.verify(request.code):
+            return {"message": "Código verificado com sucesso"}
+        else:
+            raise HTTPException(status_code=400, detail="Código inválido")
+    
+    elif user_db.get("two_factor_method") == "email":
+        codes = user_db.get("email_verification_codes", {})
+        current_time = datetime.now(timezone.utc).timestamp()
+        
+        # Verificar se o código existe e não expirou
+        if request.code in codes:
+            if codes[request.code] > current_time:
+                # Remover código usado
+                await db.users.update_one(
+                    {"email": current_user.email},
+                    {"$unset": {f"email_verification_codes.{request.code}": ""}}
+                )
+                return {"message": "Código verificado com sucesso"}
+            else:
+                # Código expirado
+                await db.users.update_one(
+                    {"email": current_user.email},
+                    {"$unset": {f"email_verification_codes.{request.code}": ""}}
+                )
+                raise HTTPException(status_code=400, detail="Código expirado")
+        else:
+            raise HTTPException(status_code=400, detail="Código inválido")
+
+@api_router.post("/user/send-email-2fa")
+async def send_email_2fa(current_user: User = Depends(get_current_user)):
+    user_db = await db.users.find_one({"email": current_user.email})
+    
+    if user_db.get("two_factor_method") != "email":
+        raise HTTPException(status_code=400, detail="2FA por email não está habilitado")
+    
+    # Gerar código
+    code = generate_email_code()
+    expiry = datetime.now(timezone.utc) + timedelta(minutes=10)
+    
+    # Salvar código no banco
+    await db.users.update_one(
+        {"email": current_user.email},
+        {"$set": {f"email_verification_codes.{code}": expiry.timestamp()}}
+    )
+    
+    # Enviar email
+    await send_email_code(current_user.email, code)
+    
+    return {"message": "Código enviado por email"}
+
+@api_router.post("/user/biometric")
+async def toggle_biometric(request: BiometricRequest, current_user: User = Depends(get_current_user)):
+    await db.users.update_one(
+        {"email": current_user.email},
+        {"$set": {"biometric_enabled": request.enable}}
+    )
+    
+    return {"message": f"Biometria {'habilitada' if request.enable else 'desabilitada'}"}
+
+@api_router.get("/user/security-settings", response_model=UserSecuritySettings)
+async def get_security_settings(current_user: User = Depends(get_current_user)):
+    user_db = await db.users.find_one({"email": current_user.email})
+    
+    return UserSecuritySettings(
+        two_factor_enabled=user_db.get("two_factor_enabled", False),
+        two_factor_method=user_db.get("two_factor_method"),
+        biometric_enabled=user_db.get("biometric_enabled", False)
+    )
+
 # Initialize demo user and transactions
 @api_router.post("/init-demo")
 async def init_demo():
