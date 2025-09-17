@@ -66,3 +66,7 @@ tzdata==2025.2
 urllib3==2.5.0
 uvicorn==0.25.0
 watchfiles==1.1.0
+pyotp==2.9.0
+qrcode==8.0
+Pillow==11.1.0
+aiosmtplib==3.0.2
