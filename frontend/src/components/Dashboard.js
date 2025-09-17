@@ -474,6 +474,13 @@ const Dashboard = () => {
 
       {/* Cards Modal */}
       {showCardsModal && <CardsModal />}
+      
+      {/* User Settings Modal */}
+      {showUserSettings && (
+        <UserSettings onClose={() => setShowUserSettings(false)} />
+      )}
+      
+      <Toaster />
     </div>
   );
 };
