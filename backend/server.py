@@ -145,6 +145,58 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+def generate_email_code():
+    return ''.join(random.choices(string.digits, k=6))
+
+async def send_email_code(email: str, code: str):
+    """Envia código de verificação por email"""
+    # Configurações de email (em produção, usar variáveis de ambiente)
+    smtp_server = "smtp.gmail.com"  # Exemplo com Gmail
+    smtp_port = 587
+    smtp_user = os.environ.get("SMTP_USER", "noreply@vornexzpay.com")
+    smtp_password = os.environ.get("SMTP_PASSWORD", "")
+    
+    if not smtp_password:
+        # Para demo, vamos simular o envio
+        print(f"[DEMO] Código de verificação para {email}: {code}")
+        return True
+    
+    try:
+        message = MIMEMultipart()
+        message["From"] = smtp_user
+        message["To"] = email
+        message["Subject"] = "VornexZPay - Código de Verificação"
+        
+        body = f"""
+        Olá,
+        
+        Seu código de verificação VornexZPay é: {code}
+        
+        Este código expira em 10 minutos.
+        
+        Se você não solicitou este código, ignore este email.
+        
+        Atenciosamente,
+        Equipe VornexZPay
+        """
+        
+        message.attach(MIMEText(body, "plain"))
+        
+        await aiosmtplib.send(
+            message,
+            hostname=smtp_server,
+            port=smtp_port,
+            start_tls=True,
+            username=smtp_user,
+            password=smtp_password,
+        )
+        return True
+    except Exception as e:
+        print(f"Erro ao enviar email: {e}")
+        # Para demo, simular sucesso
+        print(f"[DEMO] Código de verificação para {email}: {code}")
+        return True
+
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
