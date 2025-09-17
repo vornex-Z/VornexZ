@@ -100,6 +100,12 @@ class User(BaseModel):
     saldo: float = 0.0
     premium: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    # Campos de segurança
+    two_factor_enabled: bool = False
+    two_factor_method: Optional[str] = None  # "totp", "email"
+    totp_secret: Optional[str] = None
+    biometric_enabled: bool = False
+    email_verification_codes: Optional[dict] = None  # {code: expiry_timestamp}
 
 class Transaction(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
