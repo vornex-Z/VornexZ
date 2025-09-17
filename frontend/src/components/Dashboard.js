@@ -58,6 +58,7 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCardsModal, setShowCardsModal] = useState(false);
+  const [showUserSettings, setShowUserSettings] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [showBalance, setShowBalance] = useState(true);
   const [loading, setLoading] = useState(false);
