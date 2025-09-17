@@ -16,10 +16,12 @@ import {
   Eye,
   EyeOff,
   Filter,
-  X
+  X,
+  Settings
 } from 'lucide-react';
 import { useAuth } from '../App';
 import axios from 'axios';
+import UserSettings from './UserSettings';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
