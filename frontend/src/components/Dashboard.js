@@ -150,6 +150,15 @@ const Dashboard = () => {
 
   const menuItems = [
     {
+      icon: Settings,
+      label: 'Configurações da Conta',
+      description: 'Dados pessoais e segurança',
+      onClick: () => {
+        setShowUserSettings(true);
+        setShowUserMenu(false);
+      }
+    },
+    {
       icon: CreditCard,
       label: 'Cartões Virtuais',
       description: 'Gerencie seus cartões de débito virtuais',
