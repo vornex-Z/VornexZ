@@ -612,6 +612,36 @@ def main():
         ("Demo User Login", tester.test_demo_login),
         ("Get Current User", tester.test_get_current_user),
         ("Get Transactions", tester.test_get_transactions),
+        
+        # User Data Update Tests
+        ("Update User Data - Valid", tester.test_user_data_update_valid),
+        ("Update User Data - Invalid Password", tester.test_user_data_update_invalid_password),
+        ("Update User Data - Invalid Phone", tester.test_user_data_update_invalid_phone),
+        ("Update User Data - No Fields", tester.test_user_data_update_no_fields),
+        
+        # 2FA TOTP Tests
+        ("Enable 2FA - TOTP", tester.test_enable_2fa_totp),
+        ("Get 2FA QR Code", tester.test_2fa_qr_code),
+        ("Verify 2FA TOTP - Valid Code", tester.test_verify_2fa_totp_valid),
+        ("Verify 2FA TOTP - Invalid Code", tester.test_verify_2fa_totp_invalid),
+        ("Disable 2FA", tester.test_disable_2fa),
+        
+        # 2FA Email Tests
+        ("Enable 2FA - Email", tester.test_enable_2fa_email),
+        ("Send Email 2FA Code", tester.test_send_email_2fa),
+        ("Verify 2FA Email - Invalid Code", tester.test_verify_2fa_email_invalid),
+        
+        # Biometric Tests
+        ("Enable Biometric", tester.test_enable_biometric),
+        ("Disable Biometric", tester.test_disable_biometric),
+        
+        # Security Settings Test
+        ("Get Security Settings", tester.test_get_security_settings),
+        
+        # Integrated Flow Test
+        ("Integrated Security Flow", tester.test_integrated_flow),
+        
+        # Original Tests
         ("New User Registration", tester.test_new_user_registration),
         ("Invalid Login", tester.test_invalid_login),
         ("Unauthorized Access", tester.test_unauthorized_access),
