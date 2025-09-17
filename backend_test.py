@@ -251,6 +251,355 @@ class VornexZPayAPITester:
         
         return success and success2
 
+    def test_user_data_update_valid(self):
+        """Test updating user data with valid credentials"""
+        update_data = {
+            "telefone": "(11) 98765-4321",
+            "endereco": "Nova Rua das Flores, 456",
+            "cidade": "Rio de Janeiro",
+            "estado": "RJ",
+            "senha_confirmacao": self.demo_user_password
+        }
+        
+        success, response = self.run_test(
+            "Update User Data - Valid",
+            "PUT",
+            "user/update-data",
+            200,
+            data=update_data
+        )
+        
+        if success:
+            print(f"   ✅ User data updated successfully")
+        
+        return success
+
+    def test_user_data_update_invalid_password(self):
+        """Test updating user data with incorrect password"""
+        update_data = {
+            "telefone": "(11) 98765-4321",
+            "senha_confirmacao": "wrong_password"
+        }
+        
+        success, response = self.run_test(
+            "Update User Data - Invalid Password",
+            "PUT",
+            "user/update-data",
+            400,
+            data=update_data
+        )
+        
+        return success
+
+    def test_user_data_update_invalid_phone(self):
+        """Test updating user data with invalid phone"""
+        update_data = {
+            "telefone": "123",  # Invalid phone
+            "senha_confirmacao": self.demo_user_password
+        }
+        
+        success, response = self.run_test(
+            "Update User Data - Invalid Phone",
+            "PUT",
+            "user/update-data",
+            400,
+            data=update_data
+        )
+        
+        return success
+
+    def test_user_data_update_no_fields(self):
+        """Test updating user data with no fields to update"""
+        update_data = {
+            "senha_confirmacao": self.demo_user_password
+        }
+        
+        success, response = self.run_test(
+            "Update User Data - No Fields",
+            "PUT",
+            "user/update-data",
+            400,
+            data=update_data
+        )
+        
+        return success
+
+    def test_enable_2fa_totp(self):
+        """Test enabling 2FA with TOTP method"""
+        enable_data = {
+            "enable": True,
+            "method": "totp"
+        }
+        
+        success, response = self.run_test(
+            "Enable 2FA - TOTP",
+            "POST",
+            "user/enable-2fa",
+            200,
+            data=enable_data
+        )
+        
+        if success:
+            expected_fields = ['message', 'method', 'secret', 'qr_code_uri']
+            for field in expected_fields:
+                if field not in response:
+                    print(f"   ⚠️  Missing field: {field}")
+                    return False
+            
+            print(f"   ✅ 2FA TOTP enabled with secret: {response.get('secret')[:10]}...")
+            
+            # Store secret for verification test
+            self.totp_secret = response.get('secret')
+        
+        return success
+
+    def test_2fa_qr_code(self):
+        """Test getting 2FA QR code"""
+        success, response = self.run_test(
+            "Get 2FA QR Code",
+            "GET",
+            "user/2fa-qr",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ QR Code endpoint returned PNG image")
+        
+        return success
+
+    def test_verify_2fa_totp_valid(self):
+        """Test verifying 2FA TOTP with valid code"""
+        if not hasattr(self, 'totp_secret'):
+            print("   ⚠️  TOTP secret not available, skipping test")
+            return False
+        
+        # Generate valid TOTP code
+        totp = pyotp.TOTP(self.totp_secret)
+        valid_code = totp.now()
+        
+        verify_data = {
+            "code": valid_code
+        }
+        
+        success, response = self.run_test(
+            "Verify 2FA TOTP - Valid Code",
+            "POST",
+            "user/verify-2fa",
+            200,
+            data=verify_data
+        )
+        
+        return success
+
+    def test_verify_2fa_totp_invalid(self):
+        """Test verifying 2FA TOTP with invalid code"""
+        verify_data = {
+            "code": "000000"  # Invalid code
+        }
+        
+        success, response = self.run_test(
+            "Verify 2FA TOTP - Invalid Code",
+            "POST",
+            "user/verify-2fa",
+            400,
+            data=verify_data
+        )
+        
+        return success
+
+    def test_disable_2fa(self):
+        """Test disabling 2FA"""
+        disable_data = {
+            "enable": False,
+            "method": "totp"
+        }
+        
+        success, response = self.run_test(
+            "Disable 2FA",
+            "POST",
+            "user/enable-2fa",
+            200,
+            data=disable_data
+        )
+        
+        if success:
+            print(f"   ✅ 2FA disabled successfully")
+        
+        return success
+
+    def test_enable_2fa_email(self):
+        """Test enabling 2FA with email method"""
+        enable_data = {
+            "enable": True,
+            "method": "email"
+        }
+        
+        success, response = self.run_test(
+            "Enable 2FA - Email",
+            "POST",
+            "user/enable-2fa",
+            200,
+            data=enable_data
+        )
+        
+        if success:
+            expected_fields = ['message', 'method']
+            for field in expected_fields:
+                if field not in response:
+                    print(f"   ⚠️  Missing field: {field}")
+                    return False
+            
+            print(f"   ✅ 2FA Email enabled")
+        
+        return success
+
+    def test_send_email_2fa(self):
+        """Test sending email 2FA code"""
+        success, response = self.run_test(
+            "Send Email 2FA Code",
+            "POST",
+            "user/send-email-2fa",
+            200
+        )
+        
+        if success:
+            print(f"   ✅ Email 2FA code sent (simulated)")
+        
+        return success
+
+    def test_verify_2fa_email_invalid(self):
+        """Test verifying 2FA email with invalid code"""
+        verify_data = {
+            "code": "000000"  # Invalid code
+        }
+        
+        success, response = self.run_test(
+            "Verify 2FA Email - Invalid Code",
+            "POST",
+            "user/verify-2fa",
+            400,
+            data=verify_data
+        )
+        
+        return success
+
+    def test_enable_biometric(self):
+        """Test enabling biometric authentication"""
+        biometric_data = {
+            "enable": True
+        }
+        
+        success, response = self.run_test(
+            "Enable Biometric",
+            "POST",
+            "user/biometric",
+            200,
+            data=biometric_data
+        )
+        
+        if success:
+            print(f"   ✅ Biometric authentication enabled")
+        
+        return success
+
+    def test_disable_biometric(self):
+        """Test disabling biometric authentication"""
+        biometric_data = {
+            "enable": False
+        }
+        
+        success, response = self.run_test(
+            "Disable Biometric",
+            "POST",
+            "user/biometric",
+            200,
+            data=biometric_data
+        )
+        
+        if success:
+            print(f"   ✅ Biometric authentication disabled")
+        
+        return success
+
+    def test_get_security_settings(self):
+        """Test getting security settings"""
+        success, response = self.run_test(
+            "Get Security Settings",
+            "GET",
+            "user/security-settings",
+            200
+        )
+        
+        if success:
+            expected_fields = ['two_factor_enabled', 'two_factor_method', 'biometric_enabled']
+            for field in expected_fields:
+                if field not in response:
+                    print(f"   ⚠️  Missing field: {field}")
+                    return False
+            
+            print(f"   2FA Enabled: {response.get('two_factor_enabled')}")
+            print(f"   2FA Method: {response.get('two_factor_method')}")
+            print(f"   Biometric Enabled: {response.get('biometric_enabled')}")
+        
+        return success
+
+    def test_integrated_flow(self):
+        """Test integrated flow of security features"""
+        print("\n🔄 Testing Integrated Security Flow...")
+        
+        # 1. Enable TOTP 2FA
+        enable_totp = {
+            "enable": True,
+            "method": "totp"
+        }
+        
+        success1, response1 = self.run_test(
+            "Flow Step 1: Enable TOTP",
+            "POST",
+            "user/enable-2fa",
+            200,
+            data=enable_totp
+        )
+        
+        if not success1:
+            return False
+        
+        # 2. Enable Biometric
+        enable_bio = {
+            "enable": True
+        }
+        
+        success2, response2 = self.run_test(
+            "Flow Step 2: Enable Biometric",
+            "POST",
+            "user/biometric",
+            200,
+            data=enable_bio
+        )
+        
+        if not success2:
+            return False
+        
+        # 3. Check security settings
+        success3, response3 = self.run_test(
+            "Flow Step 3: Check Settings",
+            "GET",
+            "user/security-settings",
+            200
+        )
+        
+        if success3:
+            if (response3.get('two_factor_enabled') and 
+                response3.get('two_factor_method') == 'totp' and 
+                response3.get('biometric_enabled')):
+                print("   ✅ Integrated flow completed successfully")
+                return True
+            else:
+                print("   ❌ Security settings don't match expected state")
+                return False
+        
+        return False
+
 def main():
     print("🚀 Starting VornexZPay API Tests")
     print("=" * 50)
