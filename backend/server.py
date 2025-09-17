@@ -63,6 +63,28 @@ class UserLogin(BaseModel):
     email: EmailStr
     senha: str
 
+class UserUpdateData(BaseModel):
+    telefone: Optional[str] = None
+    endereco: Optional[str] = None
+    cidade: Optional[str] = None
+    estado: Optional[str] = None
+    senha_confirmacao: str
+
+class Enable2FARequest(BaseModel):
+    enable: bool
+    method: str  # "totp" ou "email"
+
+class Verify2FARequest(BaseModel):
+    code: str
+
+class BiometricRequest(BaseModel):
+    enable: bool
+
+class UserSecuritySettings(BaseModel):
+    two_factor_enabled: bool = False
+    two_factor_method: Optional[str] = None  # "totp", "email"
+    biometric_enabled: bool = False
+
 class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     nome_completo: str
