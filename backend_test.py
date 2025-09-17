@@ -125,9 +125,9 @@ class VornexZPayAPITester:
     def test_new_user_registration(self):
         """Test registering a new user"""
         test_email = f"test_user_{datetime.now().strftime('%H%M%S')}@test.com"
-        # Generate unique CPF for each test run
+        # Generate unique CPF for each test run (11 digits)
         unique_suffix = datetime.now().strftime('%H%M%S')
-        test_cpf = f"123.456.{unique_suffix[:3]}-{unique_suffix[3:]}"
+        test_cpf = f"123.456.{unique_suffix[0:3]}-{unique_suffix[3:5]}"
         
         test_data = {
             "nome_completo": "Test User Silva",
