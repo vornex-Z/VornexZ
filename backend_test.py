@@ -355,17 +355,34 @@ class VornexZPayAPITester:
 
     def test_2fa_qr_code(self):
         """Test getting 2FA QR code"""
-        success, response = self.run_test(
-            "Get 2FA QR Code",
-            "GET",
-            "user/2fa-qr",
-            200
-        )
+        url = f"{self.base_url}/user/2fa-qr"
+        test_headers = {'Authorization': f'Bearer {self.token}'}
         
-        if success:
-            print(f"   ✅ QR Code endpoint returned PNG image")
+        self.tests_run += 1
+        print(f"\n🔍 Testing Get 2FA QR Code...")
+        print(f"   URL: {url}")
         
-        return success
+        try:
+            response = requests.get(url, headers=test_headers)
+            success = response.status_code == 200
+            
+            if success:
+                self.tests_passed += 1
+                print(f"✅ Passed - Status: {response.status_code}")
+                # Check if response is PNG image
+                if response.headers.get('content-type') == 'image/png':
+                    print(f"   ✅ QR Code endpoint returned PNG image")
+                else:
+                    print(f"   ⚠️  Expected PNG image, got: {response.headers.get('content-type')}")
+            else:
+                print(f"❌ Failed - Expected 200, got {response.status_code}")
+                print(f"   Error: {response.text}")
+            
+            return success
+            
+        except Exception as e:
+            print(f"❌ Failed - Error: {str(e)}")
+            return False
 
     def test_verify_2fa_totp_valid(self):
         """Test verifying 2FA TOTP with valid code"""
