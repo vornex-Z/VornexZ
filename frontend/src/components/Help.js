@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Lock, Shield, Mail, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Lock, Mail, HelpCircle } from 'lucide-react';
 
 const Help = () => {
   const helpOptions = [
