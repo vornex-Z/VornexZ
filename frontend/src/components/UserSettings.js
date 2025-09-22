@@ -8,7 +8,9 @@ import {
   Save,
   X,
   Check,
-  AlertCircle
+  AlertCircle,
+  Mail,
+  Map
 } from 'lucide-react';
 import { useAuth } from '../App';
 import axios from 'axios';
