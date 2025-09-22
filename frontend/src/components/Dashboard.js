@@ -28,7 +28,26 @@ import { Toaster } from './ui/sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component - Usando a imagem oficial do PIX
+// Componente para ícone de código de barras
+const BarcodeIcon = ({ size = 24 }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+    className="barcode-icon"
+  >
+    <rect x="2" y="6" width="1" height="12" fill="currentColor"/>
+    <rect x="4" y="6" width="2" height="12" fill="currentColor"/>
+    <rect x="7" y="6" width="1" height="12" fill="currentColor"/>
+    <rect x="9" y="6" width="1" height="12" fill="currentColor"/>
+    <rect x="11" y="6" width="2" height="12" fill="currentColor"/>
+    <rect x="14" y="6" width="1" height="12" fill="currentColor"/>
+    <rect x="16" y="6" width="1" height="12" fill="currentColor"/>
+    <rect x="18" y="6" width="2" height="12" fill="currentColor"/>
+    <rect x="21" y="6" width="1" height="12" fill="currentColor"/>
+  </svg>
+);
 const PixIcon = ({ size = 24 }) => (
   <img 
     src="https://customer-assets.emergentagent.com/job_account-manager-33/artifacts/dfulhml4_Pix.png"
