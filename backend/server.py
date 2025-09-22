@@ -299,11 +299,20 @@ async def register(user_data: UserRegister):
 
 @api_router.post("/auth/login", response_model=Token)
 async def login(user_data: UserLogin):
-    user = await db.users.find_one({"email": user_data.email})
+    # Tentar login com email ou CPF
+    user = None
+    
+    # Verificar se é um email válido
+    if "@" in user_data.login:
+        user = await db.users.find_one({"email": user_data.login})
+    else:
+        # Assumir que é CPF
+        user = await db.users.find_one({"cpf": user_data.login})
+    
     if not user or not verify_password(user_data.senha, user["senha"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Email ou senha incorretos",
+            detail="Email/CPF ou senha incorretos",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
