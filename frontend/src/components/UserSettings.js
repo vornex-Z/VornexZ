@@ -23,10 +23,12 @@ const UserSettings = ({ onClose }) => {
   
   // Estados para dados pessoais - inicializar com dados atuais do usuário
   const [personalData, setPersonalData] = useState({
+    email: user?.email || '',
     telefone: user?.telefone || '',
     endereco: user?.endereco || '',
     cidade: user?.cidade || '',
     estado: user?.estado || '',
+    cep: user?.cep || '',
     senha_confirmacao: ''
   });
   const [showPassword, setShowPassword] = useState(false);
