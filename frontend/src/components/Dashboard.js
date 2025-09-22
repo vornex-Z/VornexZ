@@ -28,7 +28,7 @@ import { Toaster } from './ui/sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component - Símbolo oficial PIX (4 losangos em cruz)
+// PIX Icon Component - Símbolo oficial PIX (cruz arredondada conectada)
 const PixIcon = ({ size = 24 }) => (
   <svg 
     width={size} 
@@ -37,30 +37,28 @@ const PixIcon = ({ size = 24 }) => (
     fill="currentColor"
     className="pix-icon"
   >
-    {/* Símbolo oficial PIX: 4 losangos dispostos em cruz */}
-    
-    {/* Losango Superior */}
+    {/* Símbolo oficial PIX: forma de cruz arredondada com bordas suaves */}
     <path 
-      d="M50 15 L60 25 L50 35 L40 25 Z" 
+      d="M50 10 
+       C55 10, 60 12, 63 15 
+       L75 27 
+       C85 37, 85 37, 85 50 
+       C85 63, 85 63, 75 73 
+       L63 85 
+       C60 88, 55 90, 50 90 
+       C45 90, 40 88, 37 85 
+       L25 73 
+       C15 63, 15 63, 15 50 
+       C15 37, 15 37, 25 27 
+       L37 15 
+       C40 12, 45 10, 50 10 Z
+       
+       M35 35 
+       L65 35 
+       L65 65 
+       L35 65 Z" 
       fill="currentColor"
-    />
-    
-    {/* Losango Direito */}
-    <path 
-      d="M75 40 L85 50 L75 60 L65 50 Z" 
-      fill="currentColor"
-    />
-    
-    {/* Losango Inferior */}
-    <path 
-      d="M50 65 L60 75 L50 85 L40 75 Z" 
-      fill="currentColor"
-    />
-    
-    {/* Losango Esquerdo */}
-    <path 
-      d="M25 40 L35 50 L25 60 L15 50 Z" 
-      fill="currentColor"
+      fillRule="evenodd"
     />
   </svg>
 );
