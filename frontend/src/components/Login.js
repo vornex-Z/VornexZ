@@ -105,26 +105,6 @@ const Login = () => {
                 Cadastre-se
               </Link>
             </p>
-
-            {/* Demo Credentials */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 border border-white/20">
-              <p className="text-sm text-gray-300 mb-3 font-semibold">Demo Cliente:</p>
-              <div className="space-y-1 text-sm">
-                <p className="text-gray-200">
-                  <span className="font-medium">Email:</span> usuario@example.com
-                </p>
-                <p className="text-gray-200">
-                  <span className="font-medium">Senha:</span> 123456
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="mt-3 text-xs bg-teal-500/20 text-teal-300 px-3 py-1 rounded-md hover:bg-teal-500/30 transition-colors"
-              >
-                Preencher automaticamente
-              </button>
-            </div>
           </div>
         </div>
 
