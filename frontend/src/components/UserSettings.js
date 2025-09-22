@@ -36,27 +36,6 @@ const UserSettings = ({ onClose }) => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    fetchSecuritySettings();
-  }, []);
-
-  const fetchSecuritySettings = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${API}/user/security-settings`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      setTwoFASettings({
-        enabled: response.data.two_factor_enabled,
-        method: response.data.two_factor_method
-      });
-      setBiometricEnabled(response.data.biometric_enabled);
-    } catch (error) {
-      console.log('Erro ao buscar configurações:', error);
-    }
-  };
-
   const showMessage = (type, text) => {
     setMessage({ type, text });
     setTimeout(() => setMessage({ type: '', text: '' }), 5000);
