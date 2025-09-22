@@ -152,8 +152,8 @@ const Dashboard = () => {
   const menuItems = [
     {
       icon: Settings,
-      label: 'Configurações da Conta',
-      description: 'Dados pessoais e segurança',
+      label: 'Conta',
+      description: 'Dados pessoais e informações da conta',
       onClick: () => {
         setShowUserSettings(true);
         setShowUserMenu(false);
