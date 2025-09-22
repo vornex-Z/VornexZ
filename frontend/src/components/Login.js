@@ -5,7 +5,7 @@ import { useAuth } from '../App';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    login: '',
     senha: ''
   });
   const [showPassword, setShowPassword] = useState(false);
