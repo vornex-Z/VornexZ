@@ -12,15 +12,6 @@ const Help = () => {
       onClick: () => {
         alert('Funcionalidade em desenvolvimento - Recuperação de senha será implementada em breve. Entre em contato com o suporte.');
       }
-    },
-    {
-      id: '2fa-problems',
-      icon: Shield,
-      title: 'Problemas com autenticação em 2 etapas',
-      description: 'Resolva problemas com códigos de verificação',
-      onClick: () => {
-        alert('Funcionalidade em desenvolvimento - Suporte para 2FA será implementado em breve. Entre em contato com o suporte.');
-      }
     }
   ];
 
