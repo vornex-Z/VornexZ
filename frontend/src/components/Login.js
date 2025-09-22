@@ -45,13 +45,13 @@ const Login = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="form-group">
-              <label className="form-label">Email</label>
+              <label className="form-label">Email ou CPF</label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                name="login"
+                value={formData.login}
                 onChange={handleChange}
-                placeholder="seu@email.com"
+                placeholder="seu@email.com ou 123.456.789-00"
                 className="vornex-input"
                 required
               />
