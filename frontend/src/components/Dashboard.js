@@ -215,7 +215,7 @@ const Dashboard = () => {
 
   const CardsModal = () => (
     <div className="modal-overlay" onClick={() => setShowCardsModal(false)}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
+      <div className="modal-content max-w-4xl" onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Cartões</h2>
           <button 
@@ -226,63 +226,209 @@ const Dashboard = () => {
           </button>
         </div>
         
-        {/* Opções de Cartões */}
-        <div className="space-y-4 mb-8">
-          {/* Cartão Virtual Grátis */}
-          <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CreditCard size={32} className="text-white" />
+        {!showPremiumCard ? (
+          <>
+            {/* Opções de Cartões */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              {/* Cartão Virtual Grátis */}
+              <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CreditCard size={32} className="text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartão Virtual</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Crie um cartão de débito virtual gratuito para compras online
+                  </p>
+                  <div className="inline-flex items-center justify-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full mb-4">
+                    ✨ Grátis
+                  </div>
+                  <button 
+                    onClick={() => alert('Funcionalidade em desenvolvimento - API será integrada em breve')}
+                    className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all"
+                  >
+                    Criar Cartão Virtual
+                  </button>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartão Virtual</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Crie um cartão de débito virtual gratuito para compras online
-              </p>
-              <div className="inline-flex items-center justify-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full mb-4">
-                ✨ Grátis
+
+              {/* Cartão Físico */}
+              <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CreditCard size={32} className="text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartão Físico</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Solicite seu cartão de débito físico para usar em qualquer lugar
+                  </p>
+                  <div className="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full mb-4">
+                    📦 Entrega Grátis
+                  </div>
+                  <button 
+                    onClick={() => alert('Funcionalidade em desenvolvimento - Solicitação de cartão físico será implementada em breve')}
+                    className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-all"
+                  >
+                    Pedir Cartão Físico
+                  </button>
+                </div>
               </div>
+
+              {/* Cartão Premium */}
+              <div className="border-2 border-dashed border-yellow-200 rounded-lg p-6 hover:border-yellow-300 transition-colors bg-gradient-to-br from-yellow-50 to-orange-50">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Crown size={32} className="text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartão Premium</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Cartão exclusivo com benefícios únicos e design diferenciado
+                  </p>
+                  <div className="inline-flex items-center justify-center px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full mb-4">
+                    👑 R$ 12/mês
+                  </div>
+                  <button 
+                    onClick={() => setShowPremiumCard(true)}
+                    className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all"
+                  >
+                    Ver Detalhes
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Informações adicionais */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 mb-2">ℹ️ Sobre os Cartões</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• Cartão virtual: Disponível imediatamente após criação</li>
+                <li>• Cartão físico: Entrega em 7-10 dias úteis</li>
+                <li>• Cartão premium: Benefícios exclusivos por R$ 12/mês</li>
+                <li>• Todos funcionam como débito na conta VornexZPay</li>
+              </ul>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Detalhes do Cartão Premium */}
+            <div className="mb-4">
               <button 
-                onClick={() => alert('Funcionalidade em desenvolvimento - API será integrada em breve')}
-                className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all"
+                onClick={() => setShowPremiumCard(false)}
+                className="flex items-center text-gray-600 hover:text-gray-800 mb-4"
               >
-                Criar Cartão Virtual
+                <ArrowLeft size={20} className="mr-2" />
+                Voltar
               </button>
             </div>
-          </div>
 
-          {/* Cartão Físico */}
-          <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CreditCard size={32} className="text-white" />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Imagem do Cartão */}
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Design do Cartão Premium</h3>
+                
+                {/* Cartão Mockup */}
+                <div className="relative mx-auto w-80 h-48 rounded-2xl bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-300">
+                  <div className="absolute inset-4 flex flex-col justify-between text-white">
+                    <div className="flex justify-between items-start">
+                      <div className="text-left">
+                        <p className="text-xs opacity-80">VornexZPay</p>
+                        <p className="text-lg font-bold">PREMIUM</p>
+                      </div>
+                      <Crown size={24} className="text-yellow-200" />
+                    </div>
+                    
+                    <div>
+                      <p className="text-lg font-mono tracking-wider mb-2">•••• •••• •••• 8888</p>
+                      <div className="flex justify-between items-end">
+                        <div>
+                          <p className="text-xs opacity-80">Nome do Titular</p>
+                          <p className="text-sm font-semibold">{user?.nome_completo?.toUpperCase() || 'SEU NOME'}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs opacity-80">Válido até</p>
+                          <p className="text-sm font-semibold">12/29</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartão Físico</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Solicite seu cartão de débito físico para usar em qualquer lugar
-              </p>
-              <div className="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full mb-4">
-                📦 Entrega Grátis
+
+              {/* Benefícios */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Benefícios Exclusivos</h3>
+                
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Cashback Aumentado</p>
+                      <p className="text-sm text-gray-600">2% de cashback em todas as compras (vs 0.5% padrão)</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Limites Aumentados</p>
+                      <p className="text-sm text-gray-600">PIX de até R$ 50.000 por dia (vs R$ 20.000)</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Suporte Prioritário</p>
+                      <p className="text-sm text-gray-600">Atendimento VIP 24/7 via chat e telefone</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Design Exclusivo</p>
+                      <p className="text-sm text-gray-600">Cartão dourado com acabamento premium</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Sem Taxas</p>
+                      <p className="text-sm text-gray-600">Transferências TED e DOC gratuitas</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Crown size={20} className="text-yellow-600" />
+                    <p className="font-semibold text-yellow-800">Assinatura Premium</p>
+                  </div>
+                  <p className="text-2xl font-bold text-yellow-800">R$ 12,00<span className="text-sm font-normal">/mês</span></p>
+                  <p className="text-sm text-yellow-700">Cancele a qualquer momento</p>
+                </div>
+
+                <button 
+                  onClick={() => alert('Funcionalidade em desenvolvimento - Assinatura Premium será implementada em breve')}
+                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 px-6 rounded-lg font-bold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg"
+                >
+                  Assinar Premium - R$ 12/mês
+                </button>
               </div>
-              <button 
-                onClick={() => alert('Funcionalidade em desenvolvimento - Solicitação de cartão físico será implementada em breve')}
-                className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-all"
-              >
-                Pedir Cartão Físico
-              </button>
             </div>
-          </div>
-        </div>
-
-        {/* Informações adicionais */}
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h4 className="font-semibold text-gray-900 mb-2">ℹ️ Sobre os Cartões</h4>
-          <ul className="text-sm text-gray-600 space-y-1">
-            <li>• Cartão virtual: Disponível imediatamente após criação</li>
-            <li>• Cartão físico: Entrega em 7-10 dias úteis</li>
-            <li>• Ambos funcionam como débito na conta VornexZPay</li>
-            <li>• Sem taxas de manutenção ou anuidade</li>
-          </ul>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
