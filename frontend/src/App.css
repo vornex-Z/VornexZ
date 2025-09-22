@@ -417,6 +417,7 @@ input[type="number"] {
   .action-button {
     width: 90px;
     height: 90px;
+    border-radius: 20px;
   }
   
   .glass-card {
@@ -437,6 +438,7 @@ input[type="number"] {
   .action-button {
     width: 70px;
     height: 70px;
+    border-radius: 16px;
   }
 }
 
@@ -449,6 +451,7 @@ input[type="number"] {
   .action-button {
     width: 60px;
     height: 60px;
+    border-radius: 14px;
     font-size: 12px;
   }
   
@@ -485,6 +488,7 @@ input[type="number"] {
   .action-button {
     width: 50px;
     height: 50px;
+    border-radius: 12px;
     font-size: 10px;
   }
   
@@ -527,6 +531,7 @@ input[type="number"] {
   .action-button {
     width: 45px;
     height: 45px;
+    border-radius: 10px;
     font-size: 9px;
   }
   
@@ -554,6 +559,7 @@ input[type="number"] {
   .action-button {
     width: 40px;
     height: 40px;
+    border-radius: 8px;
     font-size: 8px;
   }
   
