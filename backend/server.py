@@ -285,6 +285,14 @@ async def register(user_data: UserRegister):
         id=user.id,
         nome_completo=user.nome_completo,
         email=user.email,
+        cpf=user.cpf,
+        rg=user.rg,
+        telefone=user.telefone,
+        data_nascimento=user.data_nascimento,
+        endereco=user.endereco,
+        cidade=user.cidade,
+        estado=user.estado,
+        cep=user.cep,
         saldo=user.saldo,
         premium=user.premium
     )
