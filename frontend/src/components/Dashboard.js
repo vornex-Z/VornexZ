@@ -200,32 +200,11 @@ const Dashboard = () => {
     }
   };
 
-  const mockCards = [
-    {
-      id: 1,
-      number: '**** **** **** 1234',
-      name: user?.nome_completo || 'João Santos Silva',
-      expiry: '12/28',
-      status: 'Ativo',
-      limit: 5000.00,
-      spent: 1250.00
-    },
-    {
-      id: 2,
-      number: '**** **** **** 5678',
-      name: user?.nome_completo || 'João Santos Silva',
-      expiry: '08/27',
-      status: 'Bloqueado',
-      limit: 2000.00,
-      spent: 0.00
-    }
-  ];
-
   const CardsModal = () => (
     <div className="modal-overlay" onClick={() => setShowCardsModal(false)}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Cartões Virtuais</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Cartões</h2>
           <button 
             onClick={() => setShowCardsModal(false)}
             className="text-gray-500 hover:text-gray-700"
@@ -234,47 +213,62 @@ const Dashboard = () => {
           </button>
         </div>
         
-        <div className="space-y-4">
-          {mockCards.map(card => (
-            <div key={card.id} className="card-item">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <p className="text-lg font-semibold">{card.number}</p>
-                  <p className="text-sm opacity-80">{card.name}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm">Válido até</p>
-                  <p className="font-semibold">{card.expiry}</p>
-                </div>
+        {/* Opções de Cartões */}
+        <div className="space-y-4 mb-8">
+          {/* Cartão Virtual Grátis */}
+          <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CreditCard size={32} className="text-white" />
               </div>
-              
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="text-sm opacity-80">Status</p>
-                  <p className={`font-semibold ${card.status === 'Ativo' ? 'text-green-300' : 'text-red-300'}`}>
-                    {card.status}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm opacity-80">Limite</p>
-                  <p className="font-semibold">{formatCurrency(card.limit)}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm opacity-80">Gasto</p>
-                  <p className="font-semibold">{formatCurrency(card.spent)}</p>
-                </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartão Virtual</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Crie um cartão de débito virtual gratuito para compras online
+              </p>
+              <div className="inline-flex items-center justify-center px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full mb-4">
+                ✨ Grátis
               </div>
+              <button 
+                onClick={() => alert('Funcionalidade em desenvolvimento - API será integrada em breve')}
+                className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all"
+              >
+                Criar Cartão Virtual
+              </button>
             </div>
-          ))}
+          </div>
+
+          {/* Cartão Físico */}
+          <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-gray-600 to-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CreditCard size={32} className="text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Cartão Físico</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                Solicite seu cartão de débito físico para usar em qualquer lugar
+              </p>
+              <div className="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full mb-4">
+                📦 Entrega Grátis
+              </div>
+              <button 
+                onClick={() => alert('Funcionalidade em desenvolvimento - Solicitação de cartão físico será implementada em breve')}
+                className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-all"
+              >
+                Pedir Cartão Físico
+              </button>
+            </div>
+          </div>
         </div>
-        
-        <div className="mt-6 flex space-x-3">
-          <button className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all">
-            Criar Novo Cartão
-          </button>
-          <button className="flex-1 bg-gray-100 text-gray-800 py-3 px-4 rounded-lg font-semibold hover:bg-gray-200 transition-all">
-            Gerenciar Cartões
-          </button>
+
+        {/* Informações adicionais */}
+        <div className="bg-gray-50 rounded-lg p-4">
+          <h4 className="font-semibold text-gray-900 mb-2">ℹ️ Sobre os Cartões</h4>
+          <ul className="text-sm text-gray-600 space-y-1">
+            <li>• Cartão virtual: Disponível imediatamente após criação</li>
+            <li>• Cartão físico: Entrega em 7-10 dias úteis</li>
+            <li>• Ambos funcionam como débito na conta VornexZPay</li>
+            <li>• Sem taxas de manutenção ou anuidade</li>
+          </ul>
         </div>
       </div>
     </div>
