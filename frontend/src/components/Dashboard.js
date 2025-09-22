@@ -28,7 +28,7 @@ import { Toaster } from './ui/sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component - Oficial PIX logo design com 4 losangos arredondados
+// PIX Icon Component - Ícone oficial PIX com 4 losangos em X diagonal
 const PixIcon = ({ size = 24 }) => (
   <svg 
     width={size} 
@@ -37,33 +37,30 @@ const PixIcon = ({ size = 24 }) => (
     fill="currentColor"
     className="pix-icon"
   >
-    {/* 4 losangos arredondados em formato de cruz */}
-    {/* Losango Superior */}
+    {/* 4 losangos arredondados em formato de X diagonal */}
+    
+    {/* Losango Superior Esquerdo */}
     <path 
-      d="M50 10 C45 10, 40 15, 40 20 C40 30, 45 35, 50 40 C55 35, 60 30, 60 20 C60 15, 55 10, 50 10 Z" 
+      d="M25 25 C20 25, 15 30, 15 35 C15 40, 20 45, 25 45 C30 45, 35 40, 35 35 C35 30, 30 25, 25 25 Z" 
       fill="currentColor"
-      rx="5"
     />
     
-    {/* Losango Direito */}
+    {/* Losango Superior Direito */}
     <path 
-      d="M90 50 C90 45, 85 40, 80 40 C70 40, 65 45, 60 50 C65 55, 70 60, 80 60 C85 60, 90 55, 90 50 Z" 
+      d="M75 25 C70 25, 65 30, 65 35 C65 40, 70 45, 75 45 C80 45, 85 40, 85 35 C85 30, 80 25, 75 25 Z" 
       fill="currentColor"
-      rx="5"
     />
     
-    {/* Losango Inferior */}
+    {/* Losango Inferior Esquerdo */}
     <path 
-      d="M50 90 C55 90, 60 85, 60 80 C60 70, 55 65, 50 60 C45 65, 40 70, 40 80 C40 85, 45 90, 50 90 Z" 
+      d="M25 75 C20 75, 15 70, 15 65 C15 60, 20 55, 25 55 C30 55, 35 60, 35 65 C35 70, 30 75, 25 75 Z" 
       fill="currentColor"
-      rx="5"
     />
     
-    {/* Losango Esquerdo */}
+    {/* Losango Inferior Direito */}
     <path 
-      d="M10 50 C10 55, 15 60, 20 60 C30 60, 35 55, 40 50 C35 45, 30 40, 20 40 C15 40, 10 45, 10 50 Z" 
+      d="M75 75 C70 75, 65 70, 65 65 C65 60, 70 55, 75 55 C80 55, 85 60, 85 65 C85 70, 80 75, 75 75 Z" 
       fill="currentColor"
-      rx="5"
     />
   </svg>
 );
