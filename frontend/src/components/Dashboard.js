@@ -116,6 +116,20 @@ const Dashboard = () => {
       onClick: () => alert('Funcionalidade em desenvolvimento - Sacar')
     },
     { 
+      id: 'recarga', 
+      icon: Smartphone, 
+      label: 'Recarga', 
+      className: 'purple',
+      onClick: () => alert('Funcionalidade em desenvolvimento - Recarga de Celular')
+    },
+    { 
+      id: 'pagar', 
+      icon: BarcodeIcon, 
+      label: 'Pagar', 
+      className: 'purple',
+      onClick: () => alert('Funcionalidade em desenvolvimento - Pagar Boletos')
+    },
+    { 
       id: 'historico', 
       icon: Clock, 
       label: 'Histórico', 
@@ -124,27 +138,6 @@ const Dashboard = () => {
         const historicoSection = document.getElementById('historico-section');
         historicoSection?.scrollIntoView({ behavior: 'smooth' });
       }
-    },
-    { 
-      id: 'recarga', 
-      icon: Smartphone, 
-      label: 'Recarga', 
-      className: 'purple',
-      onClick: () => alert('Funcionalidade em desenvolvimento - Recarga de Celular')
-    },
-    { 
-      id: 'pagamentos', 
-      icon: DollarSign, 
-      label: 'Pagamentos', 
-      className: 'purple',
-      onClick: () => alert('Funcionalidade em desenvolvimento - Pagamentos')
-    },
-    { 
-      id: 'boletos', 
-      icon: FileText, 
-      label: 'Boletos', 
-      className: 'purple',
-      onClick: () => alert('Funcionalidade em desenvolvimento - Boletos e Contas')
     }
   ];
 
