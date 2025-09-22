@@ -13,9 +13,21 @@ const Login = () => {
   const { login } = useAuth();
 
   const handleChange = (e) => {
+    let value = e.target.value;
+    const name = e.target.name;
+
+    // Format CPF
+    if (name === 'cpf') {
+      value = value.replace(/\D/g, '');
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');
+      value = value.replace(/(\d{3})(\d)/, '$1.$2');
+      value = value.replace(/(\d{3})(\d{1,2})/, '$1-$2');
+      value = value.replace(/(-\d{2})\d+?$/, '$1');
+    }
+
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
   };
 
