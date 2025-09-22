@@ -95,17 +95,16 @@ const UserSettings = ({ onClose }) => {
           </p>
         </div>
 
-        {/* Dados Atuais - Visualização */}
+        {/* Dados Não Editáveis */}
         <div className="bg-gray-50 p-4 rounded-lg mb-6">
-          <h4 className="font-semibold text-gray-900 mb-3">Informações Atuais</h4>
+          <h4 className="font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+            <User size={16} />
+            <span>Informações Fixas (não editáveis)</span>
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-gray-600">Nome Completo</p>
               <p className="font-medium text-gray-900">{user?.nome_completo}</p>
-            </div>
-            <div>
-              <p className="text-gray-600">Email</p>
-              <p className="font-medium text-gray-900">{user?.email}</p>
             </div>
             <div>
               <p className="text-gray-600">CPF</p>
@@ -119,18 +118,32 @@ const UserSettings = ({ onClose }) => {
               <p className="text-gray-600">Data de Nascimento</p>
               <p className="font-medium text-gray-900">{user?.data_nascimento}</p>
             </div>
-            <div>
-              <p className="text-gray-600">CEP</p>
-              <p className="font-medium text-gray-900">{user?.cep}</p>
-            </div>
           </div>
         </div>
 
         {/* Formulário de Edição */}
         <form onSubmit={handlePersonalDataUpdate} className="space-y-4">
-          <h4 className="font-semibold text-gray-900 mb-3">Editar Informações</h4>
+          <h4 className="font-semibold text-gray-900 mb-3 flex items-center space-x-2">
+            <Save size={16} />
+            <span>Informações Editáveis</span>
+          </h4>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="form-group">
+              <label className="form-label flex items-center space-x-2">
+                <Mail size={16} />
+                <span>Email</span>
+              </label>
+              <input
+                type="email"
+                value={personalData.email}
+                onChange={(e) => setPersonalData({ ...personalData, email: e.target.value })}
+                placeholder="seu@email.com"
+                className="form-input"
+              />
+              <p className="text-xs text-gray-500 mt-1">Atual: {user?.email}</p>
+            </div>
+
             <div className="form-group">
               <label className="form-label flex items-center space-x-2">
                 <Phone size={16} />
@@ -144,6 +157,23 @@ const UserSettings = ({ onClose }) => {
                 className="form-input"
               />
               <p className="text-xs text-gray-500 mt-1">Atual: {user?.telefone}</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="form-group">
+              <label className="form-label flex items-center space-x-2">
+                <Map size={16} />
+                <span>CEP</span>
+              </label>
+              <input
+                type="text"
+                value={personalData.cep}
+                onChange={(e) => setPersonalData({ ...personalData, cep: e.target.value })}
+                placeholder="12345-678"
+                className="form-input"
+              />
+              <p className="text-xs text-gray-500 mt-1">Atual: {user?.cep}</p>
             </div>
 
             <div className="form-group">
@@ -163,7 +193,7 @@ const UserSettings = ({ onClose }) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Endereço</label>
+            <label className="form-label">Endereço (Rua)</label>
             <input
               type="text"
               value={personalData.endereco}
