@@ -64,10 +64,12 @@ class UserLogin(BaseModel):
     senha: str
 
 class UserUpdateData(BaseModel):
+    email: Optional[EmailStr] = None
     telefone: Optional[str] = None
     endereco: Optional[str] = None
     cidade: Optional[str] = None
     estado: Optional[str] = None
+    cep: Optional[str] = None
     senha_confirmacao: str
 
 class Enable2FARequest(BaseModel):
