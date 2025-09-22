@@ -17,7 +17,8 @@ import {
   EyeOff,
   Filter,
   X,
-  Settings
+  Settings,
+  DollarSign
 } from 'lucide-react';
 import { useAuth } from '../App';
 import axios from 'axios';
