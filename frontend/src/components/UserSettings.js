@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   User, 
-  Shield, 
-  Fingerprint, 
   Eye, 
   EyeOff, 
   Phone,
@@ -10,10 +8,7 @@ import {
   Save,
   X,
   Check,
-  AlertCircle,
-  QrCode,
-  Mail,
-  Smartphone
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../App';
 import axios from 'axios';
