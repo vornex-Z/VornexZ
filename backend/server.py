@@ -127,6 +127,14 @@ class UserResponse(BaseModel):
     id: str
     nome_completo: str
     email: str
+    cpf: str
+    rg: str
+    telefone: str
+    data_nascimento: str
+    endereco: str
+    cidade: str
+    estado: str
+    cep: str
     saldo: float
     premium: bool
 
