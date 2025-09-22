@@ -28,7 +28,7 @@ import { Toaster } from './ui/sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component - Official PIX logo design
+// PIX Icon Component - Oficial PIX logo design com 4 losangos arredondados
 const PixIcon = ({ size = 24 }) => (
   <svg 
     width={size} 
@@ -37,22 +37,34 @@ const PixIcon = ({ size = 24 }) => (
     fill="currentColor"
     className="pix-icon"
   >
-    {/* Official PIX logo - 4 rounded diamond shapes forming the characteristic pattern */}
-    {/* Top section */}
-    <path d="M50 5 C35 5, 25 15, 25 25 C25 35, 30 40, 35 42 L42 45 C45 47, 50 47, 50 47 C50 47, 55 47, 58 45 L65 42 C70 40, 75 35, 75 25 C75 15, 65 5, 50 5 Z" 
-          fill="currentColor"/>
+    {/* 4 losangos arredondados em formato de cruz */}
+    {/* Losango Superior */}
+    <path 
+      d="M50 10 C45 10, 40 15, 40 20 C40 30, 45 35, 50 40 C55 35, 60 30, 60 20 C60 15, 55 10, 50 10 Z" 
+      fill="currentColor"
+      rx="5"
+    />
     
-    {/* Right section */}
-    <path d="M95 50 C95 35, 85 25, 75 25 C65 25, 60 30, 58 35 L55 42 C53 45, 53 50, 53 50 C53 50, 53 55, 55 58 L58 65 C60 70, 65 75, 75 75 C85 75, 95 65, 95 50 Z" 
-          fill="currentColor"/>
+    {/* Losango Direito */}
+    <path 
+      d="M90 50 C90 45, 85 40, 80 40 C70 40, 65 45, 60 50 C65 55, 70 60, 80 60 C85 60, 90 55, 90 50 Z" 
+      fill="currentColor"
+      rx="5"
+    />
     
-    {/* Bottom section */}
-    <path d="M50 95 C65 95, 75 85, 75 75 C75 65, 70 60, 65 58 L58 55 C55 53, 50 53, 50 53 C50 53, 45 53, 42 55 L35 58 C30 60, 25 65, 25 75 C25 85, 35 95, 50 95 Z" 
-          fill="currentColor"/>
+    {/* Losango Inferior */}
+    <path 
+      d="M50 90 C55 90, 60 85, 60 80 C60 70, 55 65, 50 60 C45 65, 40 70, 40 80 C40 85, 45 90, 50 90 Z" 
+      fill="currentColor"
+      rx="5"
+    />
     
-    {/* Left section */}
-    <path d="M5 50 C5 65, 15 75, 25 75 C35 75, 40 70, 42 65 L45 58 C47 55, 47 50, 47 50 C47 50, 47 45, 45 42 L42 35 C40 30, 35 25, 25 25 C15 25, 5 35, 5 50 Z" 
-          fill="currentColor"/>
+    {/* Losango Esquerdo */}
+    <path 
+      d="M10 50 C10 55, 15 60, 20 60 C30 60, 35 55, 40 50 C35 45, 30 40, 20 40 C15 40, 10 45, 10 50 Z" 
+      fill="currentColor"
+      rx="5"
+    />
   </svg>
 );
 
