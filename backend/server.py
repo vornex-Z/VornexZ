@@ -321,6 +321,15 @@ async def update_user_data(update_data: UserUpdateData, current_user: User = Dep
     
     # Preparar dados para atualização
     update_fields = {}
+    
+    if update_data.email:
+        # Verificar se o novo email já existe (diferente do atual)
+        if update_data.email != current_user.email:
+            existing_email = await db.users.find_one({"email": update_data.email})
+            if existing_email:
+                raise HTTPException(status_code=400, detail="Email já está em uso por outra conta")
+        update_fields["email"] = update_data.email
+    
     if update_data.telefone:
         if not validate_phone(update_data.telefone):
             raise HTTPException(status_code=400, detail="Telefone inválido")
@@ -334,6 +343,14 @@ async def update_user_data(update_data: UserUpdateData, current_user: User = Dep
     
     if update_data.estado:
         update_fields["estado"] = update_data.estado
+    
+    if update_data.cep:
+        # Validação básica de CEP (formato XXXXX-XXX ou XXXXXXXX)
+        import re
+        cep_clean = re.sub(r'[^0-9]', '', update_data.cep)
+        if len(cep_clean) != 8:
+            raise HTTPException(status_code=400, detail="CEP inválido")
+        update_fields["cep"] = update_data.cep
     
     if not update_fields:
         raise HTTPException(status_code=400, detail="Nenhum campo para atualizar")
