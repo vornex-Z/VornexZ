@@ -82,8 +82,13 @@ const Register = () => {
     }
 
     setLoading(true);
-    await register(formData);
+    const success = await register(formData);
     setLoading(false);
+    
+    if (success) {
+      alert('Conta criada com sucesso! Faça login para continuar.');
+      navigate('/login');
+    }
   };
 
   return (
