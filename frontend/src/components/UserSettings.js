@@ -52,6 +52,12 @@ const UserSettings = ({ onClose }) => {
       
       showMessage('success', 'Dados atualizados com sucesso!');
       setPersonalData({ ...personalData, senha_confirmacao: '' });
+      
+      // Fechar o modal após 1.5 segundos para mostrar a mensagem de sucesso
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+      
     } catch (error) {
       showMessage('error', error.response?.data?.detail || 'Erro ao atualizar dados');
     } finally {
