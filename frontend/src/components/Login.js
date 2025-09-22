@@ -22,7 +22,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await login(formData.email, formData.senha);
+    await login(formData.login, formData.senha);
     setLoading(false);
   };
 
