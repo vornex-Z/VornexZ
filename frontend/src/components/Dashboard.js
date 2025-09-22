@@ -68,6 +68,7 @@ const Dashboard = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showCardsModal, setShowCardsModal] = useState(false);
   const [showPremiumCard, setShowPremiumCard] = useState(false);
+  const [showPhysicalCard, setShowPhysicalCard] = useState(false);
   const [showUserSettings, setShowUserSettings] = useState(false);
   const [transactions, setTransactions] = useState([]);
   const [showBalance, setShowBalance] = useState(true);
