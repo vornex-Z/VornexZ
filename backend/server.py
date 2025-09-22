@@ -311,6 +311,14 @@ async def get_me(current_user: User = Depends(get_current_user)):
         id=current_user.id,
         nome_completo=current_user.nome_completo,
         email=current_user.email,
+        cpf=current_user.cpf,
+        rg=current_user.rg,
+        telefone=current_user.telefone,
+        data_nascimento=current_user.data_nascimento,
+        endereco=current_user.endereco,
+        cidade=current_user.cidade,
+        estado=current_user.estado,
+        cep=current_user.cep,
         saldo=current_user.saldo,
         premium=current_user.premium
     )
