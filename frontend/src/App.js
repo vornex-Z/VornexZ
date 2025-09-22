@@ -96,18 +96,18 @@ const AuthProvider = ({ children }) => {
 };
 
 // Initialize demo data
-const initializeDemo = async () => {
-  try {
-    await axios.post(`${API}/init-demo`);
-  } catch (error) {
-    console.log('Demo initialization error:', error);
-  }
-};
+// const initializeDemo = async () => {
+//   try {
+//     await axios.post(`${API}/init-demo`);
+//   } catch (error) {
+//     console.log('Demo initialization error:', error);
+//   }
+// };
 
 function App() {
-  useEffect(() => {
-    initializeDemo();
-  }, []);
+  // useEffect(() => {
+  //   initializeDemo();
+  // }, []);
 
   return (
     <div className="App">
