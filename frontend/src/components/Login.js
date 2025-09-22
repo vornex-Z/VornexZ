@@ -34,7 +34,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await login(formData.login, formData.senha);
+    await login(formData.cpf, formData.senha);
     setLoading(false);
   };
 
