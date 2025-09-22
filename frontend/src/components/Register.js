@@ -4,6 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../App';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     nome_completo: '',
     email: '',
