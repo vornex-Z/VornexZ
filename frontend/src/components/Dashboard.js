@@ -141,8 +141,8 @@ const Dashboard = () => {
     },
     {
       icon: CreditCard,
-      label: 'Cartões Virtuais',
-      description: 'Gerencie seus cartões de débito virtuais',
+      label: 'Cartões',
+      description: 'Gerencie cartões virtuais e físicos',
       onClick: () => {
         setShowCardsModal(true);
         setShowUserMenu(false);
