@@ -28,7 +28,7 @@ import { Toaster } from './ui/sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component - Símbolo oficial PIX (cruz arredondada conectada)
+// PIX Icon Component - Símbolo oficial PIX baseado na imagem fornecida
 const PixIcon = ({ size = 24 }) => (
   <svg 
     width={size} 
@@ -37,26 +37,36 @@ const PixIcon = ({ size = 24 }) => (
     fill="currentColor"
     className="pix-icon"
   >
-    {/* Símbolo oficial PIX: forma de cruz arredondada com bordas suaves */}
+    {/* Símbolo oficial PIX: cruz arredondada com espaços nas diagonais */}
     <path 
-      d="M50 10 
-       C55 10, 60 12, 63 15 
-       L75 27 
-       C85 37, 85 37, 85 50 
-       C85 63, 85 63, 75 73 
-       L63 85 
-       C60 88, 55 90, 50 90 
-       C45 90, 40 88, 37 85 
-       L25 73 
-       C15 63, 15 63, 15 50 
-       C15 37, 15 37, 25 27 
-       L37 15 
-       C40 12, 45 10, 50 10 Z
+      d="M50 8
+       C56 8, 62 10, 67 15 
+       C72 20, 74 26, 74 32
+       L74 68
+       C74 74, 72 80, 67 85
+       C62 90, 56 92, 50 92
+       C44 92, 38 90, 33 85
+       C28 80, 26 74, 26 68
+       L26 32
+       C26 26, 28 20, 33 15
+       C38 10, 44 8, 50 8 Z
        
-       M35 35 
-       L65 35 
-       L65 65 
-       L35 65 Z" 
+       M92 50
+       C92 56, 90 62, 85 67
+       C80 72, 74 74, 68 74
+       L32 74
+       C26 74, 20 72, 15 67
+       C10 62, 8 56, 8 50
+       C8 44, 10 38, 15 33
+       C20 28, 26 26, 32 26
+       L68 26
+       C74 26, 80 28, 85 33  
+       C90 38, 92 44, 92 50 Z
+       
+       M38 38
+       L62 38
+       L62 62
+       L38 62 Z" 
       fill="currentColor"
       fillRule="evenodd"
     />
