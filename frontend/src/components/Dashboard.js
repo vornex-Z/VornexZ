@@ -28,49 +28,18 @@ import { Toaster } from './ui/sonner';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// PIX Icon Component - Símbolo oficial PIX baseado na imagem fornecida
+// PIX Icon Component - Usando a imagem oficial do PIX
 const PixIcon = ({ size = 24 }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 100 100" 
-    fill="currentColor"
-    className="pix-icon"
-  >
-    {/* Símbolo oficial PIX: cruz arredondada com espaços nas diagonais */}
-    <path 
-      d="M50 8
-       C56 8, 62 10, 67 15 
-       C72 20, 74 26, 74 32
-       L74 68
-       C74 74, 72 80, 67 85
-       C62 90, 56 92, 50 92
-       C44 92, 38 90, 33 85
-       C28 80, 26 74, 26 68
-       L26 32
-       C26 26, 28 20, 33 15
-       C38 10, 44 8, 50 8 Z
-       
-       M92 50
-       C92 56, 90 62, 85 67
-       C80 72, 74 74, 68 74
-       L32 74
-       C26 74, 20 72, 15 67
-       C10 62, 8 56, 8 50
-       C8 44, 10 38, 15 33
-       C20 28, 26 26, 32 26
-       L68 26
-       C74 26, 80 28, 85 33  
-       C90 38, 92 44, 92 50 Z
-       
-       M38 38
-       L62 38
-       L62 62
-       L38 62 Z" 
-      fill="currentColor"
-      fillRule="evenodd"
-    />
-  </svg>
+  <img 
+    src="https://customer-assets.emergentagent.com/job_account-manager-33/artifacts/dfulhml4_Pix.png"
+    alt="PIX"
+    width={size}
+    height={size}
+    style={{
+      filter: 'brightness(0) invert(1)', // Torna a imagem branca
+      objectFit: 'contain'
+    }}
+  />
 );
 
 const Dashboard = () => {
