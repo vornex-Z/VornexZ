@@ -229,7 +229,7 @@ const Dashboard = () => {
           </button>
         </div>
         
-        {!showPremiumCard ? (
+        {!showPremiumCard && !showPhysicalCard ? (
           <>
             {/* Opções de Cartões */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
@@ -268,12 +268,20 @@ const Dashboard = () => {
                   <div className="inline-flex items-center justify-center px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full mb-4">
                     📦 Entrega Grátis
                   </div>
-                  <button 
-                    onClick={() => alert('Funcionalidade em desenvolvimento - Solicitação de cartão físico será implementada em breve')}
-                    className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-all"
-                  >
-                    Pedir Cartão Físico
-                  </button>
+                  <div className="space-y-2">
+                    <button 
+                      onClick={() => setShowPhysicalCard(true)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all text-sm"
+                    >
+                      Ver Design
+                    </button>
+                    <button 
+                      onClick={() => alert('Funcionalidade em desenvolvimento - Solicitação de cartão físico será implementada em breve')}
+                      className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-2 px-4 rounded-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-all text-sm"
+                    >
+                      Solicitar Cartão
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -309,6 +317,117 @@ const Dashboard = () => {
                 <li>• Cartão premium: Benefícios exclusivos por R$ 12/mês</li>
                 <li>• Todos funcionam como débito na conta VornexZPay</li>
               </ul>
+            </div>
+          </>
+        ) : showPhysicalCard ? (
+          <>
+            {/* Detalhes do Cartão Físico */}
+            <div className="mb-4">
+              <button 
+                onClick={() => setShowPhysicalCard(false)}
+                className="flex items-center text-gray-600 hover:text-gray-800 mb-4"
+              >
+                <ArrowLeft size={20} className="mr-2" />
+                Voltar
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Imagem do Cartão */}
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Design do Cartão Físico</h3>
+                
+                {/* Cartão Físico usando a imagem oficial */}
+                <div className="relative mx-auto w-80 h-48 rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300">
+                  <img 
+                    src="https://customer-assets.emergentagent.com/job_account-manager-33/artifacts/pkqx09n9_Imagem%20do%20WhatsApp%20de%202025-09-22%20%C3%A0%28s%29%2020.18.49_5e2333a0.jpg"
+                    alt="Cartão VornexZPay Físico"
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Overlay com nome personalizado */}
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="text-lg font-bold">{user?.nome_completo?.toUpperCase() || 'SEU NOME AQUI'}</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 text-center">
+                  <p className="text-sm text-gray-600 mb-2">🎨 Design oficial VornexZPay</p>
+                  <p className="text-sm text-gray-600">Material: PVC de alta qualidade</p>
+                </div>
+              </div>
+
+              {/* Informações do Cartão Físico */}
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Informações do Cartão</h3>
+                
+                <div className="space-y-4 mb-6">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Design Exclusivo</p>
+                      <p className="text-sm text-gray-600">Cartão com visual moderno e logo VornexZPay</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Aceito Mundialmente</p>
+                      <p className="text-sm text-gray-600">Use em qualquer lugar que aceite cartão de débito</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Tecnologia Contactless</p>
+                      <p className="text-sm text-gray-600">Pagamentos rápidos por aproximação</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Segurança Chip e PIN</p>
+                      <p className="text-sm text-gray-600">Proteção avançada em todas as transações</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={14} className="text-white" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">Sem Anuidade</p>
+                      <p className="text-sm text-gray-600">Cartão gratuito, sem taxas de manutenção</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <CreditCard size={20} className="text-blue-600" />
+                    <p className="font-semibold text-blue-800">Entrega Gratuita</p>
+                  </div>
+                  <p className="text-sm text-blue-700 mb-1">📦 Frete grátis para todo o Brasil</p>
+                  <p className="text-sm text-blue-700">⏱️ Prazo: 7-10 dias úteis</p>
+                </div>
+
+                <button 
+                  onClick={() => alert('Funcionalidade em desenvolvimento - Solicitação de cartão físico será implementada em breve')}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-lg font-bold text-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg"
+                >
+                  Solicitar Cartão Físico
+                </button>
+              </div>
             </div>
           </>
         ) : (
