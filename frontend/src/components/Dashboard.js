@@ -103,9 +103,9 @@ const Dashboard = () => {
     },
     { 
       id: 'pix', 
-      icon: (props) => <PixIcon {...props} size={32} />, 
+      icon: (props) => <PixIcon {...props} size={28} />, 
       label: 'PIX', 
-      className: 'teal',
+      className: 'pix',
       onClick: () => alert('Funcionalidade em desenvolvimento - PIX')
     },
     { 
@@ -141,7 +141,7 @@ const Dashboard = () => {
     },
     { 
       id: 'pagamentos', 
-      icon: Receipt, 
+      icon: DollarSign, 
       label: 'Pagamentos', 
       className: 'purple',
       onClick: () => alert('Funcionalidade em desenvolvimento - Pagamentos')
@@ -152,13 +152,6 @@ const Dashboard = () => {
       label: 'Boletos', 
       className: 'purple',
       onClick: () => alert('Funcionalidade em desenvolvimento - Boletos e Contas')
-    },
-    { 
-      id: 'premium', 
-      icon: Crown, 
-      label: 'Premium', 
-      className: 'teal',
-      onClick: () => alert('Funcionalidade em desenvolvimento - Clube Premium')
     }
   ];
 
