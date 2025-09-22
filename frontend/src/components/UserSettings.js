@@ -64,7 +64,7 @@ const UserSettings = ({ onClose }) => {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content max-w-2xl" onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Configurações da Conta</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Conta</h2>
           <button 
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700"
@@ -85,290 +85,144 @@ const UserSettings = ({ onClose }) => {
           </div>
         )}
 
-        {/* Tabs */}
-        <div className="flex space-x-1 mb-6 bg-gray-100 p-1 rounded-lg">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab.id
-                  ? 'bg-white text-purple-600 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <tab.icon size={16} />
-              <span>{tab.label}</span>
-            </button>
-          ))}
+        {/* Header */}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center space-x-2">
+            <User size={20} />
+            <span>Dados Pessoais</span>
+          </h3>
+          <p className="text-gray-600 text-sm">
+            Visualize e atualize suas informações pessoais
+          </p>
         </div>
 
-        {/* Tab Content */}
-        <div className="tab-content">
-          {activeTab === 'personal' && (
-            <form onSubmit={handlePersonalDataUpdate} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label flex items-center space-x-2">
-                    <Phone size={16} />
-                    <span>Telefone</span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={personalData.telefone}
-                    onChange={(e) => setPersonalData({ ...personalData, telefone: e.target.value })}
-                    placeholder="(11) 99999-9999"
-                    className="form-input"
-                  />
-                </div>
+        {/* Dados Atuais - Visualização */}
+        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+          <h4 className="font-semibold text-gray-900 mb-3">Informações Atuais</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <p className="text-gray-600">Nome Completo</p>
+              <p className="font-medium text-gray-900">{user?.nome_completo}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">Email</p>
+              <p className="font-medium text-gray-900">{user?.email}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">CPF</p>
+              <p className="font-medium text-gray-900">{user?.cpf}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">RG</p>
+              <p className="font-medium text-gray-900">{user?.rg}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">Data de Nascimento</p>
+              <p className="font-medium text-gray-900">{user?.data_nascimento}</p>
+            </div>
+            <div>
+              <p className="text-gray-600">CEP</p>
+              <p className="font-medium text-gray-900">{user?.cep}</p>
+            </div>
+          </div>
+        </div>
 
-                <div className="form-group">
-                  <label className="form-label flex items-center space-x-2">
-                    <MapPin size={16} />
-                    <span>Estado</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={personalData.estado}
-                    onChange={(e) => setPersonalData({ ...personalData, estado: e.target.value })}
-                    placeholder="SP"
-                    className="form-input"
-                  />
-                </div>
-              </div>
+        {/* Formulário de Edição */}
+        <form onSubmit={handlePersonalDataUpdate} className="space-y-4">
+          <h4 className="font-semibold text-gray-900 mb-3">Editar Informações</h4>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="form-group">
+              <label className="form-label flex items-center space-x-2">
+                <Phone size={16} />
+                <span>Telefone</span>
+              </label>
+              <input
+                type="tel"
+                value={personalData.telefone}
+                onChange={(e) => setPersonalData({ ...personalData, telefone: e.target.value })}
+                placeholder="(11) 99999-9999"
+                className="form-input"
+              />
+              <p className="text-xs text-gray-500 mt-1">Atual: {user?.telefone}</p>
+            </div>
 
-              <div className="form-group">
-                <label className="form-label">Endereço</label>
-                <input
-                  type="text"
-                  value={personalData.endereco}
-                  onChange={(e) => setPersonalData({ ...personalData, endereco: e.target.value })}
-                  placeholder="Rua das Flores, 123"
-                  className="form-input"
-                />
-              </div>
+            <div className="form-group">
+              <label className="form-label flex items-center space-x-2">
+                <MapPin size={16} />
+                <span>Estado</span>
+              </label>
+              <input
+                type="text"
+                value={personalData.estado}
+                onChange={(e) => setPersonalData({ ...personalData, estado: e.target.value })}
+                placeholder="SP"
+                className="form-input"
+              />
+              <p className="text-xs text-gray-500 mt-1">Atual: {user?.estado}</p>
+            </div>
+          </div>
 
-              <div className="form-group">
-                <label className="form-label">Cidade</label>
-                <input
-                  type="text"
-                  value={personalData.cidade}
-                  onChange={(e) => setPersonalData({ ...personalData, cidade: e.target.value })}
-                  placeholder="São Paulo"
-                  className="form-input"
-                />
-              </div>
+          <div className="form-group">
+            <label className="form-label">Endereço</label>
+            <input
+              type="text"
+              value={personalData.endereco}
+              onChange={(e) => setPersonalData({ ...personalData, endereco: e.target.value })}
+              placeholder="Rua das Flores, 123"
+              className="form-input"
+            />
+            <p className="text-xs text-gray-500 mt-1">Atual: {user?.endereco}</p>
+          </div>
 
-              <div className="form-group">
-                <label className="form-label">Confirme sua senha para salvar</label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={personalData.senha_confirmacao}
-                    onChange={(e) => setPersonalData({ ...personalData, senha_confirmacao: e.target.value })}
-                    placeholder="Digite sua senha atual"
-                    className="form-input pr-12"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-                  >
-                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                  </button>
-                </div>
-              </div>
+          <div className="form-group">
+            <label className="form-label">Cidade</label>
+            <input
+              type="text"
+              value={personalData.cidade}
+              onChange={(e) => setPersonalData({ ...personalData, cidade: e.target.value })}
+              placeholder="São Paulo"
+              className="form-input"
+            />
+            <p className="text-xs text-gray-500 mt-1">Atual: {user?.cidade}</p>
+          </div>
 
+          <div className="form-group">
+            <label className="form-label">Confirme sua senha para salvar</label>
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={personalData.senha_confirmacao}
+                onChange={(e) => setPersonalData({ ...personalData, senha_confirmacao: e.target.value })}
+                placeholder="Digite sua senha atual"
+                className="form-input pr-12"
+                required
+              />
               <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
               >
-                {loading ? (
-                  <div className="loading-spinner"></div>
-                ) : (
-                  <>
-                    <Save size={20} />
-                    <span>Salvar Alterações</span>
-                  </>
-                )}
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
-            </form>
-          )}
-
-          {activeTab === 'security' && (
-            <div className="space-y-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                  <Shield size={20} />
-                  <span>Autenticação em Duas Etapas</span>
-                </h3>
-                
-                {!twoFASettings.enabled ? (
-                  <div className="space-y-4">
-                    <p className="text-gray-600 text-sm">
-                      Adicione uma camada extra de segurança à sua conta.
-                    </p>
-                    <div className="space-y-3">
-                      <button
-                        onClick={() => handleToggle2FA(true, 'totp')}
-                        disabled={loading}
-                        className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
-                      >
-                        <Smartphone size={20} />
-                        <span>Usar Aplicativo Autenticador</span>
-                      </button>
-                      <button
-                        onClick={() => handleToggle2FA(true, 'email')}
-                        disabled={loading}
-                        className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
-                      >
-                        <Mail size={20} />
-                        <span>Usar Email</span>
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-3 bg-green-100 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <Check size={16} className="text-green-600" />
-                        <span className="text-green-800 font-medium">
-                          2FA Ativo ({twoFASettings.method === 'totp' ? 'Aplicativo' : 'Email'})
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => handleToggle2FA(false)}
-                        disabled={loading}
-                        className="text-red-600 hover:text-red-800 text-sm font-medium"
-                      >
-                        Desabilitar
-                      </button>
-                    </div>
-
-                    {twoFASettings.method === 'email' && (
-                      <div className="space-y-3">
-                        <button
-                          onClick={handleSendEmail2FA}
-                          disabled={loading}
-                          className="bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-all disabled:opacity-50"
-                        >
-                          Enviar Código de Teste
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* QR Code Modal */}
-                {showQrCode && (
-                  <div className="mt-4 p-4 bg-white border rounded-lg">
-                    <h4 className="font-semibold mb-3 flex items-center space-x-2">
-                      <QrCode size={16} />
-                      <span>Configure seu Aplicativo</span>
-                    </h4>
-                    <div className="text-center">
-                      <img 
-                        src={`${qrCodeUrl}?t=${Date.now()}`} 
-                        alt="QR Code 2FA" 
-                        className="mx-auto mb-4 max-w-xs border rounded-lg"
-                      />
-                      <p className="text-sm text-gray-600 mb-4">
-                        Escaneie este QR Code com seu aplicativo autenticador
-                      </p>
-                      <div className="flex space-x-2">
-                        <input
-                          type="text"
-                          value={twoFACode}
-                          onChange={(e) => setTwoFACode(e.target.value)}
-                          placeholder="Digite o código do app"
-                          className="form-input flex-1"
-                        />
-                        <button
-                          onClick={handleVerify2FA}
-                          disabled={loading || !twoFACode}
-                          className="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition-all disabled:opacity-50"
-                        >
-                          Verificar
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Test 2FA */}
-                {twoFASettings.enabled && !showQrCode && (
-                  <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                    <h4 className="font-semibold mb-3">Testar 2FA</h4>
-                    <div className="flex space-x-2">
-                      <input
-                        type="text"
-                        value={twoFACode}
-                        onChange={(e) => setTwoFACode(e.target.value)}
-                        placeholder="Digite o código"
-                        className="form-input flex-1"
-                      />
-                      <button
-                        onClick={handleVerify2FA}
-                        disabled={loading || !twoFACode}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all disabled:opacity-50"
-                      >
-                        Testar
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
-          )}
+          </div>
 
-          {activeTab === 'biometric' && (
-            <div className="space-y-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2">
-                  <Fingerprint size={20} />
-                  <span>Login com Biometria</span>
-                </h3>
-                
-                <div className="space-y-4">
-                  <p className="text-gray-600 text-sm">
-                    Use sua impressão digital, Face ID ou Windows Hello para fazer login rapidamente.
-                  </p>
-                  
-                  <div className="flex items-center justify-between p-4 border rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900">Autenticação Biométrica</p>
-                      <p className="text-sm text-gray-600">
-                        {biometricEnabled ? 'Habilitada' : 'Desabilitada'}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleToggleBiometric(!biometricEnabled)}
-                      disabled={loading}
-                      className={`px-4 py-2 rounded-lg font-medium transition-all disabled:opacity-50 ${
-                        biometricEnabled
-                          ? 'bg-red-600 text-white hover:bg-red-700'
-                          : 'bg-green-600 text-white hover:bg-green-700'
-                      }`}
-                    >
-                      {biometricEnabled ? 'Desabilitar' : 'Habilitar'}
-                    </button>
-                  </div>
-
-                  {!navigator.credentials && (
-                    <div className="p-3 bg-yellow-100 border border-yellow-200 rounded-lg">
-                      <p className="text-yellow-800 text-sm flex items-center space-x-2">
-                        <AlertCircle size={16} />
-                        <span>Seu navegador não suporta autenticação biométrica.</span>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-purple-600 to-purple-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-700 hover:to-purple-800 transition-all disabled:opacity-50 flex items-center justify-center space-x-2"
+          >
+            {loading ? (
+              <div className="loading-spinner"></div>
+            ) : (
+              <>
+                <Save size={20} />
+                <span>Salvar Alterações</span>
+              </>
+            )}
+          </button>
+        </form>
       </div>
     </div>
   );
