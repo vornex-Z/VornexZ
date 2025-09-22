@@ -60,7 +60,7 @@ class UserRegister(BaseModel):
     confirmar_senha: str
 
 class UserLogin(BaseModel):
-    login: str  # Pode ser email ou CPF
+    cpf: str
     senha: str
 
 class UserUpdateData(BaseModel):
