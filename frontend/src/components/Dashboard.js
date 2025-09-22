@@ -18,7 +18,9 @@ import {
   Filter,
   X,
   Settings,
-  DollarSign
+  DollarSign,
+  Check,
+  ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../App';
 import axios from 'axios';
