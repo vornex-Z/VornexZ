@@ -23,11 +23,10 @@ const API = `${BACKEND_URL}/api`;
 
 const UserSettings = ({ onClose }) => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('personal');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   
-  // Estados para dados pessoais
+  // Estados para dados pessoais - inicializar com dados atuais do usuário
   const [personalData, setPersonalData] = useState({
     telefone: user?.telefone || '',
     endereco: user?.endereco || '',
@@ -36,18 +35,6 @@ const UserSettings = ({ onClose }) => {
     senha_confirmacao: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  
-  // Estados para 2FA
-  const [twoFASettings, setTwoFASettings] = useState({
-    enabled: false,
-    method: null
-  });
-  const [twoFACode, setTwoFACode] = useState('');
-  const [qrCodeUrl, setQrCodeUrl] = useState('');
-  const [showQrCode, setShowQrCode] = useState(false);
-  
-  // Estados para biometria
-  const [biometricEnabled, setBiometricEnabled] = useState(false);
 
   useEffect(() => {
     fetchSecuritySettings();
