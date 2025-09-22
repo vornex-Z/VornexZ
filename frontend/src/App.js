@@ -50,9 +50,9 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, senha) => {
+  const login = async (login, senha) => {
     try {
-      const response = await axios.post(`${API}/auth/login`, { email, senha });
+      const response = await axios.post(`${API}/auth/login`, { login, senha });
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
       
