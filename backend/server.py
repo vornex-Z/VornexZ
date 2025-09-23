@@ -442,8 +442,8 @@ async def update_user_data(request: Request, update_data: UserUpdateData, curren
 @api_router.post("/user/enable-2fa")
 @limiter.limit("5/minute")  # Limit 2FA operations
 async def enable_2fa(request: Request, request_data: Enable2FARequest, current_user: User = Depends(get_current_user)):
-    if request.enable:
-        if request.method == "totp":
+    if request_data.enable:
+        if request_data.method == "totp":
             # Gerar segredo TOTP
             secret = pyotp.random_base32()
             totp = pyotp.TOTP(secret)
