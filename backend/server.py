@@ -584,6 +584,97 @@ async def get_security_settings(current_user: User = Depends(get_current_user)):
         biometric_enabled=user_db.get("biometric_enabled", False)
     )
 
+# Admin endpoints
+@api_router.post("/admin/login")
+async def admin_login(admin_data: AdminLogin):
+    # Simple admin authentication (em produção, usar hash de senha)
+    if admin_data.username == "admin" and admin_data.password == "admin123":
+        admin_user = {
+            "id": "admin_001",
+            "username": "admin",
+            "role": "super_admin"
+        }
+        
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": admin_user["username"], "role": "admin"}, 
+            expires_delta=access_token_expires
+        )
+        
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer",
+            "admin": AdminResponse(**admin_user)
+        }
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciais de admin inválidas",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+# Função auxiliar para verificar admin
+async def get_current_admin(token: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        payload = jwt.decode(token.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        role: str = payload.get("role")
+        
+        if username is None or role != "admin":
+            raise HTTPException(status_code=401, detail="Token inválido")
+            
+        return {"username": username, "role": role}
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token inválido")
+
+@api_router.get("/admin/dashboard")
+async def get_admin_dashboard(current_admin = Depends(get_current_admin)):
+    # Buscar dados do sistema
+    users = await db.users.find({}).to_list(None)
+    
+    # Mock data para demonstração
+    buttons = [
+        {"id": "1", "label": "PIX", "icon": "CreditCard", "endpoint": "/api/pix", "enabled": True, "position": 1},
+        {"id": "2", "label": "Transferir", "icon": "ArrowUp", "endpoint": "/api/transfer", "enabled": True, "position": 2},
+        {"id": "3", "label": "Pagar", "icon": "Receipt", "endpoint": "/api/payment", "enabled": False, "position": 3}
+    ]
+    
+    partnerships = [
+        {"id": "1", "name": "McDonald's", "logo": "https://example.com/mcdonalds.png", "cashback": "5%", "category": "Alimentação", "description": "Cashback em pedidos", "active": True},
+        {"id": "2", "name": "Amazon", "logo": "https://example.com/amazon.png", "cashback": "3%", "category": "E-commerce", "description": "Cashback em compras", "active": True}
+    ]
+    
+    apis = [
+        {"id": "1", "name": "PIX API", "endpoint": "https://api.pix.com/transfer", "method": "POST", "headers": "{}", "enabled": True, "buttonId": "1"},
+        {"id": "2", "name": "Payment API", "endpoint": "https://api.payment.com/pay", "method": "POST", "headers": "{}", "enabled": False, "buttonId": "3"}
+    ]
+    
+    return {
+        "users": users,
+        "buttons": buttons,
+        "partnerships": partnerships,
+        "apis": apis,
+        "systemConfig": {}
+    }
+
+@api_router.post("/admin/buttons")
+async def save_button_config(button: ButtonConfig, current_admin = Depends(get_current_admin)):
+    # Em produção, salvar no banco de dados
+    # Por enquanto, apenas simular sucesso
+    return {"message": "Configuração de botão salva com sucesso", "button": button}
+
+@api_router.post("/admin/partnerships") 
+async def save_partnership_config(partnership: PartnershipConfig, current_admin = Depends(get_current_admin)):
+    # Em produção, salvar no banco de dados
+    # Por enquanto, apenas simular sucesso
+    return {"message": "Parceria salva com sucesso", "partnership": partnership}
+
+@api_router.post("/admin/apis")
+async def save_api_config(api: ApiConfig, current_admin = Depends(get_current_admin)):
+    # Em produção, salvar no banco de dados
+    # Por enquanto, apenas simular sucesso
+    return {"message": "API configurada com sucesso", "api": api}
+
 # Initialize demo user and transactions
 @api_router.post("/init-demo")
 async def init_demo():
