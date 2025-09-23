@@ -61,8 +61,15 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
-app = FastAPI()
+# Create FastAPI instance with security configurations
+app = FastAPI(
+    title="VornexZPay Secure API",
+    description="Secure Banking API with Enterprise-level Security",
+    version="2.0.0",
+    docs_url=None,  # Disable docs in production
+    redoc_url=None,  # Disable redoc in production
+    openapi_url=None  # Disable OpenAPI in production
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
