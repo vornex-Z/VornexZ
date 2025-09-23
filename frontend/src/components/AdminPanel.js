@@ -670,9 +670,14 @@ const AdminPanel = () => {
                       >
                         <option value="">Selecione um botão</option>
                         {adminData.buttons?.map((button, index) => (
-                          <option key={index} value={button.id}>{button.label}</option>
+                          <option key={index} value={button.id}>
+                            {button.label} ({button.enabled ? 'Ativo' : 'Inativo'})
+                          </option>
                         ))}
                       </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {adminData.buttons?.length || 0} botões disponíveis no app
+                      </p>
                     </div>
 
                     <div className="flex items-center">
