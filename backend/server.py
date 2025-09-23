@@ -620,9 +620,9 @@ async def init_demo():
             "id": str(uuid.uuid4()),
             "nome_completo": "João Santos Silva",
             "email": "usuario@example.com",
-            "cpf": "123.456.789-00",
-            "rg": "12.345.678-9",
-            "telefone": "(11) 99999-9999",
+            "cpf": encrypt_sensitive_data("123.456.789-00"),  # Encrypt CPF
+            "rg": encrypt_sensitive_data("12.345.678-9"),    # Encrypt RG
+            "telefone": encrypt_sensitive_data("(11) 99999-9999"),  # Encrypt phone
             "data_nascimento": "1990-01-01",
             "endereco": "Rua das Flores, 123",
             "cidade": "São Paulo",
