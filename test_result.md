@@ -244,8 +244,47 @@ test_plan:
   test_all: true
   test_priority: "high_first"
 
+  - task: "Implementar rate limiting completo em endpoints críticos"
+    implemented: false
+    working: false
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Rate limiting parcialmente implementado. Precisa adicionar a todos os endpoints críticos (login, update-data, 2FA, etc)"
+
+  - task: "Implementar proteções contra screenshot e gravação no frontend"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Headers de backend implementados, mas proteções JavaScript no frontend ainda faltam"
+
+frontend:
+  - task: "Implementar proteções de segurança frontend (anti-screenshot, anti-recording)"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "Precisa implementar proteções JavaScript contra captura de tela, gravação, e outras medidas de segurança de nível bancário"
+
 agent_communication:
   - agent: "main"
     message: "Implementadas todas as funcionalidades solicitadas: link esqueci senha, página de ajuda, configurações de dados pessoais com confirmação de senha, 2FA (aplicativo + email), biometria. Backend e frontend prontos para teste."
   - agent: "testing"
     message: "✅ BACKEND TESTADO COMPLETAMENTE: Todas as funcionalidades do backend VornexZPay foram testadas com sucesso. Executados 27 testes abrangentes cobrindo: atualização de dados do usuário, sistema 2FA (TOTP e Email), configurações de biometria, endpoint de configurações de segurança, e fluxo integrado. Todos os endpoints estão funcionando corretamente com validações apropriadas. Sistema pronto para uso em produção."
+  - agent: "main"
+    message: "SEGURANÇA INCOMPLETA: Usuário perguntou sobre proteções contra captura de tela e criptografia. Backend tem criptografia e alguns headers, mas falta proteções frontend completas e rate limiting em todos endpoints críticos. Iniciando implementação das proteções faltantes."
