@@ -104,7 +104,19 @@ const AdminPanel = () => {
   // Carregar dados do admin
   useEffect(() => {
     loadAdminData();
-  }, []);
+    
+    // Auto-refresh se modo tempo real estiver ativo
+    let interval;
+    if (realTimeMode) {
+      interval = setInterval(() => {
+        loadAdminData();
+      }, 10000); // Atualizar a cada 10 segundos
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [realTimeMode]);
 
   const loadAdminData = async () => {
     setLoading(true);
@@ -113,11 +125,36 @@ const AdminPanel = () => {
       const response = await axios.get(`${API}/admin/dashboard`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
       setAdminData(response.data);
+      
+      // Carregar configurações de design
+      if (response.data.designConfig) {
+        setDesignConfig(response.data.designConfig);
+      }
+      
     } catch (error) {
       showMessage('error', 'Erro ao carregar dados administrativos');
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Carregar estatísticas em tempo real
+  const loadRealTimeStats = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.get(`${API}/admin/real-time-stats`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setAdminData(prev => ({
+        ...prev,
+        realTimeStats: response.data
+      }));
+      
+    } catch (error) {
+      console.log('Erro ao carregar estatísticas:', error);
     }
   };
 
