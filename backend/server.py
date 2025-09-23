@@ -261,6 +261,15 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     user = await db.users.find_one({"email": email})
     if user is None:
         raise credentials_exception
+    
+    # Decrypt sensitive data
+    if "cpf" in user:
+        user["cpf"] = decrypt_sensitive_data(user["cpf"])
+    if "rg" in user:
+        user["rg"] = decrypt_sensitive_data(user["rg"])
+    if "telefone" in user:
+        user["telefone"] = decrypt_sensitive_data(user["telefone"])
+    
     return User(**user)
 
 def validate_cpf(cpf: str) -> bool:
