@@ -171,14 +171,16 @@ class SecurityProtection {
       }
     }, 500);
 
-    // Detecta debug via console
-    let lastConsoleTime = Date.now();
+    // Detecta debug via console (modo menos agressivo)
     const originalConsole = console.log;
+    let consoleAccessCount = 0;
+    
     console.log = function() {
-      if (Date.now() - lastConsoleTime < 100) {
-        throw new Error('Console access blocked');
+      consoleAccessCount++;
+      if (consoleAccessCount > 10) {
+        console.warn('[SECURITY] Acesso excessivo ao console detectado');
+        consoleAccessCount = 0; // Reset counter
       }
-      lastConsoleTime = Date.now();
       return originalConsole.apply(console, arguments);
     };
   }
