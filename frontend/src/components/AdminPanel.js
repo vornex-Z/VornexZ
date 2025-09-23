@@ -545,15 +545,22 @@ const AdminPanel = () => {
                   </div>
                 </div>
 
-                {/* Lista de botões existentes */}
+                {/* Lista de botões reais do app */}
                 <div className="bg-white p-6 rounded-lg shadow-sm border">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Botões Configurados</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Botões do App (Tempo Real)</h3>
                   <div className="space-y-3">
                     {adminData.buttons?.map((button, index) => (
                       <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div>
-                          <p className="font-medium">{button.label}</p>
-                          <p className="text-sm text-gray-600">{button.icon}</p>
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                            button.className === 'pix' ? 'bg-teal-500' : 'bg-purple-500'
+                          }`}>
+                            <span className="text-white text-xs">{button.icon === 'Plus' ? '+' : button.label[0]}</span>
+                          </div>
+                          <div>
+                            <p className="font-medium">{button.label}</p>
+                            <p className="text-sm text-gray-600">{button.endpoint}</p>
+                          </div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <span className={`px-2 py-1 text-xs rounded-full ${
@@ -563,8 +570,12 @@ const AdminPanel = () => {
                           }`}>
                             {button.enabled ? 'Ativo' : 'Inativo'}
                           </span>
+                          <span className="text-xs text-gray-500">Pos: {button.position}</span>
                           <button
-                            onClick={() => setButtonConfig(button)}
+                            onClick={() => setButtonConfig({
+                              ...button,
+                              buttonId: button.id
+                            })}
                             className="text-blue-600 hover:text-blue-800"
                           >
                             <Edit size={16} />
@@ -572,6 +583,12 @@ const AdminPanel = () => {
                         </div>
                       </div>
                     ))}
+                  </div>
+                  <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-700">
+                      <Activity size={16} className="inline mr-2" />
+                      Estes são os botões reais que aparecem no app principal
+                    </p>
                   </div>
                 </div>
               </div>
