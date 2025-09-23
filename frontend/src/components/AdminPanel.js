@@ -344,13 +344,18 @@ const AdminPanel = () => {
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-gray-900">Dashboard Administrativo</h2>
               
-              {/* Stats Cards */}
+              {/* Stats Cards com dados em tempo real */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-white p-6 rounded-lg shadow-sm border">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Usuários Totais</p>
-                      <p className="text-2xl font-bold text-gray-900">{adminData.users?.length || 0}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {adminData.realTimeStats?.totalUsers || adminData.users?.length || 0}
+                      </p>
+                      {adminData.realTimeStats?.newUsersToday > 0 && (
+                        <p className="text-xs text-green-600">+{adminData.realTimeStats.newUsersToday} hoje</p>
+                      )}
                     </div>
                     <Users className="w-8 h-8 text-purple-600" />
                   </div>
@@ -360,7 +365,10 @@ const AdminPanel = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600">Botões Ativos</p>
-                      <p className="text-2xl font-bold text-gray-900">{adminData.buttons?.filter(b => b.enabled).length || 0}</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {adminData.buttons?.filter(b => b.enabled).length || 0}/{adminData.buttons?.length || 0}
+                      </p>
+                      <p className="text-xs text-gray-500">Do app principal</p>
                     </div>
                     <Settings className="w-8 h-8 text-green-600" />
                   </div>
@@ -371,6 +379,9 @@ const AdminPanel = () => {
                     <div>
                       <p className="text-sm text-gray-600">APIs Configuradas</p>
                       <p className="text-2xl font-bold text-gray-900">{adminData.apis?.length || 0}</p>
+                      <p className="text-xs text-gray-500">
+                        {adminData.apis?.filter(a => a.enabled).length || 0} ativas
+                      </p>
                     </div>
                     <Code className="w-8 h-8 text-blue-600" />
                   </div>
@@ -381,8 +392,41 @@ const AdminPanel = () => {
                     <div>
                       <p className="text-sm text-gray-600">Parcerias</p>
                       <p className="text-2xl font-bold text-gray-900">{adminData.partnerships?.length || 0}</p>
+                      <p className="text-xs text-gray-500">
+                        {adminData.partnerships?.filter(p => p.active).length || 0} ativas
+                      </p>
                     </div>
                     <Heart className="w-8 h-8 text-red-600" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Informações do Sistema */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Status do Sistema</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Cores Atuais</p>
+                    <div className="flex justify-center space-x-2 mt-2">
+                      <div 
+                        className="w-6 h-6 rounded-full border"
+                        style={{ backgroundColor: adminData.designConfig?.primaryColor || '#7B4DFF' }}
+                        title="Cor Primária"
+                      ></div>
+                      <div 
+                        className="w-6 h-6 rounded-full border"
+                        style={{ backgroundColor: adminData.designConfig?.secondaryColor || '#00BFA5' }}
+                        title="Cor Secundária"
+                      ></div>
+                    </div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Brand</p>
+                    <p className="font-semibold">{adminData.designConfig?.brandName || 'VornexZPay'}</p>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <p className="text-sm text-gray-600">Última Atualização</p>
+                    <p className="text-sm">{new Date().toLocaleTimeString()}</p>
                   </div>
                 </div>
               </div>
