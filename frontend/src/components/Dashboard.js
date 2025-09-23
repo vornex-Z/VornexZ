@@ -448,30 +448,16 @@ const Dashboard = () => {
               <div className="text-center">
                 <h3 className="text-xl font-bold text-gray-900 mb-6">Design do Cartão Premium</h3>
                 
-                {/* Cartão Mockup */}
-                <div className="relative mx-auto w-80 h-48 rounded-2xl bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-300">
-                  <div className="absolute inset-4 flex flex-col justify-between text-white">
-                    <div className="flex justify-between items-start">
-                      <div className="text-left">
-                        <p className="text-xs opacity-80">VornexZPay</p>
-                        <p className="text-lg font-bold">PREMIUM</p>
-                      </div>
-                      <Crown size={24} className="text-yellow-200" />
-                    </div>
-                    
-                    <div>
-                      <p className="text-lg font-mono tracking-wider mb-2">•••• •••• •••• 8888</p>
-                      <div className="flex justify-between items-end">
-                        <div>
-                          <p className="text-xs opacity-80">Nome do Titular</p>
-                          <p className="text-sm font-semibold">{user?.nome_completo?.toUpperCase() || 'SEU NOME'}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs opacity-80">Válido até</p>
-                          <p className="text-sm font-semibold">12/29</p>
-                        </div>
-                      </div>
-                    </div>
+                {/* Cartão Premium usando a imagem oficial */}
+                <div className="relative mx-auto w-80 h-48 rounded-2xl overflow-hidden shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-300">
+                  <img 
+                    src="https://customer-assets.emergentagent.com/job_account-manager-33/artifacts/7p9rmayl_Imagem%20do%20WhatsApp%20de%202025-09-22%20%C3%A0%28s%29%2021.11.31_1a85181b.jpg"
+                    alt="Cartão VornexZPay Premium"
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Overlay com nome personalizado */}
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <p className="text-lg font-bold">{user?.nome_completo?.toUpperCase() || 'SEU NOME'}</p>
                   </div>
                 </div>
               </div>
