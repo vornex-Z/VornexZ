@@ -440,7 +440,8 @@ async def update_user_data(request: Request, update_data: UserUpdateData, curren
     return {"message": "Dados atualizados com sucesso"}
 
 @api_router.post("/user/enable-2fa")
-async def enable_2fa(request: Enable2FARequest, current_user: User = Depends(get_current_user)):
+@limiter.limit("5/minute")  # Limit 2FA operations
+async def enable_2fa(request: Request, request_data: Enable2FARequest, current_user: User = Depends(get_current_user)):
     if request.enable:
         if request.method == "totp":
             # Gerar segredo TOTP
