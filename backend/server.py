@@ -273,7 +273,15 @@ def validate_phone(phone: str) -> bool:
 
 # Routes
 @api_router.post("/auth/register", response_model=UserResponse)
-async def register(user_data: UserRegister):
+@limiter.limit("3/minute")  # Limit registrations
+async def register(request: Request, user_data: UserRegister):
+    # Input sanitization
+    user_data.nome_completo = sanitize_input(user_data.nome_completo)
+    user_data.email = sanitize_input(str(user_data.email))
+    user_data.endereco = sanitize_input(user_data.endereco)
+    user_data.cidade = sanitize_input(user_data.cidade)
+    user_data.estado = sanitize_input(user_data.estado)
+    
     # Validate passwords match
     if user_data.senha != user_data.confirmar_senha:
         raise HTTPException(status_code=400, detail="Senhas não coincidem")
@@ -291,16 +299,14 @@ async def register(user_data: UserRegister):
         raise HTTPException(status_code=400, detail="Telefone inválido")
     
     # Check if user already exists
-    existing_user = await db.users.find_one({"email": user_data.email})
+    existing_user = await db.users.find_one({"$or": [{"email": user_data.email}, {"cpf": user_data.cpf}]})
     if existing_user:
-        raise HTTPException(status_code=400, detail="Email já cadastrado")
+        raise HTTPException(status_code=400, detail="Usuário já existe com este email ou CPF")
     
-    existing_cpf = await db.users.find_one({"cpf": user_data.cpf})
-    if existing_cpf:
-        raise HTTPException(status_code=400, detail="CPF já cadastrado")
+    # Create secure user
+    hashed_password = hash_password_secure(user_data.senha)
     
-    # Create user
-    hashed_password = get_password_hash(user_data.senha)
+    # Encrypt sensitive data
     user = User(
         nome_completo=user_data.nome_completo,
         email=user_data.email,
@@ -316,15 +322,20 @@ async def register(user_data: UserRegister):
     
     user_dict = user.dict()
     user_dict["senha"] = hashed_password
+    user_dict["cpf"] = encrypt_sensitive_data(user_dict["cpf"])
+    user_dict["rg"] = encrypt_sensitive_data(user_dict["rg"])
+    user_dict["telefone"] = encrypt_sensitive_data(user_dict["telefone"])
+    user_dict["session_token"] = generate_session_token()
+    
     await db.users.insert_one(user_dict)
     
     return UserResponse(
         id=user.id,
         nome_completo=user.nome_completo,
         email=user.email,
-        cpf=user.cpf,
-        rg=user.rg,
-        telefone=user.telefone,
+        cpf=decrypt_sensitive_data(user_dict["cpf"]),
+        rg=decrypt_sensitive_data(user_dict["rg"]),
+        telefone=decrypt_sensitive_data(user_dict["telefone"]),
         data_nascimento=user.data_nascimento,
         endereco=user.endereco,
         cidade=user.cidade,
