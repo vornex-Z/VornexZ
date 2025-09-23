@@ -531,7 +531,7 @@ async def verify_2fa(request: Request, request_data: Verify2FARequest, current_u
     
     if user_db.get("two_factor_method") == "totp":
         totp = pyotp.TOTP(user_db["totp_secret"])
-        if totp.verify(request.code):
+        if totp.verify(request_data.code):
             return {"message": "Código verificado com sucesso"}
         else:
             raise HTTPException(status_code=400, detail="Código inválido")
