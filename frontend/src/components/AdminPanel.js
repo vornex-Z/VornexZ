@@ -194,7 +194,59 @@ const AdminPanel = () => {
     }
   };
 
-  // Salvar configuração de API
+  // Salvar configuração de design
+  const saveDesignConfig = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.post(`${API}/admin/design`, designConfig, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showMessage('success', 'Configurações de design salvas!');
+    } catch (error) {
+      showMessage('error', 'Erro ao salvar configurações de design');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Deletar parceria
+  const deletePartnership = async (partnershipId) => {
+    if (!confirm('Tem certeza que deseja remover esta parceria?')) return;
+    
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.delete(`${API}/admin/partnerships/${partnershipId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showMessage('success', 'Parceria removida!');
+      loadAdminData();
+    } catch (error) {
+      showMessage('error', 'Erro ao remover parceria');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Deletar API
+  const deleteApi = async (apiId) => {
+    if (!confirm('Tem certeza que deseja remover esta API?')) return;
+    
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.delete(`${API}/admin/apis/${apiId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      showMessage('success', 'API removida!');
+      loadAdminData();
+    } catch (error) {
+      showMessage('error', 'Erro ao remover API');
+    } finally {
+      setLoading(false);
+    }
+  };
   const saveApiConfig = async () => {
     setLoading(true);
     try {
