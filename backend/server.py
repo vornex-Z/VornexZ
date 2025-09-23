@@ -541,7 +541,7 @@ async def verify_2fa(request: Request, request_data: Verify2FARequest, current_u
         current_time = datetime.now(timezone.utc).timestamp()
         
         # Verificar se o código existe e não expirou
-        if request.code in codes:
+        if request_data.code in codes:
             if codes[request.code] > current_time:
                 # Remover código usado
                 await db.users.update_one(
