@@ -346,7 +346,8 @@ async def register(request: Request, user_data: UserRegister):
     )
 
 @api_router.post("/auth/login", response_model=Token)
-async def login(user_data: UserLogin):
+@limiter.limit("5/minute")  # Limit login attempts
+async def login(request: Request, user_data: UserLogin):
     # Login apenas com CPF
     user = await db.users.find_one({"cpf": user_data.cpf})
     
