@@ -611,21 +611,29 @@ const Dashboard = () => {
       </div>
 
       <div className="px-6 pb-6">
-        {/* Balance Card */}
-        <div className="glass-card-dashboard p-8 mb-8">
+        {/* Balance Card - Protegido contra captura */}
+        <div className="glass-card-dashboard p-8 mb-8 security-protected" 
+             data-sensitive="true"
+             style={{WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', userSelect: 'none'}}>
           <div className="flex justify-between items-start mb-4">
             <div>
               <p className="text-white/80 text-lg mb-2">Saldo Principal</p>
               <div className="flex items-center space-x-3">
-                <div className="balance-display">
+                <div className="balance-display security-protected" 
+                     data-sensitive="balance"
+                     style={{WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', userSelect: 'none'}}>
                   {showBalance ? formatCurrency(user?.saldo || 0) : 'R$ •••••'}
                 </div>
                 <button
                   onClick={() => setShowBalance(!showBalance)}
                   className="text-white/60 hover:text-white transition-colors"
+                  title={showBalance ? "Ocultar saldo" : "Mostrar saldo"}
                 >
                   {showBalance ? <EyeOff size={24} /> : <Eye size={24} />}
                 </button>
+                <div className="text-white/40" title="Protegido por segurança bancária">
+                  <Shield size={16} />
+                </div>
               </div>
               <p className="balance-subtitle">Disponível para uso</p>
             </div>
