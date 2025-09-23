@@ -629,32 +629,70 @@ async def get_current_admin(token: HTTPAuthorizationCredentials = Depends(securi
 
 @api_router.get("/admin/dashboard")
 async def get_admin_dashboard(current_admin = Depends(get_current_admin)):
-    # Buscar dados do sistema
+    # Buscar dados reais do sistema
     users = await db.users.find({}).to_list(None)
     
-    # Mock data para demonstração
-    buttons = [
-        {"id": "1", "label": "PIX", "icon": "CreditCard", "endpoint": "/api/pix", "enabled": True, "position": 1},
-        {"id": "2", "label": "Transferir", "icon": "ArrowUp", "endpoint": "/api/transfer", "enabled": True, "position": 2},
-        {"id": "3", "label": "Pagar", "icon": "Receipt", "endpoint": "/api/payment", "enabled": False, "position": 3}
+    # Buscar configurações reais dos botões (se existirem)
+    button_configs = await db.button_configs.find({}).to_list(None) if hasattr(db, 'button_configs') else []
+    
+    # Botões reais do app (sincronizar com Dashboard.js)
+    real_buttons = [
+        {"id": "adicionar", "label": "Adicionar", "icon": "Plus", "endpoint": "/api/wallet/add", "enabled": True, "position": 1, "className": "purple"},
+        {"id": "pix", "label": "PIX", "icon": "PixIcon", "endpoint": "/api/pix/transfer", "enabled": True, "position": 2, "className": "pix"},
+        {"id": "enviar", "label": "Enviar", "icon": "ArrowUp", "endpoint": "/api/transfer/send", "enabled": True, "position": 3, "className": "purple"},
+        {"id": "sacar", "label": "Sacar", "icon": "ArrowDown", "endpoint": "/api/wallet/withdraw", "enabled": True, "position": 4, "className": "purple"},
+        {"id": "recarga", "label": "Recarga", "icon": "Smartphone", "endpoint": "/api/mobile/recharge", "enabled": True, "position": 5, "className": "purple"},
+        {"id": "pagar", "label": "Pagar", "icon": "BarcodeIcon", "endpoint": "/api/payment/barcode", "enabled": True, "position": 6, "className": "purple"},
+        {"id": "historico", "label": "Histórico", "icon": "Clock", "endpoint": "/api/transactions", "enabled": True, "position": 7, "className": "purple"}
     ]
     
-    partnerships = [
-        {"id": "1", "name": "McDonald's", "logo": "https://example.com/mcdonalds.png", "cashback": "5%", "category": "Alimentação", "description": "Cashback em pedidos", "active": True},
-        {"id": "2", "name": "Amazon", "logo": "https://example.com/amazon.png", "cashback": "3%", "category": "E-commerce", "description": "Cashback em compras", "active": True}
-    ]
+    # Aplicar configurações personalizadas se existirem
+    for config in button_configs:
+        for button in real_buttons:
+            if button["id"] == config.get("buttonId", config.get("id")):
+                button.update(config)
     
-    apis = [
-        {"id": "1", "name": "PIX API", "endpoint": "https://api.pix.com/transfer", "method": "POST", "headers": "{}", "enabled": True, "buttonId": "1"},
-        {"id": "2", "name": "Payment API", "endpoint": "https://api.payment.com/pay", "method": "POST", "headers": "{}", "enabled": False, "buttonId": "3"}
-    ]
+    # Buscar parcerias configuradas
+    partnerships = await db.partnerships.find({}).to_list(None) if hasattr(db, 'partnerships') else []
+    
+    # Buscar APIs configuradas
+    apis = await db.api_configs.find({}).to_list(None) if hasattr(db, 'api_configs') else []
+    
+    # Configurações de design atuais
+    design_config = await db.design_config.find_one({}) if hasattr(db, 'design_config') else None
+    current_design = design_config or {
+        "primaryColor": "#7B4DFF",  # Roxo atual
+        "secondaryColor": "#00BFA5", # Verde água PIX
+        "accentColor": "#6366f1",   # Cor de destaque
+        "brandName": "VornexZPay",
+        "tagline": "Sua carteira digital",
+        "logo": ""
+    }
+    
+    # Estatísticas em tempo real
+    total_transactions = await db.transactions.count_documents({}) if hasattr(db, 'transactions') else 0
+    active_users_today = await db.users.count_documents({
+        "created_at": {"$gte": datetime.now(timezone.utc) - timedelta(days=1)}
+    }) if len(users) > 0 else 0
     
     return {
         "users": users,
-        "buttons": buttons,
+        "buttons": real_buttons,
         "partnerships": partnerships,
         "apis": apis,
-        "systemConfig": {}
+        "systemConfig": {
+            "totalUsers": len(users),
+            "totalTransactions": total_transactions,
+            "activeUsersToday": active_users_today,
+            "systemStatus": "online"
+        },
+        "designConfig": current_design,
+        "realTimeStats": {
+            "usersCount": len(users),
+            "buttonsActive": len([b for b in real_buttons if b["enabled"]]),
+            "apisConfigured": len(apis),
+            "partnershipsActive": len([p for p in partnerships if p.get("active", True)])
+        }
     }
 
 @api_router.post("/admin/buttons")
