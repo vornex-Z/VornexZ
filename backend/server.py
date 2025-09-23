@@ -525,7 +525,8 @@ async def get_2fa_qr(current_user: User = Depends(get_current_user)):
     return StreamingResponse(img_bytes, media_type="image/png")
 
 @api_router.post("/user/verify-2fa")
-async def verify_2fa(request: Verify2FARequest, current_user: User = Depends(get_current_user)):
+@limiter.limit("10/minute")  # Limit 2FA verification attempts
+async def verify_2fa(request: Request, request_data: Verify2FARequest, current_user: User = Depends(get_current_user)):
     user_db = await db.users.find_one({"email": current_user.email})
     
     if user_db.get("two_factor_method") == "totp":
