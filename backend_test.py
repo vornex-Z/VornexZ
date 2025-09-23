@@ -82,7 +82,7 @@ class VornexZPayAPITester:
             "POST",
             "auth/login",
             200,
-            data={"email": self.demo_user_email, "senha": self.demo_user_password}
+            data={"cpf": "123.456.789-00", "senha": self.demo_user_password}
         )
         if success and 'access_token' in response:
             self.token = response['access_token']
