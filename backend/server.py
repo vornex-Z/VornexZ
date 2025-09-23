@@ -553,7 +553,7 @@ async def verify_2fa(request: Request, request_data: Verify2FARequest, current_u
                 # Código expirado
                 await db.users.update_one(
                     {"email": current_user.email},
-                    {"$unset": {f"email_verification_codes.{request.code}": ""}}
+                    {"$unset": {f"email_verification_codes.{request_data.code}": ""}}
                 )
                 raise HTTPException(status_code=400, detail="Código expirado")
         else:
