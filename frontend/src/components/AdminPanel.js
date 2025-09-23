@@ -278,6 +278,18 @@ const AdminPanel = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={realTimeMode}
+                  onChange={(e) => setRealTimeMode(e.target.checked)}
+                  className="rounded"
+                />
+                <span className="text-sm text-gray-600">Tempo Real</span>
+                {realTimeMode && (
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                )}
+              </div>
               <button
                 onClick={loadAdminData}
                 className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
