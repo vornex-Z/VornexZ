@@ -63,6 +63,41 @@ class UserLogin(BaseModel):
     cpf: str
     senha: str
 
+class AdminLogin(BaseModel):
+    username: str
+    password: str
+
+class AdminResponse(BaseModel):
+    id: str
+    username: str
+    role: str
+
+class ButtonConfig(BaseModel):
+    id: Optional[str] = None
+    label: str
+    icon: str
+    endpoint: str
+    enabled: bool = True
+    position: int = 0
+
+class PartnershipConfig(BaseModel):
+    id: Optional[str] = None
+    name: str
+    logo: str
+    cashback: str
+    category: str
+    description: str
+    active: bool = True
+
+class ApiConfig(BaseModel):
+    id: Optional[str] = None
+    name: str
+    endpoint: str
+    method: str = 'POST'
+    headers: str = ''
+    enabled: bool = True
+    buttonId: str = ''
+
 class UserUpdateData(BaseModel):
     email: Optional[EmailStr] = None
     telefone: Optional[str] = None
