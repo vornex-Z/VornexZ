@@ -12,6 +12,7 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
 import jwt
+from jwt import PyJWTError as JWTError
 from passlib.context import CryptContext
 import re
 import pyotp
