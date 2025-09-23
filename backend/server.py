@@ -697,21 +697,111 @@ async def get_admin_dashboard(current_admin = Depends(get_current_admin)):
 
 @api_router.post("/admin/buttons")
 async def save_button_config(button: ButtonConfig, current_admin = Depends(get_current_admin)):
-    # Em produção, salvar no banco de dados
-    # Por enquanto, apenas simular sucesso
-    return {"message": "Configuração de botão salva com sucesso", "button": button}
+    # Salvar configuração no banco de dados
+    button_dict = button.dict()
+    button_dict["updated_at"] = datetime.now(timezone.utc)
+    
+    if button.id:
+        # Atualizar configuração existente
+        await db.button_configs.update_one(
+            {"id": button.id},
+            {"$set": button_dict},
+            upsert=True
+        )
+    else:
+        # Criar nova configuração
+        button_dict["id"] = str(uuid.uuid4())
+        await db.button_configs.insert_one(button_dict)
+    
+    return {"message": "Configuração de botão salva com sucesso", "button": button_dict}
 
 @api_router.post("/admin/partnerships") 
 async def save_partnership_config(partnership: PartnershipConfig, current_admin = Depends(get_current_admin)):
-    # Em produção, salvar no banco de dados
-    # Por enquanto, apenas simular sucesso
-    return {"message": "Parceria salva com sucesso", "partnership": partnership}
+    # Salvar parceria no banco de dados
+    partnership_dict = partnership.dict()
+    partnership_dict["created_at"] = datetime.now(timezone.utc)
+    
+    if partnership.id:
+        # Atualizar parceria existente
+        await db.partnerships.update_one(
+            {"id": partnership.id},
+            {"$set": partnership_dict},
+            upsert=True
+        )
+    else:
+        # Criar nova parceria
+        partnership_dict["id"] = str(uuid.uuid4())
+        await db.partnerships.insert_one(partnership_dict)
+    
+    return {"message": "Parceria salva com sucesso", "partnership": partnership_dict}
 
 @api_router.post("/admin/apis")
 async def save_api_config(api: ApiConfig, current_admin = Depends(get_current_admin)):
-    # Em produção, salvar no banco de dados
-    # Por enquanto, apenas simular sucesso
-    return {"message": "API configurada com sucesso", "api": api}
+    # Salvar API no banco de dados
+    api_dict = api.dict()
+    api_dict["created_at"] = datetime.now(timezone.utc)
+    
+    if api.id:
+        # Atualizar API existente
+        await db.api_configs.update_one(
+            {"id": api.id},
+            {"$set": api_dict},
+            upsert=True
+        )
+    else:
+        # Criar nova API
+        api_dict["id"] = str(uuid.uuid4())
+        await db.api_configs.insert_one(api_dict)
+    
+    return {"message": "API configurada com sucesso", "api": api_dict}
+
+@api_router.post("/admin/design")
+async def save_design_config(design_data: dict, current_admin = Depends(get_current_admin)):
+    # Salvar configurações de design
+    design_data["updated_at"] = datetime.now(timezone.utc)
+    
+    await db.design_config.update_one(
+        {},
+        {"$set": design_data},
+        upsert=True
+    )
+    
+    return {"message": "Configurações de design salvas com sucesso", "design": design_data}
+
+@api_router.delete("/admin/partnerships/{partnership_id}")
+async def delete_partnership(partnership_id: str, current_admin = Depends(get_current_admin)):
+    result = await db.partnerships.delete_one({"id": partnership_id})
+    if result.deleted_count:
+        return {"message": "Parceria removida com sucesso"}
+    else:
+        raise HTTPException(status_code=404, detail="Parceria não encontrada")
+
+@api_router.delete("/admin/apis/{api_id}")
+async def delete_api(api_id: str, current_admin = Depends(get_current_admin)):
+    result = await db.api_configs.delete_one({"id": api_id})
+    if result.deleted_count:
+        return {"message": "API removida com sucesso"}
+    else:
+        raise HTTPException(status_code=404, detail="API não encontrada")
+
+@api_router.get("/admin/real-time-stats")
+async def get_real_time_stats(current_admin = Depends(get_current_admin)):
+    # Estatísticas em tempo real
+    users_count = await db.users.count_documents({})
+    transactions_today = await db.transactions.count_documents({
+        "created_at": {"$gte": datetime.now(timezone.utc) - timedelta(days=1)}
+    }) if hasattr(db, 'transactions') else 0
+    
+    new_users_today = await db.users.count_documents({
+        "created_at": {"$gte": datetime.now(timezone.utc) - timedelta(days=1)}
+    })
+    
+    return {
+        "totalUsers": users_count,
+        "newUsersToday": new_users_today,
+        "transactionsToday": transactions_today,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
 
 # Initialize demo user and transactions
 @api_router.post("/init-demo")
