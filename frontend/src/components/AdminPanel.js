@@ -37,10 +37,13 @@ const AdminPanel = () => {
     partnerships: [],
     apis: [],
     users: [],
-    systemConfig: {}
+    systemConfig: {},
+    designConfig: {},
+    realTimeStats: {}
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [realTimeMode, setRealTimeMode] = useState(true);
 
   // Estados para diferentes seções
   const [buttonConfig, setButtonConfig] = useState({
@@ -70,6 +73,15 @@ const AdminPanel = () => {
     headers: '',
     enabled: true,
     buttonId: ''
+  });
+
+  const [designConfig, setDesignConfig] = useState({
+    primaryColor: '#7B4DFF',
+    secondaryColor: '#00BFA5',
+    accentColor: '#6366f1',
+    brandName: 'VornexZPay',
+    tagline: 'Sua carteira digital',
+    logo: ''
   });
 
   const showMessage = (type, text) => {
