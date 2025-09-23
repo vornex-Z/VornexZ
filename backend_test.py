@@ -198,7 +198,7 @@ class VornexZPayAPITester:
             "POST",
             "auth/login",
             401,
-            data={"email": "invalid@test.com", "senha": "wrongpassword"}
+            data={"cpf": "999.999.999-99", "senha": "wrongpassword"}
         )
         return success
 
