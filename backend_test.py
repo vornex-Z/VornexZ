@@ -165,7 +165,7 @@ class VornexZPayAPITester:
                 "POST",
                 "auth/login",
                 200,
-                data={"email": test_email, "senha": "testpass123"}
+                data={"cpf": test_cpf, "senha": "testpass123"}
             )
             
             if login_success:
