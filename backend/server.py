@@ -560,7 +560,8 @@ async def verify_2fa(request: Request, request_data: Verify2FARequest, current_u
             raise HTTPException(status_code=400, detail="Código inválido")
 
 @api_router.post("/user/send-email-2fa")
-async def send_email_2fa(current_user: User = Depends(get_current_user)):
+@limiter.limit("3/minute")  # Limit email sending
+async def send_email_2fa(request: Request, current_user: User = Depends(get_current_user)):
     user_db = await db.users.find_one({"email": current_user.email})
     
     if user_db.get("two_factor_method") != "email":
