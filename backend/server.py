@@ -471,7 +471,7 @@ async def enable_2fa(request: Request, request_data: Enable2FARequest, current_u
                 "qr_code_uri": provisioning_uri
             }
         
-        elif request.method == "email":
+        elif request_data.method == "email":
             await db.users.update_one(
                 {"email": current_user.email},
                 {"$set": {
