@@ -106,9 +106,41 @@ const AuthProvider = ({ children }) => {
 // };
 
 function App() {
-  // useEffect(() => {
-  //   initializeDemo();
-  // }, []);
+  // Inicializar proteções de segurança quando o app carrega
+  useEffect(() => {
+    const security = new SecurityProtection();
+    console.log('[VORNEXZPAY] Sistema de segurança bancária ativado');
+    
+    // Adicionar headers de segurança via meta tags
+    const addSecurityHeaders = () => {
+      const securityMeta = [
+        { name: 'referrer', content: 'no-referrer' },
+        { name: 'format-detection', content: 'telephone=no' },
+        { name: 'msapplication-TileColor', content: '#7B4DFF' },
+        { name: 'theme-color', content: '#7B4DFF' },
+        { 'http-equiv': 'X-Content-Type-Options', content: 'nosniff' },
+        { 'http-equiv': 'X-Frame-Options', content: 'DENY' },
+        { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
+        { 'http-equiv': 'Strict-Transport-Security', content: 'max-age=31536000; includeSubDomains' },
+        { 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;" }
+      ];
+
+      securityMeta.forEach(meta => {
+        const metaTag = document.createElement('meta');
+        Object.keys(meta).forEach(key => {
+          metaTag.setAttribute(key, meta[key]);
+        });
+        document.head.appendChild(metaTag);
+      });
+    };
+
+    addSecurityHeaders();
+
+    return () => {
+      // Cleanup se necessário
+      console.log('[VORNEXZPAY] Limpeza de segurança executada');
+    };
+  }, []);
 
   return (
     <div className="App">
