@@ -18,6 +18,125 @@ body {
   min-height: 100vh;
 }
 
+/* Bank-Grade Security Styles */
+.security-protected {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  pointer-events: auto !important;
+}
+
+[data-sensitive="true"] {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+[data-sensitive="balance"] {
+  font-family: 'Courier New', monospace !important;
+  letter-spacing: 2px !important;
+  position: relative !important;
+}
+
+/* Anti-screenshot protection */
+@media screen {
+  .security-protected::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: -1;
+  }
+}
+
+/* Print protection - completely hide sensitive content */
+@media print {
+  .security-protected,
+  [data-sensitive="true"],
+  [data-sensitive="balance"],
+  .balance-display,
+  .glass-card-dashboard {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  
+  body::after {
+    content: "🔒 DOCUMENTO CONFIDENCIAL - VORNEXZPAY\A\A❌ IMPRESSÃO NÃO AUTORIZADA\A\AEste documento contém informações bancárias confidenciais\Ae não pode ser impresso por motivos de segurança.\A\APara acessar suas informações, utilize o aplicativo oficial." !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: 20px !important;
+    font-weight: bold !important;
+    color: #dc2626 !important;
+    text-align: center !important;
+    white-space: pre !important;
+    z-index: 999999 !important;
+    background: white !important;
+    padding: 40px !important;
+    border: 3px solid #dc2626 !important;
+    border-radius: 10px !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Screenshot detection styles */
+@media screen and (min-device-width: 0px) {
+  .security-protected {
+    position: relative !important;
+  }
+  
+  .security-protected::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 40%, rgba(123, 77, 255, 0.01) 50%, transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+/* Security watermark */
+.security-watermark {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none !important;
+  z-index: 1000000 !important;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 100px,
+    rgba(123, 77, 255, 0.015) 100px,
+    rgba(123, 77, 255, 0.015) 200px
+  ) !important;
+}
+
+/* Disable text selection globally for sensitive areas */
+.glass-card-dashboard * {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
 /* Hide scrollbars globally */
 * {
   scrollbar-width: none; /* Firefox */
