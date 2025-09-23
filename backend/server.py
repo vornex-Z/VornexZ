@@ -542,11 +542,11 @@ async def verify_2fa(request: Request, request_data: Verify2FARequest, current_u
         
         # Verificar se o código existe e não expirou
         if request_data.code in codes:
-            if codes[request.code] > current_time:
+            if codes[request_data.code] > current_time:
                 # Remover código usado
                 await db.users.update_one(
                     {"email": current_user.email},
-                    {"$unset": {f"email_verification_codes.{request.code}": ""}}
+                    {"$unset": {f"email_verification_codes.{request_data.code}": ""}}
                 )
                 return {"message": "Código verificado com sucesso"}
             else:
