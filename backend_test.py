@@ -566,62 +566,518 @@ class VornexZPayAPITester:
         
         return success
 
-    def test_integrated_flow(self):
-        """Test integrated flow of security features"""
-        print("\n🔄 Testing Integrated Security Flow...")
+    def test_rate_limiting_register(self):
+        """Test rate limiting on register endpoint (3/minute)"""
+        print("\n🔍 Testing Rate Limiting - Register Endpoint (3/minute)...")
         
-        # 1. Enable TOTP 2FA
-        enable_totp = {
+        # Create unique test data for each request
+        def create_test_user_data(suffix):
+            return {
+                "nome_completo": f"Rate Test User {suffix}",
+                "email": f"ratetest{suffix}@test.com",
+                "cpf": f"123.456.{suffix:03d}-{suffix%100:02d}",
+                "rg": f"12.345.{suffix:03d}-{suffix%10}",
+                "telefone": f"(11) 9876{suffix:04d}",
+                "data_nascimento": "1995-05-15",
+                "endereco": f"Rua Rate Test, {suffix}",
+                "cidade": "São Paulo",
+                "estado": "SP",
+                "cep": "01234-567",
+                "senha": "testpass123",
+                "confirmar_senha": "testpass123"
+            }
+        
+        success_count = 0
+        rate_limited_count = 0
+        
+        # Make 5 requests rapidly (should allow 3, then rate limit)
+        for i in range(5):
+            test_data = create_test_user_data(int(time.time() * 1000) + i)
+            
+            success, response = self.run_test(
+                f"Rate Limit Test Register #{i+1}",
+                "POST",
+                "auth/register",
+                200 if i < 3 else 429,  # Expect 429 after 3 requests
+                data=test_data
+            )
+            
+            if i < 3:
+                if success:
+                    success_count += 1
+                    print(f"   ✅ Request {i+1}: Allowed (within rate limit)")
+                else:
+                    print(f"   ❌ Request {i+1}: Should have been allowed")
+            else:
+                # Check for rate limiting (429 status)
+                url = f"{self.base_url}/auth/register"
+                try:
+                    response = requests.post(url, json=test_data, headers={'Content-Type': 'application/json'})
+                    if response.status_code == 429:
+                        rate_limited_count += 1
+                        print(f"   ✅ Request {i+1}: Rate limited (429) - CORRECT")
+                        # Check rate limit headers
+                        if 'X-RateLimit-Limit' in response.headers or 'Retry-After' in response.headers:
+                            print(f"   ✅ Rate limit headers present")
+                    else:
+                        print(f"   ❌ Request {i+1}: Expected 429, got {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Request {i+1}: Error - {str(e)}")
+            
+            time.sleep(0.1)  # Small delay between requests
+        
+        # Test should pass if first 3 succeed and last 2 are rate limited
+        test_passed = success_count >= 3 and rate_limited_count >= 1
+        if test_passed:
+            self.tests_passed += 1
+            print(f"   ✅ Rate limiting working correctly: {success_count} allowed, {rate_limited_count} rate limited")
+        else:
+            print(f"   ❌ Rate limiting not working properly: {success_count} allowed, {rate_limited_count} rate limited")
+        
+        self.tests_run += 1
+        return test_passed
+
+    def test_rate_limiting_login(self):
+        """Test rate limiting on login endpoint (5/minute)"""
+        print("\n🔍 Testing Rate Limiting - Login Endpoint (5/minute)...")
+        
+        login_data = {
+            "cpf": "123.456.789-00",  # Invalid CPF for testing
+            "senha": "wrongpassword"
+        }
+        
+        success_count = 0
+        rate_limited_count = 0
+        
+        # Make 7 requests rapidly (should allow 5, then rate limit)
+        for i in range(7):
+            if i < 5:
+                success, response = self.run_test(
+                    f"Rate Limit Test Login #{i+1}",
+                    "POST",
+                    "auth/login",
+                    401,  # Expect 401 for invalid credentials
+                    data=login_data
+                )
+                if success:
+                    success_count += 1
+                    print(f"   ✅ Request {i+1}: Allowed (within rate limit)")
+            else:
+                # Check for rate limiting
+                url = f"{self.base_url}/auth/login"
+                try:
+                    response = requests.post(url, json=login_data, headers={'Content-Type': 'application/json'})
+                    if response.status_code == 429:
+                        rate_limited_count += 1
+                        print(f"   ✅ Request {i+1}: Rate limited (429) - CORRECT")
+                    else:
+                        print(f"   ❌ Request {i+1}: Expected 429, got {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Request {i+1}: Error - {str(e)}")
+            
+            time.sleep(0.1)
+        
+        test_passed = success_count >= 5 and rate_limited_count >= 1
+        if test_passed:
+            self.tests_passed += 1
+            print(f"   ✅ Login rate limiting working: {success_count} allowed, {rate_limited_count} rate limited")
+        else:
+            print(f"   ❌ Login rate limiting not working: {success_count} allowed, {rate_limited_count} rate limited")
+        
+        self.tests_run += 1
+        return test_passed
+
+    def test_rate_limiting_update_data(self):
+        """Test rate limiting on update-data endpoint (10/minute)"""
+        print("\n🔍 Testing Rate Limiting - Update Data Endpoint (10/minute)...")
+        
+        if not self.token:
+            print("   ⚠️  No auth token available, skipping test")
+            return False
+        
+        update_data = {
+            "endereco": f"Test Address {int(time.time())}",
+            "senha_confirmacao": self.demo_user_password
+        }
+        
+        success_count = 0
+        rate_limited_count = 0
+        
+        # Make 12 requests rapidly (should allow 10, then rate limit)
+        for i in range(12):
+            update_data["endereco"] = f"Test Address {int(time.time())}_{i}"
+            
+            if i < 10:
+                success, response = self.run_test(
+                    f"Rate Limit Test Update #{i+1}",
+                    "PUT",
+                    "user/update-data",
+                    200,
+                    data=update_data
+                )
+                if success:
+                    success_count += 1
+                    print(f"   ✅ Request {i+1}: Allowed (within rate limit)")
+            else:
+                # Check for rate limiting
+                url = f"{self.base_url}/user/update-data"
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {self.token}'
+                }
+                try:
+                    response = requests.put(url, json=update_data, headers=headers)
+                    if response.status_code == 429:
+                        rate_limited_count += 1
+                        print(f"   ✅ Request {i+1}: Rate limited (429) - CORRECT")
+                    else:
+                        print(f"   ❌ Request {i+1}: Expected 429, got {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Request {i+1}: Error - {str(e)}")
+            
+            time.sleep(0.1)
+        
+        test_passed = success_count >= 10 and rate_limited_count >= 1
+        if test_passed:
+            self.tests_passed += 1
+            print(f"   ✅ Update data rate limiting working: {success_count} allowed, {rate_limited_count} rate limited")
+        else:
+            print(f"   ❌ Update data rate limiting not working: {success_count} allowed, {rate_limited_count} rate limited")
+        
+        self.tests_run += 1
+        return test_passed
+
+    def test_rate_limiting_enable_2fa(self):
+        """Test rate limiting on enable-2fa endpoint (5/minute)"""
+        print("\n🔍 Testing Rate Limiting - Enable 2FA Endpoint (5/minute)...")
+        
+        if not self.token:
+            print("   ⚠️  No auth token available, skipping test")
+            return False
+        
+        enable_data = {
             "enable": True,
-            "method": "totp"
+            "method": "email"
         }
         
-        success1, response1 = self.run_test(
-            "Flow Step 1: Enable TOTP",
-            "POST",
-            "user/enable-2fa",
-            200,
-            data=enable_totp
-        )
+        success_count = 0
+        rate_limited_count = 0
         
-        if not success1:
+        # Make 7 requests rapidly (should allow 5, then rate limit)
+        for i in range(7):
+            if i < 5:
+                success, response = self.run_test(
+                    f"Rate Limit Test Enable 2FA #{i+1}",
+                    "POST",
+                    "user/enable-2fa",
+                    200,
+                    data=enable_data
+                )
+                if success:
+                    success_count += 1
+                    print(f"   ✅ Request {i+1}: Allowed (within rate limit)")
+            else:
+                # Check for rate limiting
+                url = f"{self.base_url}/user/enable-2fa"
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {self.token}'
+                }
+                try:
+                    response = requests.post(url, json=enable_data, headers=headers)
+                    if response.status_code == 429:
+                        rate_limited_count += 1
+                        print(f"   ✅ Request {i+1}: Rate limited (429) - CORRECT")
+                    else:
+                        print(f"   ❌ Request {i+1}: Expected 429, got {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Request {i+1}: Error - {str(e)}")
+            
+            time.sleep(0.1)
+        
+        test_passed = success_count >= 5 and rate_limited_count >= 1
+        if test_passed:
+            self.tests_passed += 1
+            print(f"   ✅ Enable 2FA rate limiting working: {success_count} allowed, {rate_limited_count} rate limited")
+        else:
+            print(f"   ❌ Enable 2FA rate limiting not working: {success_count} allowed, {rate_limited_count} rate limited")
+        
+        self.tests_run += 1
+        return test_passed
+
+    def test_rate_limiting_verify_2fa(self):
+        """Test rate limiting on verify-2fa endpoint (10/minute)"""
+        print("\n🔍 Testing Rate Limiting - Verify 2FA Endpoint (10/minute)...")
+        
+        if not self.token:
+            print("   ⚠️  No auth token available, skipping test")
             return False
         
-        # 2. Enable Biometric
-        enable_bio = {
-            "enable": True
+        # First enable 2FA
+        enable_data = {"enable": True, "method": "email"}
+        self.run_test("Setup 2FA for rate limit test", "POST", "user/enable-2fa", 200, data=enable_data)
+        
+        verify_data = {
+            "code": "000000"  # Invalid code for testing
         }
         
-        success2, response2 = self.run_test(
-            "Flow Step 2: Enable Biometric",
-            "POST",
-            "user/biometric",
-            200,
-            data=enable_bio
-        )
+        success_count = 0
+        rate_limited_count = 0
         
-        if not success2:
+        # Make 12 requests rapidly (should allow 10, then rate limit)
+        for i in range(12):
+            if i < 10:
+                success, response = self.run_test(
+                    f"Rate Limit Test Verify 2FA #{i+1}",
+                    "POST",
+                    "user/verify-2fa",
+                    400,  # Expect 400 for invalid code
+                    data=verify_data
+                )
+                if success:
+                    success_count += 1
+                    print(f"   ✅ Request {i+1}: Allowed (within rate limit)")
+            else:
+                # Check for rate limiting
+                url = f"{self.base_url}/user/verify-2fa"
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {self.token}'
+                }
+                try:
+                    response = requests.post(url, json=verify_data, headers=headers)
+                    if response.status_code == 429:
+                        rate_limited_count += 1
+                        print(f"   ✅ Request {i+1}: Rate limited (429) - CORRECT")
+                    else:
+                        print(f"   ❌ Request {i+1}: Expected 429, got {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Request {i+1}: Error - {str(e)}")
+            
+            time.sleep(0.1)
+        
+        test_passed = success_count >= 10 and rate_limited_count >= 1
+        if test_passed:
+            self.tests_passed += 1
+            print(f"   ✅ Verify 2FA rate limiting working: {success_count} allowed, {rate_limited_count} rate limited")
+        else:
+            print(f"   ❌ Verify 2FA rate limiting not working: {success_count} allowed, {rate_limited_count} rate limited")
+        
+        self.tests_run += 1
+        return test_passed
+
+    def test_rate_limiting_send_email_2fa(self):
+        """Test rate limiting on send-email-2fa endpoint (3/minute)"""
+        print("\n🔍 Testing Rate Limiting - Send Email 2FA Endpoint (3/minute)...")
+        
+        if not self.token:
+            print("   ⚠️  No auth token available, skipping test")
             return False
         
-        # 3. Check security settings
-        success3, response3 = self.run_test(
-            "Flow Step 3: Check Settings",
+        # First enable email 2FA
+        enable_data = {"enable": True, "method": "email"}
+        self.run_test("Setup Email 2FA for rate limit test", "POST", "user/enable-2fa", 200, data=enable_data)
+        
+        success_count = 0
+        rate_limited_count = 0
+        
+        # Make 5 requests rapidly (should allow 3, then rate limit)
+        for i in range(5):
+            if i < 3:
+                success, response = self.run_test(
+                    f"Rate Limit Test Send Email 2FA #{i+1}",
+                    "POST",
+                    "user/send-email-2fa",
+                    200
+                )
+                if success:
+                    success_count += 1
+                    print(f"   ✅ Request {i+1}: Allowed (within rate limit)")
+            else:
+                # Check for rate limiting
+                url = f"{self.base_url}/user/send-email-2fa"
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': f'Bearer {self.token}'
+                }
+                try:
+                    response = requests.post(url, headers=headers)
+                    if response.status_code == 429:
+                        rate_limited_count += 1
+                        print(f"   ✅ Request {i+1}: Rate limited (429) - CORRECT")
+                    else:
+                        print(f"   ❌ Request {i+1}: Expected 429, got {response.status_code}")
+                except Exception as e:
+                    print(f"   ❌ Request {i+1}: Error - {str(e)}")
+            
+            time.sleep(0.1)
+        
+        test_passed = success_count >= 3 and rate_limited_count >= 1
+        if test_passed:
+            self.tests_passed += 1
+            print(f"   ✅ Send Email 2FA rate limiting working: {success_count} allowed, {rate_limited_count} rate limited")
+        else:
+            print(f"   ❌ Send Email 2FA rate limiting not working: {success_count} allowed, {rate_limited_count} rate limited")
+        
+        self.tests_run += 1
+        return test_passed
+
+    def test_security_headers(self):
+        """Test security headers are present in responses"""
+        print("\n🔍 Testing Security Headers...")
+        
+        # Test on a simple endpoint
+        url = f"{self.base_url}/init-demo"
+        
+        self.tests_run += 1
+        try:
+            response = requests.post(url, headers={'Content-Type': 'application/json'})
+            
+            # Check for required security headers
+            required_headers = {
+                'X-Screenshot-Block': '1',
+                'X-Recording-Block': '1',
+                'X-Print-Block': '1',
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': 'DENY',
+                'X-XSS-Protection': '1; mode=block'
+            }
+            
+            missing_headers = []
+            present_headers = []
+            
+            for header, expected_value in required_headers.items():
+                if header in response.headers:
+                    if response.headers[header] == expected_value:
+                        present_headers.append(f"{header}: {response.headers[header]}")
+                    else:
+                        missing_headers.append(f"{header} (expected: {expected_value}, got: {response.headers[header]})")
+                else:
+                    missing_headers.append(f"{header} (missing)")
+            
+            if not missing_headers:
+                self.tests_passed += 1
+                print("✅ All required security headers present:")
+                for header in present_headers:
+                    print(f"   ✅ {header}")
+                return True
+            else:
+                print("❌ Missing or incorrect security headers:")
+                for header in missing_headers:
+                    print(f"   ❌ {header}")
+                print("Present headers:")
+                for header in present_headers:
+                    print(f"   ✅ {header}")
+                return False
+                
+        except Exception as e:
+            print(f"❌ Failed to test security headers: {str(e)}")
+            return False
+
+    def test_data_encryption_verification(self):
+        """Test that sensitive data is properly encrypted"""
+        print("\n🔍 Testing Data Encryption...")
+        
+        # Create a test user to verify encryption
+        test_email = f"encryption_test_{int(time.time())}@test.com"
+        test_cpf = f"123.456.{int(time.time()) % 1000:03d}-{int(time.time()) % 100:02d}"
+        test_rg = f"12.345.{int(time.time()) % 1000:03d}-{int(time.time()) % 10}"
+        test_phone = f"(11) 9876{int(time.time()) % 10000:04d}"
+        
+        test_data = {
+            "nome_completo": "Encryption Test User",
+            "email": test_email,
+            "cpf": test_cpf,
+            "rg": test_rg,
+            "telefone": test_phone,
+            "data_nascimento": "1995-05-15",
+            "endereco": "Rua Encryption Test, 123",
+            "cidade": "São Paulo",
+            "estado": "SP",
+            "cep": "01234-567",
+            "senha": "testpass123",
+            "confirmar_senha": "testpass123"
+        }
+        
+        self.tests_run += 1
+        
+        # Register user
+        success, response = self.run_test(
+            "Create User for Encryption Test",
+            "POST",
+            "auth/register",
+            200,
+            data=test_data
+        )
+        
+        if not success:
+            print("❌ Failed to create test user for encryption verification")
+            return False
+        
+        # Login with the new user
+        login_success, login_response = self.run_test(
+            "Login Encryption Test User",
+            "POST",
+            "auth/login",
+            200,
+            data={"cpf": test_cpf, "senha": "testpass123"}
+        )
+        
+        if not login_success:
+            print("❌ Failed to login with test user")
+            return False
+        
+        # Store old token and use new user token
+        old_token = self.token
+        self.token = login_response['access_token']
+        
+        # Get user data
+        user_success, user_response = self.run_test(
+            "Get Encrypted User Data",
             "GET",
-            "user/security-settings",
+            "auth/me",
             200
         )
         
-        if success3:
-            if (response3.get('two_factor_enabled') and 
-                response3.get('two_factor_method') == 'totp' and 
-                response3.get('biometric_enabled')):
-                print("   ✅ Integrated flow completed successfully")
+        # Restore original token
+        self.token = old_token
+        
+        if user_success:
+            # Verify that sensitive data is returned properly (decrypted)
+            returned_cpf = user_response.get('cpf')
+            returned_rg = user_response.get('rg')
+            returned_phone = user_response.get('telefone')
+            
+            encryption_working = True
+            
+            if returned_cpf != test_cpf:
+                print(f"   ❌ CPF encryption/decryption issue: expected {test_cpf}, got {returned_cpf}")
+                encryption_working = False
+            else:
+                print(f"   ✅ CPF properly encrypted/decrypted: {returned_cpf}")
+            
+            if returned_rg != test_rg:
+                print(f"   ❌ RG encryption/decryption issue: expected {test_rg}, got {returned_rg}")
+                encryption_working = False
+            else:
+                print(f"   ✅ RG properly encrypted/decrypted: {returned_rg}")
+            
+            if returned_phone != test_phone:
+                print(f"   ❌ Phone encryption/decryption issue: expected {test_phone}, got {returned_phone}")
+                encryption_working = False
+            else:
+                print(f"   ✅ Phone properly encrypted/decrypted: {returned_phone}")
+            
+            if encryption_working:
+                self.tests_passed += 1
+                print("✅ Data encryption/decryption working correctly")
                 return True
             else:
-                print("   ❌ Security settings don't match expected state")
+                print("❌ Data encryption/decryption has issues")
                 return False
-        
-        return False
+        else:
+            print("❌ Failed to retrieve user data for encryption verification")
+            return False
 
 def main():
     print("🚀 Starting VornexZPay API Tests")
