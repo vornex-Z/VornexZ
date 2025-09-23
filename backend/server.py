@@ -348,8 +348,14 @@ async def register(request: Request, user_data: UserRegister):
 @api_router.post("/auth/login", response_model=Token)
 @limiter.limit("5/minute")  # Limit login attempts
 async def login(request: Request, user_data: UserLogin):
-    # Login apenas com CPF
+    # Login com CPF - precisa buscar por CPF criptografado
+    # Primeiro tenta buscar por CPF não criptografado (demo user)
     user = await db.users.find_one({"cpf": user_data.cpf})
+    
+    # Se não encontrar, tenta buscar por CPF criptografado
+    if not user:
+        encrypted_cpf = encrypt_sensitive_data(user_data.cpf)
+        user = await db.users.find_one({"cpf": encrypted_cpf})
     
     if not user or not verify_password(user_data.senha, user["senha"]):
         raise HTTPException(
