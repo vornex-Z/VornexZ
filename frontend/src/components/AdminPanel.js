@@ -880,19 +880,62 @@ const AdminPanel = () => {
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">Cores do Tema</h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Cor Primária</label>
-                      <input type="color" className="w-full h-12 border border-gray-300 rounded-md" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Cor Primária (Botões)</label>
+                      <div className="flex items-center space-x-3">
+                        <input 
+                          type="color" 
+                          value={designConfig.primaryColor}
+                          onChange={(e) => setDesignConfig({...designConfig, primaryColor: e.target.value})}
+                          className="w-12 h-12 border border-gray-300 rounded-md" 
+                        />
+                        <input 
+                          type="text" 
+                          value={designConfig.primaryColor}
+                          onChange={(e) => setDesignConfig({...designConfig, primaryColor: e.target.value})}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Cor Secundária</label>
-                      <input type="color" className="w-full h-12 border border-gray-300 rounded-md" />
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Cor PIX (Verde Água)</label>
+                      <div className="flex items-center space-x-3">
+                        <input 
+                          type="color" 
+                          value={designConfig.secondaryColor}
+                          onChange={(e) => setDesignConfig({...designConfig, secondaryColor: e.target.value})}
+                          className="w-12 h-12 border border-gray-300 rounded-md" 
+                        />
+                        <input 
+                          type="text" 
+                          value={designConfig.secondaryColor}
+                          onChange={(e) => setDesignConfig({...designConfig, secondaryColor: e.target.value})}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Cor de Destaque</label>
-                      <input type="color" className="w-full h-12 border border-gray-300 rounded-md" />
+                      <div className="flex items-center space-x-3">
+                        <input 
+                          type="color" 
+                          value={designConfig.accentColor}
+                          onChange={(e) => setDesignConfig({...designConfig, accentColor: e.target.value})}
+                          className="w-12 h-12 border border-gray-300 rounded-md" 
+                        />
+                        <input 
+                          type="text" 
+                          value={designConfig.accentColor}
+                          onChange={(e) => setDesignConfig({...designConfig, accentColor: e.target.value})}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                      </div>
                     </div>
-                    <button className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
-                      Aplicar Cores
+                    <button 
+                      onClick={saveDesignConfig}
+                      disabled={loading}
+                      className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
+                    >
+                      {loading ? 'Salvando...' : 'Aplicar Cores'}
                     </button>
                   </div>
                 </div>
@@ -904,6 +947,8 @@ const AdminPanel = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">URL do Logo</label>
                       <input 
                         type="text" 
+                        value={designConfig.logo}
+                        onChange={(e) => setDesignConfig({...designConfig, logo: e.target.value})}
                         placeholder="https://exemplo.com/logo.png"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
@@ -912,7 +957,8 @@ const AdminPanel = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">Nome da Empresa</label>
                       <input 
                         type="text" 
-                        defaultValue="VornexZPay"
+                        value={designConfig.brandName}
+                        onChange={(e) => setDesignConfig({...designConfig, brandName: e.target.value})}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
@@ -920,13 +966,53 @@ const AdminPanel = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">Tagline</label>
                       <input 
                         type="text" 
+                        value={designConfig.tagline}
+                        onChange={(e) => setDesignConfig({...designConfig, tagline: e.target.value})}
                         placeholder="Sua carteira digital"
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
                     </div>
-                    <button className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors">
-                      Salvar Branding
+                    <button 
+                      onClick={saveDesignConfig}
+                      disabled={loading}
+                      className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50"
+                    >
+                      {loading ? 'Salvando...' : 'Salvar Branding'}
                     </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Preview das cores */}
+              <div className="bg-white p-6 rounded-lg shadow-sm border">
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">Preview das Cores</h3>
+                <div className="flex space-x-4">
+                  <div className="text-center">
+                    <div 
+                      className="w-16 h-16 rounded-lg mb-2 shadow-md flex items-center justify-center text-white font-bold"
+                      style={{ backgroundColor: designConfig.primaryColor }}
+                    >
+                      Botão
+                    </div>
+                    <p className="text-sm">Botões Normais</p>
+                  </div>
+                  <div className="text-center">
+                    <div 
+                      className="w-16 h-16 rounded-lg mb-2 shadow-md flex items-center justify-center text-white font-bold"
+                      style={{ backgroundColor: designConfig.secondaryColor }}
+                    >
+                      PIX
+                    </div>
+                    <p className="text-sm">Botão PIX</p>
+                  </div>
+                  <div className="text-center">
+                    <div 
+                      className="w-16 h-16 rounded-lg mb-2 shadow-md flex items-center justify-center text-white font-bold"
+                      style={{ backgroundColor: designConfig.accentColor }}
+                    >
+                      Link
+                    </div>
+                    <p className="text-sm">Destaques</p>
                   </div>
                 </div>
               </div>
