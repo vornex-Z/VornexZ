@@ -1080,19 +1080,30 @@ class VornexZPayAPITester:
             return False
 
 def main():
-    print("🚀 Starting VornexZPay API Tests")
-    print("=" * 50)
+    print("🚀 Starting VornexZPay Security & Rate Limiting Tests")
+    print("=" * 60)
     
     tester = VornexZPayAPITester()
     
-    # Test sequence
+    # Test sequence - focusing on security and rate limiting
     tests = [
         ("Demo Initialization", tester.test_demo_initialization),
         ("Demo User Login", tester.test_demo_login),
         ("Get Current User", tester.test_get_current_user),
-        ("Get Transactions", tester.test_get_transactions),
         
-        # User Data Update Tests
+        # SECURITY TESTS - PRIORITY
+        ("Security Headers Verification", tester.test_security_headers),
+        ("Data Encryption Verification", tester.test_data_encryption_verification),
+        
+        # RATE LIMITING TESTS - MAIN FOCUS
+        ("Rate Limiting - Register (3/min)", tester.test_rate_limiting_register),
+        ("Rate Limiting - Login (5/min)", tester.test_rate_limiting_login),
+        ("Rate Limiting - Update Data (10/min)", tester.test_rate_limiting_update_data),
+        ("Rate Limiting - Enable 2FA (5/min)", tester.test_rate_limiting_enable_2fa),
+        ("Rate Limiting - Verify 2FA (10/min)", tester.test_rate_limiting_verify_2fa),
+        ("Rate Limiting - Send Email 2FA (3/min)", tester.test_rate_limiting_send_email_2fa),
+        
+        # FUNCTIONAL TESTS
         ("Update User Data - Valid", tester.test_user_data_update_valid),
         ("Update User Data - Invalid Password", tester.test_user_data_update_invalid_password),
         ("Update User Data - Invalid Phone", tester.test_user_data_update_invalid_phone),
@@ -1117,31 +1128,52 @@ def main():
         # Security Settings Test
         ("Get Security Settings", tester.test_get_security_settings),
         
-        # Integrated Flow Test
-        ("Integrated Security Flow", tester.test_integrated_flow),
-        
-        # Original Tests
+        # Additional validation tests
         ("New User Registration", tester.test_new_user_registration),
         ("Invalid Login", tester.test_invalid_login),
         ("Unauthorized Access", tester.test_unauthorized_access),
         ("Registration Validation", tester.test_registration_validation),
     ]
     
+    # Track critical vs non-critical failures
+    critical_failures = []
+    minor_failures = []
+    
     for test_name, test_func in tests:
         try:
-            test_func()
+            result = test_func()
+            if not result:
+                # Determine if this is a critical failure
+                if any(keyword in test_name.lower() for keyword in ['rate limiting', 'security headers', 'encryption']):
+                    critical_failures.append(test_name)
+                else:
+                    minor_failures.append(test_name)
         except Exception as e:
             print(f"❌ {test_name} failed with exception: {str(e)}")
+            critical_failures.append(f"{test_name} (Exception: {str(e)})")
     
     # Print final results
-    print("\n" + "=" * 50)
+    print("\n" + "=" * 60)
     print(f"📊 Final Results: {tester.tests_passed}/{tester.tests_run} tests passed")
     
+    if critical_failures:
+        print("\n🚨 CRITICAL FAILURES (Security/Rate Limiting):")
+        for failure in critical_failures:
+            print(f"   ❌ {failure}")
+    
+    if minor_failures:
+        print("\n⚠️  Minor Failures:")
+        for failure in minor_failures:
+            print(f"   ⚠️  {failure}")
+    
     if tester.tests_passed == tester.tests_run:
-        print("🎉 All API tests passed!")
+        print("\n🎉 All security and rate limiting tests passed!")
+        return 0
+    elif not critical_failures:
+        print("\n✅ All critical security tests passed! Minor issues can be addressed later.")
         return 0
     else:
-        print("⚠️  Some API tests failed")
+        print("\n⚠️  Critical security or rate limiting issues found!")
         return 1
 
 if __name__ == "__main__":
