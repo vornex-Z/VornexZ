@@ -20,7 +20,8 @@ import {
   Settings,
   DollarSign,
   Check,
-  ArrowLeft
+  ArrowLeft,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '../App';
 import axios from 'axios';
