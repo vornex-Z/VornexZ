@@ -388,7 +388,8 @@ async def get_transactions(current_user: User = Depends(get_current_user)):
     return [Transaction(**transaction) for transaction in transactions]
 
 @api_router.put("/user/update-data")
-async def update_user_data(update_data: UserUpdateData, current_user: User = Depends(get_current_user)):
+@limiter.limit("10/minute")  # Limit profile updates
+async def update_user_data(request: Request, update_data: UserUpdateData, current_user: User = Depends(get_current_user)):
     # Verificar senha antes de permitir alterações
     user_db = await db.users.find_one({"email": current_user.email})
     if not verify_password(update_data.senha_confirmacao, user_db["senha"]):
