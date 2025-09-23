@@ -671,6 +671,72 @@ app.add_middleware(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# Security middleware
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    
+    # Add security headers
+    for header, value in SECURITY_HEADERS.items():
+        response.headers[header] = value
+    
+    # Add anti-screenshot and anti-recording headers
+    response.headers["X-Screenshot-Block"] = "1"
+    response.headers["X-Recording-Block"] = "1"
+    response.headers["X-Print-Block"] = "1"
+    
+    return response
+
+# Encryption/Decryption helpers
+def encrypt_sensitive_data(data: str) -> str:
+    """Encrypt sensitive data before storing"""
+    try:
+        encrypted_data = cipher_suite.encrypt(data.encode())
+        return base64.urlsafe_b64encode(encrypted_data).decode()
+    except Exception:
+        return data  # Return original if encryption fails
+
+def decrypt_sensitive_data(encrypted_data: str) -> str:
+    """Decrypt sensitive data after retrieving"""
+    try:
+        decoded_data = base64.urlsafe_b64decode(encrypted_data.encode())
+        return cipher_suite.decrypt(decoded_data).decode()
+    except Exception:
+        return encrypted_data  # Return original if decryption fails
+
+# Enhanced password hashing
+def hash_password_secure(password: str) -> str:
+    """Secure password hashing with bcrypt"""
+    salt = bcrypt.gensalt(rounds=12)
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+
+def verify_password_secure(password: str, hashed: str) -> bool:
+    """Verify password with secure bcrypt"""
+    try:
+        return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+    except Exception:
+        return False
+
+# Session security
+def generate_session_token() -> str:
+    """Generate secure session token"""
+    return secrets.token_urlsafe(32)
+
+# Input sanitization
+def sanitize_input(data: str) -> str:
+    """Sanitize user input to prevent injection attacks"""
+    if not isinstance(data, str):
+        return str(data)
+    
+    # Remove potentially dangerous characters
+    dangerous_chars = ['<', '>', '"', "'", '&', 'script', 'javascript:', 'onload=', 'onerror=']
+    sanitized = data
+    
+    for char in dangerous_chars:
+        sanitized = sanitized.replace(char, '')
+    
+    return sanitized.strip()
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
