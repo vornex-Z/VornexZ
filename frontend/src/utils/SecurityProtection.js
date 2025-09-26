@@ -240,12 +240,6 @@ class SecurityProtection {
   // Sistema de monitoramento contínuo
   monitorSecurity() {
     setInterval(() => {
-      // Verifica se elementos de segurança ainda estão presentes
-      const watermark = document.querySelector('.security-watermark');
-      if (!watermark) {
-        this.addWatermark();
-      }
-
       // Verifica manipulação do DOM
       if (!document.body.classList.contains('security-protected')) {
         document.body.classList.add('security-protected');
@@ -260,14 +254,12 @@ class SecurityProtection {
       }
     }, 3000);
 
-    // Monitora tentativas de manipulação
+    // Monitora tentativas de manipulação do DOM
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && 
-            mutation.target.classList && 
-            mutation.target.classList.contains('security-watermark')) {
-          console.warn('[SECURITY] Tentativa de manipulação da marca d\'água');
-          this.addWatermark();
+        if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+          // Monitora remoções suspeitas do DOM
+          console.warn('[SECURITY] Alterações no DOM detectadas');
         }
       });
     });
