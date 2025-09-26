@@ -121,7 +121,7 @@ function App() {
         { 'http-equiv': 'X-Frame-Options', content: 'DENY' },
         { 'http-equiv': 'X-XSS-Protection', content: '1; mode=block' },
         { 'http-equiv': 'Strict-Transport-Security', content: 'max-age=31536000; includeSubDomains' },
-        { 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;" }
+        { 'http-equiv': 'Content-Security-Policy', content: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https: ws: wss:; frame-ancestors 'none';" }
       ];
 
       securityMeta.forEach(meta => {
