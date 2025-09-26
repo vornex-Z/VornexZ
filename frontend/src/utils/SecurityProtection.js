@@ -151,25 +151,31 @@ class SecurityProtection {
       }
     });
 
-    // Detecta se DevTools está aberto
+    // Detecta se DevTools está aberto (modo menos intrusivo para desenvolvimento)
     let devtools = {
       open: false,
       orientation: null
     };
 
-    const threshold = 160;
-    setInterval(() => {
-      if (window.outerHeight - window.innerHeight > threshold || 
-          window.outerWidth - window.innerWidth > threshold) {
-        if (!devtools.open) {
-          devtools.open = true;
-          console.warn('[SECURITY] DevTools detectado');
-          this.showSecurityAlert('Ferramentas de desenvolvedor detectadas');
+    // Só ativa detecção em produção
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      const threshold = 160;
+      setInterval(() => {
+        if (window.outerHeight - window.innerHeight > threshold || 
+            window.outerWidth - window.innerWidth > threshold) {
+          if (!devtools.open) {
+            devtools.open = true;
+            console.warn('[SECURITY] DevTools detectado');
+            // Só mostra alerta em produção
+            this.showSecurityAlert('Ferramentas de desenvolvedor detectadas');
+          }
+        } else {
+          devtools.open = false;
         }
-      } else {
-        devtools.open = false;
-      }
-    }, 500);
+      }, 500);
+    }
 
     // Detecta debug via console (modo menos agressivo)
     const originalConsole = console.log;
