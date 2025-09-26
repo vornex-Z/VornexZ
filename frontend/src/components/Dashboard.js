@@ -542,7 +542,7 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+    <div className="min-h-screen" style={{background: 'transparent'}}>
       {/* Header */}
       <div className="flex justify-between items-center p-6 pb-4">
         <h1 className="text-2xl font-bold text-white">
