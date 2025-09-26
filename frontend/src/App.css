@@ -194,9 +194,9 @@ html, body {
   box-shadow: 0 0 0 3px rgba(16, 31, 71, 0.3);
 }
 
-/* Button styles - Navy theme */
+/* Button styles - Voltando ao roxo original */
 .vornex-button {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
   border: none;
   border-radius: 12px;
   padding: 16px 24px;
@@ -206,13 +206,12 @@ html, body {
   cursor: pointer;
   transition: all 0.3s ease;
   width: 100%;
-  box-shadow: 0 4px 15px 0 rgba(30, 58, 138, 0.4);
+  box-shadow: 0 4px 15px 0 rgba(139, 92, 246, 0.3);
 }
 
 .vornex-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px 0 rgba(30, 58, 138, 0.5);
-  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+  box-shadow: 0 8px 25px 0 rgba(139, 92, 246, 0.4);
 }
 
 .vornex-button:active {
