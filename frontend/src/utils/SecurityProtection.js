@@ -136,20 +136,32 @@ class SecurityProtection {
     document.head.appendChild(printStyle);
   }
 
-  // Previne ferramentas de desenvolvedor
+  // Previne ferramentas de desenvolvedor (menos agressivo em desenvolvimento)
   preventDevTools() {
-    // Bloqueia F12
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'F12' || 
-          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-          (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-          (e.ctrlKey && e.key === 'U')) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.showSecurityAlert('Ferramentas de desenvolvedor bloqueadas');
-        return false;
-      }
-    });
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    // Só bloqueia teclas em produção
+    if (isProduction) {
+      // Bloqueia F12
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+            (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+            (e.ctrlKey && e.key === 'U')) {
+          e.preventDefault();
+          e.stopPropagation();
+          this.showSecurityAlert('Ferramentas de desenvolvedor bloqueadas');
+          return false;
+        }
+      });
+    } else {
+      // Em desenvolvimento, apenas loga
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12') {
+          console.log('[DEV MODE] F12 detectado - DevTools liberado para desenvolvimento');
+        }
+      });
+    }
 
     // Detecta se DevTools está aberto (modo menos intrusivo para desenvolvimento)
     let devtools = {
