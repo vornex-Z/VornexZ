@@ -92,7 +92,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900 flex items-center justify-center p-6">
+    <div className="min-h-screen flex items-center justify-center p-6" style={{background: 'transparent'}}>
       <div className="w-full max-w-2xl">
         {/* Logo */}
         <div className="text-center mb-8">
