@@ -7,15 +7,16 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #0a1433 0%, #101f47 100%);
+  background: linear-gradient(135deg, #0a1433 0%, #101f47 100%) !important;
   min-height: 100vh;
 }
 
 .App {
   min-height: 100vh;
+  background: linear-gradient(135deg, #0a1433 0%, #101f47 100%) !important;
 }
 
 /* Bank-Grade Security Styles */
