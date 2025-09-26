@@ -220,48 +220,6 @@ class SecurityProtection {
     });
   }
 
-  // Adiciona marca d'água de segurança
-  addWatermark() {
-    const watermark = document.createElement('div');
-    watermark.className = 'security-watermark';
-    watermark.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1000000;
-      background-image: 
-        repeating-linear-gradient(
-          45deg,
-          transparent,
-          transparent 100px,
-          rgba(123, 77, 255, 0.02) 100px,
-          rgba(123, 77, 255, 0.02) 200px
-        );
-      font-family: Arial, sans-serif;
-    `;
-
-    // Adiciona texto da marca d'água
-    const watermarkText = document.createElement('div');
-    watermarkText.style.cssText = `
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-45deg);
-      font-size: 48px;
-      color: rgba(123, 77, 255, 0.03);
-      font-weight: bold;
-      white-space: nowrap;
-      user-select: none;
-    `;
-    watermarkText.textContent = 'VORNEXZPAY CONFIDENCIAL';
-    watermark.appendChild(watermarkText);
-
-    document.body.appendChild(watermark);
-  }
-
   // Detecta tentativas de captura
   detectScreenCapture() {
     // Monitor mudanças na janela
