@@ -313,12 +313,19 @@ class SecurityProtection {
     });
   }
 
-  // Exibe alertas de segurança
+  // Exibe alertas de segurança (menos intrusivo em desenvolvimento)
   showSecurityAlert(message) {
-    // Não usar alert() por ser muito intrusivo
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    // Em desenvolvimento, só loga no console
+    if (!isProduction) {
+      console.warn(`[VORNEXZPAY SECURITY - DEV] ${message}`);
+      return;
+    }
+    
+    // Em produção, mostra alerta visual
     console.warn(`[VORNEXZPAY SECURITY] ${message}`);
     
-    // Poderia adicionar notificação visual discreta se necessário
     const notification = document.createElement('div');
     notification.style.cssText = `
       position: fixed;
