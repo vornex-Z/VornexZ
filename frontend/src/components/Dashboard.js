@@ -729,8 +729,6 @@ const Dashboard = () => {
       {showUserSettings && (
         <UserSettings onClose={() => setShowUserSettings(false)} />
       )}
-      
-      <Toaster />
     </div>
   );
 };
