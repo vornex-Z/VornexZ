@@ -168,9 +168,6 @@ class SecurityProtection {
       open: false,
       orientation: null
     };
-
-    // Só ativa detecção em produção
-    const isProduction = process.env.NODE_ENV === 'production';
     
     if (isProduction) {
       const threshold = 160;
