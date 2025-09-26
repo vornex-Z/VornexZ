@@ -14,7 +14,6 @@ class SecurityProtection {
     this.preventPrint();
     this.preventDevTools();
     this.preventRightClick();
-    this.addWatermark();
     this.detectScreenCapture();
     this.monitorSecurity();
   }
