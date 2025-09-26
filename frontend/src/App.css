@@ -170,9 +170,9 @@ html, body {
   box-shadow: 0 8px 32px 0 rgba(10, 20, 51, 0.3);
 }
 
-/* Input styles */
+/* Input styles - Navy theme */
 .vornex-input {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(16, 31, 71, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   padding: 14px 18px;
@@ -189,8 +189,8 @@ html, body {
 .vornex-input:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  background: rgba(16, 31, 71, 0.4);
+  box-shadow: 0 0 0 3px rgba(16, 31, 71, 0.3);
 }
 
 /* Button styles */
