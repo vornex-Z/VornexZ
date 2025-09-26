@@ -295,17 +295,15 @@ html, body {
   background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
 }
 
-/* Menu styles - Navy theme */
+/* Menu styles - Voltando ao original */
 .user-menu {
   position: absolute;
   top: 70px;
   right: 20px;
-  background: rgba(16, 31, 71, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: white;
   border-radius: 16px;
   padding: 8px;
-  box-shadow: 0 20px 40px 0 rgba(10, 20, 51, 0.4);
+  box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.1);
   min-width: 280px;
   z-index: 1000;
   animation: menuSlideIn 0.3s ease-out;
