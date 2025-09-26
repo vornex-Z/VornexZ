@@ -171,10 +171,10 @@ html, body {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
 }
 
-/* Input styles - Navy theme */
+/* Input styles - Mais transparente */
 .vornex-input {
-  background: rgba(16, 31, 71, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(16, 31, 71, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
   padding: 14px 18px;
   color: white;
@@ -184,14 +184,14 @@ html, body {
 }
 
 .vornex-input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .vornex-input:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(16, 31, 71, 0.4);
-  box-shadow: 0 0 0 3px rgba(16, 31, 71, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(16, 31, 71, 0.25);
+  box-shadow: 0 0 0 3px rgba(16, 31, 71, 0.2);
 }
 
 /* Button styles - Voltando ao roxo original */
