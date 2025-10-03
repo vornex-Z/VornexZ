@@ -960,6 +960,49 @@ async def get_admin_logs(
         "pages": (total + limit - 1) // limit
     }
 
+@api_router.post("/debug-login")
+async def debug_login(user_data: UserLogin):
+    """Endpoint de debug para investigar problema de login"""
+    
+    # Buscar usuário por CPF criptografado
+    encrypted_cpf = encrypt_sensitive_data(user_data.cpf)
+    user_encrypted = await db.users.find_one({"cpf": encrypted_cpf})
+    
+    # Buscar usuário por CPF não criptografado
+    user_plain = await db.users.find_one({"cpf": user_data.cpf})
+    
+    # Buscar todos os usuários para ver como está armazenado
+    all_users = await db.users.find({}, {"cpf": 1, "email": 1, "nome_completo": 1}).to_list(10)
+    
+    debug_info = {
+        "cpf_buscado": user_data.cpf,
+        "cpf_criptografado": encrypted_cpf,
+        "usuario_encontrado_criptografado": bool(user_encrypted),
+        "usuario_encontrado_plano": bool(user_plain),
+        "todos_usuarios": []
+    }
+    
+    # Descriptografar CPFs para debug
+    for user in all_users:
+        cpf_original = user.get("cpf", "")
+        try:
+            cpf_descriptografado = decrypt_sensitive_data(cpf_original)
+            debug_info["todos_usuarios"].append({
+                "nome": user.get("nome_completo", ""),
+                "email": user.get("email", ""),
+                "cpf_armazenado": cpf_original[:20] + "...",  # Mostrar só início
+                "cpf_descriptografado": cpf_descriptografado
+            })
+        except:
+            debug_info["todos_usuarios"].append({
+                "nome": user.get("nome_completo", ""),
+                "email": user.get("email", ""),
+                "cpf_armazenado": cpf_original,
+                "cpf_descriptografado": "ERRO_DESCRIPTOGRAFIA"
+            })
+    
+    return debug_info
+
 @api_router.get("/system-status")
 async def system_status():
     """Verificar status do sistema e contadores"""
