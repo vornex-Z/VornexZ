@@ -40,8 +40,12 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # Security Configuration
-SECURITY_KEY = os.environ.get("SECURITY_KEY", Fernet.generate_key().decode())
-cipher_suite = Fernet(SECURITY_KEY.encode() if isinstance(SECURITY_KEY, str) else SECURITY_KEY)
+# Chave fixa para criptografia (em produção seria variável de ambiente)
+SECURITY_KEY = os.environ.get("SECURITY_KEY", "vornexzpay_secure_key_2025_fixed_for_encryption_demo")
+# Gerar chave Fernet válida a partir da string
+key_bytes = SECURITY_KEY.encode()[:32].ljust(32, b'0')
+fernet_key = base64.urlsafe_b64encode(key_bytes)
+cipher_suite = Fernet(fernet_key)
 
 # Rate limiting
 limiter = Limiter(key_func=get_remote_address)
