@@ -469,45 +469,34 @@ const AdminPanel = () => {
                       <div className="flex space-x-2">
                         {!user.blocked ? (
                           <button
-                            onClick={() => {
-                              const reason = prompt('Motivo do bloqueio:');
-                              if (reason) handleUserAction(user.id, 'block', reason);
-                            }}
+                            onClick={() => handleUserAction(user.id, 'block', user)}
                             className="text-red-600 hover:text-red-900"
-                            title="Bloquear usuário"
+                            title="🚫 Bloquear usuário (blacklist permanente)"
                           >
                             <UserX size={16} />
                           </button>
                         ) : (
                           <button
-                            onClick={() => handleUserAction(user.id, 'unblock')}
+                            onClick={() => handleUserAction(user.id, 'unblock', user)}
                             className="text-green-600 hover:text-green-900"
-                            title="Desbloquear usuário"
+                            title="✅ Desbloquear usuário (remover da blacklist)"
                           >
                             <UserCheck size={16} />
                           </button>
                         )}
                         
                         <button
-                          onClick={() => {
-                            if (confirm('Tem certeza que deseja resetar a senha deste usuário?')) {
-                              handleUserAction(user.id, 'reset_password');
-                            }
-                          }}
-                          className="text-orange-600 hover:text-orange-900"
-                          title="Resetar senha"
+                          onClick={() => handleUserAction(user.id, 'reset_password', user)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="🔑 Resetar senha (ver dados atuais)"
                         >
                           <RotateCcw size={16} />
                         </button>
                         
                         <button
-                          onClick={() => {
-                            if (confirm('Tem certeza que deseja remover este usuário? Esta ação não pode ser desfeita.')) {
-                              handleUserAction(user.id, 'delete');
-                            }
-                          }}
+                          onClick={() => handleUserAction(user.id, 'delete', user)}
                           className="text-red-600 hover:text-red-900"
-                          title="Remover usuário"
+                          title="🗑️ Excluir permanentemente (permite novo cadastro)"
                         >
                           <Trash2 size={16} />
                         </button>
