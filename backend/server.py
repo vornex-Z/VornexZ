@@ -695,7 +695,236 @@ async def get_security_settings(current_user: User = Depends(get_current_user)):
         biometric_enabled=user_db.get("biometric_enabled", False)
     )
 
-# Initialize demo user and transactions
+# Admin Routes
+@api_router.post("/admin/auth/login")
+@limiter.limit("3/minute")
+async def admin_login(request: Request, admin_data: AdminLogin):
+    """Login administrativo"""
+    admin = await db.admin_users.find_one({"email": admin_data.email, "ativo": True})
+    
+    if not admin or not verify_password(admin_data.senha, admin["senha"]):
+        await create_admin_log(admin_data.email, "LOGIN_FAILED", ip_address=request.client.host)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciais administrativas inválidas"
+        )
+    
+    # Atualizar último acesso
+    await db.admin_users.update_one(
+        {"email": admin_data.email},
+        {"$set": {"ultimo_acesso": datetime.now(timezone.utc)}}
+    )
+    
+    # Criar token com tipo admin
+    access_token_expires = timedelta(hours=8)  # Admin tem sessão mais longa
+    access_token = create_access_token(
+        data={"sub": admin["email"], "type": "admin"}, 
+        expires_delta=access_token_expires
+    )
+    
+    await create_admin_log(admin_data.email, "LOGIN_SUCCESS", ip_address=request.client.host)
+    
+    return {"access_token": access_token, "token_type": "bearer", "admin": AdminUser(**admin)}
+
+@api_router.get("/admin/dashboard")
+async def get_admin_dashboard(current_admin: AdminUser = Depends(get_current_admin)):
+    """Dashboard administrativo com estatísticas"""
+    if not has_permission(current_admin, "view_dashboard"):
+        raise HTTPException(status_code=403, detail="Permissão negada")
+    
+    # Estatísticas gerais
+    total_users = await db.users.count_documents({})
+    active_users = await db.users.count_documents({"ultimo_acesso": {"$gte": datetime.now(timezone.utc) - timedelta(days=30)}})
+    
+    # Cadastros por período
+    today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    cadastros_hoje = await db.users.count_documents({"created_at": {"$gte": today}})
+    cadastros_semana = await db.users.count_documents({"created_at": {"$gte": today - timedelta(days=7)}})
+    
+    # Logs recentes de segurança
+    logs_recentes = await db.admin_logs.find(
+        {"action": {"$in": ["LOGIN_FAILED", "ACCOUNT_BLOCKED", "PASSWORD_RESET"]}},
+        sort=[("timestamp", -1)],
+        limit=10
+    ).to_list(10)
+    
+    # Atividades suspeitas (tentativas de login falharam)
+    atividades_suspeitas = await db.admin_logs.count_documents({
+        "action": "LOGIN_FAILED",
+        "timestamp": {"$gte": datetime.now(timezone.utc) - timedelta(hours=24)}
+    })
+    
+    dashboard_data = {
+        "total_usuarios": total_users,
+        "usuarios_ativos": active_users,
+        "cadastros_hoje": cadastros_hoje,
+        "cadastros_semana": cadastros_semana,
+        "atividades_suspeitas_24h": atividades_suspeitas,
+        "logs_recentes": logs_recentes,
+        "admin_info": {
+            "nome": current_admin.nome,
+            "cargo": current_admin.cargo,
+            "ultimo_acesso": current_admin.ultimo_acesso
+        }
+    }
+    
+    await create_admin_log(current_admin.email, "DASHBOARD_ACCESS")
+    return dashboard_data
+
+@api_router.get("/admin/users")
+async def get_all_users(
+    page: int = 1,
+    limit: int = 20,
+    search: str = None,
+    status: str = None,
+    current_admin: AdminUser = Depends(get_current_admin)
+):
+    """Lista todos os usuários com filtros e paginação"""
+    if not has_permission(current_admin, "manage_users"):
+        raise HTTPException(status_code=403, detail="Permissão negada")
+    
+    # Construir query
+    query = {}
+    if search:
+        query["$or"] = [
+            {"nome_completo": {"$regex": search, "$options": "i"}},
+            {"email": {"$regex": search, "$options": "i"}},
+            {"cpf": {"$regex": search, "$options": "i"}}
+        ]
+    
+    if status == "blocked":
+        query["blocked"] = True
+    elif status == "active":
+        query["blocked"] = {"$ne": True}
+    
+    # Paginação
+    skip = (page - 1) * limit
+    
+    users = await db.users.find(query, {
+        "senha": 0  # Não retornar senhas
+    }).skip(skip).limit(limit).sort("created_at", -1).to_list(limit)
+    
+    total = await db.users.count_documents(query)
+    
+    # Descriptografar dados sensíveis para admin
+    for user in users:
+        if "cpf" in user:
+            try:
+                user["cpf"] = decrypt_sensitive_data(user["cpf"])
+            except:
+                pass  # Manter original se não conseguir descriptografar
+        if "rg" in user:
+            try:
+                user["rg"] = decrypt_sensitive_data(user["rg"])
+            except:
+                pass
+        if "telefone" in user:
+            try:
+                user["telefone"] = decrypt_sensitive_data(user["telefone"])
+            except:
+                pass
+    
+    await create_admin_log(current_admin.email, "USERS_LIST_ACCESS", details={"search": search, "page": page})
+    
+    return {
+        "users": users,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "pages": (total + limit - 1) // limit
+    }
+
+@api_router.post("/admin/users/{user_id}/action")
+async def manage_user_action(
+    user_id: str,
+    action_data: UserManagementAction,
+    request: Request,
+    current_admin: AdminUser = Depends(get_current_admin)
+):
+    """Executa ações de gerenciamento de usuário"""
+    if not has_permission(current_admin, "manage_users"):
+        raise HTTPException(status_code=403, detail="Permissão negada")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    action = action_data.action
+    result = {}
+    
+    if action == "block":
+        await db.users.update_one({"id": user_id}, {"$set": {"blocked": True, "blocked_reason": action_data.reason}})
+        result = {"message": "Usuário bloqueado com sucesso"}
+        
+    elif action == "unblock":
+        await db.users.update_one({"id": user_id}, {"$unset": {"blocked": "", "blocked_reason": ""}})
+        result = {"message": "Usuário desbloqueado com sucesso"}
+        
+    elif action == "delete":
+        # Soft delete - não remove do banco, apenas marca como deletado
+        await db.users.update_one({"id": user_id}, {"$set": {"deleted": True, "deleted_at": datetime.now(timezone.utc)}})
+        result = {"message": "Usuário removido com sucesso"}
+        
+    elif action == "reset_password":
+        # Gerar nova senha temporária
+        import secrets
+        import string
+        
+        temp_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for i in range(12))
+        hashed_password = get_password_hash(temp_password)
+        
+        await db.users.update_one({"id": user_id}, {
+            "$set": {
+                "senha": hashed_password,
+                "password_reset_required": True,
+                "temp_password": temp_password
+            }
+        })
+        result = {"message": "Senha resetada", "temp_password": temp_password}
+    
+    else:
+        raise HTTPException(status_code=400, detail="Ação inválida")
+    
+    # Log da ação
+    await create_admin_log(
+        current_admin.email,
+        f"USER_{action.upper()}",
+        target_user_id=user_id,
+        details={"reason": action_data.reason, "user_email": user.get("email")},
+        ip_address=request.client.host
+    )
+    
+    return result
+
+@api_router.get("/admin/logs")
+async def get_admin_logs(
+    page: int = 1,
+    limit: int = 50,
+    action_filter: str = None,
+    current_admin: AdminUser = Depends(get_current_admin)
+):
+    """Obtém logs administrativos"""
+    if not has_permission(current_admin, "view_logs"):
+        raise HTTPException(status_code=403, detail="Permissão negada")
+    
+    query = {}
+    if action_filter:
+        query["action"] = {"$regex": action_filter, "$options": "i"}
+    
+    skip = (page - 1) * limit
+    
+    logs = await db.admin_logs.find(query).skip(skip).limit(limit).sort("timestamp", -1).to_list(limit)
+    total = await db.admin_logs.count_documents(query)
+    
+    return {
+        "logs": logs,
+        "total": total,
+        "page": page,
+        "limit": limit,
+        "pages": (total + limit - 1) // limit
+    }
+
+# Initialize demo data
 @api_router.post("/init-demo")
 async def init_demo():
     # Check if demo user exists
