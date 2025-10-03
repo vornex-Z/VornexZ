@@ -150,6 +150,7 @@ function App() {
             <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
             <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
             <Route path="/help" element={<PublicRoute><Help /></PublicRoute>} />
+            <Route path="/admin/*" element={<AdminApp />} />
             <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
             <Route path="/" element={<Navigate to="/login" replace />} />
           </Routes>
