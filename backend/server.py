@@ -211,6 +211,49 @@ class UserResponse(BaseModel):
     saldo: float
     premium: bool
 
+# Helper functions for admin
+async def create_admin_log(admin_email: str, action: str, target_user_id: str = None, details: dict = {}, ip_address: str = None):
+    """Cria log de ação administrativa"""
+    admin = await db.admin_users.find_one({"email": admin_email})
+    if admin:
+        log = AdminLog(
+            admin_id=admin["id"],
+            admin_email=admin_email,
+            action=action,
+            target_user_id=target_user_id,
+            details=details,
+            ip_address=ip_address
+        )
+        await db.admin_logs.insert_one(log.dict())
+
+async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verifica se é um admin válido"""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Admin credentials required",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        user_type: str = payload.get("type", "user")
+        
+        if user_type != "admin" or email is None:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+    
+    admin = await db.admin_users.find_one({"email": email, "ativo": True})
+    if admin is None:
+        raise credentials_exception
+    return AdminUser(**admin)
+
+def has_permission(admin: AdminUser, required_permission: str) -> bool:
+    """Verifica se admin tem permissão específica"""
+    if admin.cargo == "admin":  # Admin total tem todas as permissões
+        return True
+    return required_permission in admin.permissoes
+
 # Helper functions
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
