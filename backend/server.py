@@ -215,15 +215,12 @@ class UserResponse(BaseModel):
 # Helper functions for admin
 def convert_objectid_to_str(obj):
     """Convert MongoDB ObjectId to string recursively"""
-    if isinstance(obj, dict):
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    elif isinstance(obj, dict):
         return {key: convert_objectid_to_str(value) for key, value in obj.items()}
     elif isinstance(obj, list):
         return [convert_objectid_to_str(item) for item in obj]
-    elif hasattr(obj, '__dict__') and hasattr(obj, '__class__'):
-        # Handle ObjectId
-        if obj.__class__.__name__ == 'ObjectId':
-            return str(obj)
-        return obj
     else:
         return obj
 
