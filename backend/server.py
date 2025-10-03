@@ -823,6 +823,9 @@ async def get_all_users(
     
     total = await db.users.count_documents(query)
     
+    # Convert ObjectIds to strings
+    users = convert_objectid_to_str(users)
+    
     # Descriptografar dados sensíveis para admin
     for user in users:
         if "cpf" in user:
