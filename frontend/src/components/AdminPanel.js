@@ -107,23 +107,70 @@ const AdminPanel = () => {
     }
   };
 
-  const handleUserAction = async (userId, action, reason = '') => {
+  const handleUserAction = async (userId, action, user) => {
     try {
       const token = localStorage.getItem('admin_token');
-      await axios.post(`${API}/admin/users/${userId}/action`, {
-        user_id: userId,
-        action: action,
-        reason: reason
-      }, {
+      let requestData = { user_id: userId, action: action };
+      
+      if (action === 'block') {
+        const reason = prompt('Motivo do bloqueio (o usuário não poderá se cadastrar novamente):');
+        if (!reason) return;
+        requestData.reason = reason;
+      }
+      
+      if (action === 'delete') {
+        const confirmDelete = window.confirm(
+          `⚠️ ATENÇÃO: Esta ação irá EXCLUIR PERMANENTEMENTE o usuário:\n\n` +
+          `Nome: ${user.nome_completo}\n` +
+          `Email: ${user.email}\n` +
+          `CPF: ${user.cpf}\n\n` +
+          `O usuário poderá se cadastrar novamente com os mesmos dados.\n\n` +
+          `Tem certeza que deseja continuar?`
+        );
+        if (!confirmDelete) return;
+      }
+      
+      if (action === 'reset_password') {
+        const newPassword = prompt(
+          `Resetar senha do usuário: ${user.nome_completo}\n\n` +
+          `Deixe em branco para gerar senha automática ou digite a nova senha:`
+        );
+        if (newPassword !== null) {
+          if (newPassword.trim()) {
+            requestData.new_password = newPassword.trim();
+          }
+        } else {
+          return; // Cancelou
+        }
+      }
+      
+      const response = await axios.post(`${API}/admin/users/${userId}/action`, requestData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      // Mostrar resultado detalhado
+      if (action === 'reset_password' && response.data.user_info) {
+        const info = response.data;
+        alert(
+          `✅ Senha resetada com sucesso!\n\n` +
+          `📋 Informações de Login:\n` +
+          `Nome: ${info.user_info.nome}\n` +
+          `CPF: ${info.user_info.cpf}\n` +
+          `Nova Senha: ${info.new_password}\n\n` +
+          `🔑 O usuário pode fazer login com:\n` +
+          `CPF: ${info.user_info.cpf}\n` +
+          `Senha: ${info.new_password}`
+        );
+      } else {
+        alert(`✅ ${response.data.message}`);
+      }
+      
       // Recarregar lista de usuários
       loadUsers(pagination.page);
-      alert(`Ação ${action} executada com sucesso!`);
     } catch (error) {
       console.error('Erro ao executar ação:', error);
-      alert('Erro ao executar ação');
+      const errorMsg = error.response?.data?.detail || 'Erro ao executar ação';
+      alert(`❌ Erro: ${errorMsg}`);
     }
   };
 
