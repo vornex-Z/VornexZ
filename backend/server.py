@@ -442,6 +442,14 @@ async def register(request: Request, user_data: UserRegister):
     if not validate_phone(user_data.telefone):
         raise HTTPException(status_code=400, detail="Telefone inválido")
     
+    # Check if user is blacklisted
+    blacklist_entry = await check_user_blacklist(user_data.cpf, user_data.email, user_data.rg, user_data.telefone)
+    if blacklist_entry:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=f"Cadastro bloqueado: {blacklist_entry.get('reason', 'Usuário bloqueado pelo administrador')}"
+        )
+    
     # Check if user already exists
     existing_user = await db.users.find_one({"$or": [{"email": user_data.email}, {"cpf": user_data.cpf}]})
     if existing_user:
