@@ -961,34 +961,84 @@ async def manage_user_action(
     result = {}
     
     if action == "block":
+        # Bloquear usuário E adicionar à blacklist para impedir novos cadastros
         await db.users.update_one({"id": user_id}, {"$set": {"blocked": True, "blocked_reason": action_data.reason}})
-        result = {"message": "Usuário bloqueado com sucesso"}
+        
+        # Adicionar à blacklist
+        await add_to_blacklist(user, action_data.reason or "Bloqueado pelo administrador", current_admin.email)
+        
+        result = {"message": "Usuário bloqueado e adicionado à blacklist. Não poderá se cadastrar novamente."}
         
     elif action == "unblock":
+        # Desbloquear usuário E remover da blacklist
         await db.users.update_one({"id": user_id}, {"$unset": {"blocked": "", "blocked_reason": ""}})
-        result = {"message": "Usuário desbloqueado com sucesso"}
+        
+        # Remover da blacklist
+        encrypted_cpf = encrypt_sensitive_data(user.get("cpf", ""))
+        await db.user_blacklist.delete_many({
+            "$or": [
+                {"cpf": encrypted_cpf},
+                {"email": user.get("email", "")}
+            ]
+        })
+        
+        result = {"message": "Usuário desbloqueado e removido da blacklist"}
         
     elif action == "delete":
-        # Soft delete - não remove do banco, apenas marca como deletado
-        await db.users.update_one({"id": user_id}, {"$set": {"deleted": True, "deleted_at": datetime.now(timezone.utc)}})
-        result = {"message": "Usuário removido com sucesso"}
+        # DELETE REAL - remover completamente do banco para permitir novo cadastro
+        await db.users.delete_one({"id": user_id})
+        
+        # Também remover da blacklist se existir
+        encrypted_cpf = encrypt_sensitive_data(user.get("cpf", ""))
+        await db.user_blacklist.delete_many({
+            "$or": [
+                {"cpf": encrypted_cpf},
+                {"email": user.get("email", "")}
+            ]
+        })
+        
+        result = {"message": "Usuário excluído permanentemente. Dados podem ser reutilizados para novo cadastro."}
         
     elif action == "reset_password":
-        # Gerar nova senha temporária
-        import secrets
-        import string
+        # Descriptografar dados para mostrar informações atuais
+        try:
+            cpf_decrypted = decrypt_sensitive_data(user.get("cpf", ""))
+            rg_decrypted = decrypt_sensitive_data(user.get("rg", ""))
+            telefone_decrypted = decrypt_sensitive_data(user.get("telefone", ""))
+        except:
+            cpf_decrypted = user.get("cpf", "")
+            rg_decrypted = user.get("rg", "")  
+            telefone_decrypted = user.get("telefone", "")
         
-        temp_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for i in range(12))
-        hashed_password = get_password_hash(temp_password)
+        # Usar nova senha se fornecida, senão gerar automaticamente
+        if action_data.new_password:
+            new_password = action_data.new_password
+        else:
+            import secrets
+            import string
+            new_password = ''.join(secrets.choice(string.ascii_letters + string.digits) for i in range(10))
+        
+        hashed_password = get_password_hash(new_password)
         
         await db.users.update_one({"id": user_id}, {
             "$set": {
                 "senha": hashed_password,
-                "password_reset_required": True,
-                "temp_password": temp_password
+                "password_reset_required": False
             }
         })
-        result = {"message": "Senha resetada", "temp_password": temp_password}
+        
+        result = {
+            "message": "Senha resetada com sucesso",
+            "user_info": {
+                "nome": user.get("nome_completo", ""),
+                "email": user.get("email", ""),
+                "cpf": cpf_decrypted,
+                "rg": rg_decrypted,
+                "telefone": telefone_decrypted
+            },
+            "new_password": new_password,
+            "login_instructions": f"Usuário pode fazer login com CPF: {cpf_decrypted} e nova senha: {new_password}"
+        }
     
     else:
         raise HTTPException(status_code=400, detail="Ação inválida")
@@ -998,7 +1048,11 @@ async def manage_user_action(
         current_admin.email,
         f"USER_{action.upper()}",
         target_user_id=user_id,
-        details={"reason": action_data.reason, "user_email": user.get("email")},
+        details={
+            "reason": action_data.reason, 
+            "user_email": user.get("email"),
+            "new_password": action_data.new_password if action == "reset_password" else None
+        },
         ip_address=request.client.host
     )
     
