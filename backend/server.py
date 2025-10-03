@@ -155,6 +155,11 @@ class AdminLog(BaseModel):
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     ip_address: Optional[str] = None
 
+class UserSecuritySettings(BaseModel):
+    two_factor_enabled: bool = False
+    two_factor_method: Optional[str] = None  # "totp", "email"
+    biometric_enabled: bool = False
+
 class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     nome_completo: str
