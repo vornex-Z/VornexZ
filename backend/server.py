@@ -452,13 +452,36 @@ async def register(request: Request, user_data: UserRegister):
 @api_router.post("/auth/login", response_model=Token)
 @limiter.limit("5/minute")  # Limit login attempts
 async def login(request: Request, user_data: UserLogin):
-    # Login com CPF - buscar por CPF criptografado
-    encrypted_cpf = encrypt_sensitive_data(user_data.cpf)
-    user = await db.users.find_one({"cpf": encrypted_cpf})
+    # Buscar usuário - tentar diferentes variações do CPF
+    user = None
     
-    # Se não encontrar por CPF criptografado, tentar CPF não criptografado (demo users antigos)
+    # 1. Tentar CPF criptografado
+    try:
+        encrypted_cpf = encrypt_sensitive_data(user_data.cpf)
+        user = await db.users.find_one({"cpf": encrypted_cpf})
+    except:
+        pass
+    
+    # 2. Tentar CPF não criptografado
     if not user:
         user = await db.users.find_one({"cpf": user_data.cpf})
+    
+    # 3. Buscar todos os usuários e comparar CPF descriptografado (método de força bruta)
+    if not user:
+        all_users = await db.users.find({}).to_list(100)
+        for u in all_users:
+            try:
+                cpf_stored = u.get("cpf", "")
+                # Tentar descriptografar
+                cpf_decrypted = decrypt_sensitive_data(cpf_stored)
+                if cpf_decrypted == user_data.cpf:
+                    user = u
+                    break
+            except:
+                # Se não conseguir descriptografar, comparar direto
+                if u.get("cpf", "") == user_data.cpf:
+                    user = u
+                    break
     
     if not user:
         raise HTTPException(
