@@ -250,6 +250,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Painel administrativo VornexZPay - CONCLUÍDO ✅"
     - "Testar fluxo completo desde login até configurações"
     - "Testar funcionalidade de 2FA com aplicativo e email"
     - "Testar atualização de dados pessoais"
