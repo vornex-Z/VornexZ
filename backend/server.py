@@ -448,26 +448,41 @@ async def register(request: Request, user_data: UserRegister):
 @api_router.post("/auth/login", response_model=Token)
 @limiter.limit("5/minute")  # Limit login attempts
 async def login(request: Request, user_data: UserLogin):
-    # Login com CPF - precisa buscar por CPF criptografado
-    # Primeiro tenta buscar por CPF não criptografado (demo user)
-    user = await db.users.find_one({"cpf": user_data.cpf})
+    # Login com CPF - buscar por CPF criptografado
+    encrypted_cpf = encrypt_sensitive_data(user_data.cpf)
+    user = await db.users.find_one({"cpf": encrypted_cpf})
     
-    # Se não encontrar, tenta buscar por CPF criptografado
+    # Se não encontrar por CPF criptografado, tentar CPF não criptografado (demo users antigos)
     if not user:
-        encrypted_cpf = encrypt_sensitive_data(user_data.cpf)
-        user = await db.users.find_one({"cpf": encrypted_cpf})
+        user = await db.users.find_one({"cpf": user_data.cpf})
     
-    if not user or not verify_password(user_data.senha, user["senha"]):
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="CPF ou senha incorretos",
+            detail="CPF não encontrado",
             headers={"WWW-Authenticate": "Bearer"},
         )
     
+    # Verificar senha
+    if not verify_password(user_data.senha, user["senha"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Senha incorreta",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # Gerar token
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user["email"]}, expires_delta=access_token_expires
     )
+    
+    # Atualizar último acesso
+    await db.users.update_one(
+        {"_id": user["_id"]},
+        {"$set": {"ultimo_acesso": datetime.now(timezone.utc)}}
+    )
+    
     return {"access_token": access_token, "token_type": "bearer"}
 
 @api_router.get("/auth/me", response_model=UserResponse)
