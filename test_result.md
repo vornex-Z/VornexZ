@@ -166,6 +166,21 @@ backend:
         agent: "testing"
         comment: "✅ TESTADO: Endpoint GET /api/user/security-settings funcionando perfeitamente. Retorna todos os campos obrigatórios: two_factor_enabled, two_factor_method, biometric_enabled. Estados são atualizados corretamente conforme as configurações do usuário."
 
+  - task: "Implementar painel administrativo VornexZPay"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implementado painel administrativo completo com endpoints: POST /api/init-admin, POST /api/admin/auth/login, GET /api/admin/dashboard, GET /api/admin/users, POST /api/admin/users/{user_id}/action, GET /api/admin/logs"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO COMPLETAMENTE: Painel administrativo VornexZPay 100% funcional. SETUP: Inicialização admin funciona múltiplas vezes (✅). AUTENTICAÇÃO: Login admin com credenciais corretas (julio@vornexzpay.com / VornexAdmin2025!) funciona (✅), credenciais inválidas retornam 401 (✅). DASHBOARD: Retorna estatísticas corretas (total_usuarios, usuarios_ativos, cadastros_hoje, logs_recentes) (✅), acesso não autorizado retorna 403 (✅). GESTÃO USUÁRIOS: Listagem com paginação e filtros funciona (✅), dados sensíveis descriptografados para admin (✅), busca e filtros por status funcionam (✅). AÇÕES USUÁRIOS: Block/unblock/reset_password funcionam (✅), ações inválidas retornam 400 (✅), usuários inexistentes retornam 404 (✅). LOGS: Acesso a logs com filtros funciona (✅), logs são criados para todas ações admin (✅). SEGURANÇA: Todos endpoints protegidos, acesso não autorizado retorna 403 (✅). CORREÇÃO APLICADA: Resolvido problema ObjectId não serializável adicionando função convert_objectid_to_str. Sistema administrativo pronto para produção."
+
 frontend:
   - task: "Adicionar link 'Esqueci minha senha' no login"
     implemented: true
