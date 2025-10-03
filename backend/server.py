@@ -119,10 +119,41 @@ class Verify2FARequest(BaseModel):
 class BiometricRequest(BaseModel):
     enable: bool
 
-class UserSecuritySettings(BaseModel):
-    two_factor_enabled: bool = False
-    two_factor_method: Optional[str] = None  # "totp", "email"
-    biometric_enabled: bool = False
+class AdminUser(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    nome: str
+    email: EmailStr
+    cargo: str  # "admin", "suporte", "auditor"
+    permissoes: List[str] = []
+    ativo: bool = True
+    ultimo_acesso: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class AdminLogin(BaseModel):
+    email: EmailStr
+    senha: str
+
+class AdminCreateUser(BaseModel):
+    nome: str
+    email: EmailStr
+    cargo: str
+    senha: str
+    permissoes: List[str] = []
+
+class UserManagementAction(BaseModel):
+    user_id: str
+    action: str  # "block", "unblock", "delete", "reset_password"
+    reason: Optional[str] = None
+
+class AdminLog(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    admin_id: str
+    admin_email: str
+    action: str
+    target_user_id: Optional[str] = None
+    details: dict = {}
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    ip_address: Optional[str] = None
 
 class User(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
