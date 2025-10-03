@@ -964,6 +964,61 @@ async def get_admin_logs(
         "pages": (total + limit - 1) // limit
     }
 
+@api_router.post("/fix-encryption")
+async def fix_encryption():
+    """Corrigir criptografia dos usuários existentes"""
+    
+    users_updated = 0
+    all_users = await db.users.find({}).to_list(100)
+    
+    for user in all_users:
+        try:
+            # Tentar descriptografar os dados atuais
+            cpf_original = user.get("cpf", "")
+            rg_original = user.get("rg", "")
+            telefone_original = user.get("telefone", "")
+            
+            # Se parecer dados criptografados (base64), tentar descriptografar
+            if len(cpf_original) > 20:  # CPF criptografado é mais longo
+                try:
+                    # Tentar descriptografar (pode falhar com chave diferente)
+                    cpf_plain = decrypt_sensitive_data(cpf_original)
+                    rg_plain = decrypt_sensitive_data(rg_original) if rg_original else ""
+                    telefone_plain = decrypt_sensitive_data(telefone_original) if telefone_original else ""
+                except:
+                    # Se falhar, assumir que são dados já em texto plano
+                    cpf_plain = cpf_original
+                    rg_plain = rg_original
+                    telefone_plain = telefone_original
+            else:
+                # Dados já em texto plano
+                cpf_plain = cpf_original
+                rg_plain = rg_original
+                telefone_plain = telefone_original
+            
+            # Re-criptografar com a nova chave fixa
+            cpf_encrypted = encrypt_sensitive_data(cpf_plain)
+            rg_encrypted = encrypt_sensitive_data(rg_plain) if rg_plain else ""
+            telefone_encrypted = encrypt_sensitive_data(telefone_plain) if telefone_plain else ""
+            
+            # Atualizar no banco
+            await db.users.update_one(
+                {"_id": user["_id"]},
+                {
+                    "$set": {
+                        "cpf": cpf_encrypted,
+                        "rg": rg_encrypted,
+                        "telefone": telefone_encrypted
+                    }
+                }
+            )
+            users_updated += 1
+            
+        except Exception as e:
+            print(f"Erro ao atualizar usuário {user.get('email', '')}: {e}")
+    
+    return {"users_updated": users_updated, "message": "Criptografia corrigida"}
+
 @api_router.post("/debug-login")
 async def debug_login(user_data: UserLogin):
     """Endpoint de debug para investigar problema de login"""
