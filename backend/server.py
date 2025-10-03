@@ -990,6 +990,42 @@ async def init_demo():
     
     return {"message": "Demo data initialized"}
 
+@api_router.post("/init-admin")
+async def init_admin():
+    """Inicializa admin principal - Julio"""
+    # Verificar se já existe admin
+    existing_admin = await db.admin_users.find_one({"email": "julio@vornexzpay.com"})
+    
+    if existing_admin:
+        return {"message": "Admin já existe"}
+    
+    # Criar admin principal
+    admin_password = "VornexAdmin2025!"  # Senha inicial - deve ser alterada
+    hashed_password = get_password_hash(admin_password)
+    
+    admin_data = {
+        "id": str(uuid.uuid4()),
+        "nome": "Julio - Admin Principal",
+        "email": "julio@vornexzpay.com",
+        "cargo": "admin",
+        "permissoes": ["all"],  # Admin total tem todas as permissões
+        "ativo": True,
+        "senha": hashed_password,
+        "created_at": datetime.now(timezone.utc)
+    }
+    
+    await db.admin_users.insert_one(admin_data)
+    
+    # Criar log de inicialização
+    await create_admin_log("julio@vornexzpay.com", "ADMIN_CREATED", details={"initial_setup": True})
+    
+    return {
+        "message": "Admin principal criado com sucesso!",
+        "email": "julio@vornexzpay.com",
+        "password": admin_password,
+        "warning": "IMPORTANTE: Altere esta senha após o primeiro login!"
+    }
+
 # Include the router in the main app
 app.include_router(api_router)
 
