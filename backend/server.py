@@ -239,6 +239,35 @@ def convert_objectid_to_str(obj):
     else:
         return obj
 
+async def check_user_blacklist(cpf: str, email: str, rg: str = None, telefone: str = None):
+    """Verificar se usuário está na blacklist"""
+    # Criptografar dados para comparação
+    encrypted_cpf = encrypt_sensitive_data(cpf)
+    
+    blacklist_entry = await db.user_blacklist.find_one({
+        "$or": [
+            {"cpf": encrypted_cpf},
+            {"email": email},
+            {"rg": encrypt_sensitive_data(rg) if rg else None},
+            {"telefone": encrypt_sensitive_data(telefone) if telefone else None}
+        ]
+    })
+    
+    return blacklist_entry
+
+async def add_to_blacklist(user_data: dict, reason: str, admin_email: str):
+    """Adicionar usuário à blacklist"""
+    blacklist_entry = UserBlacklist(
+        cpf=user_data.get("cpf", ""),
+        email=user_data.get("email", ""),
+        rg=user_data.get("rg", ""),
+        telefone=user_data.get("telefone", ""),
+        reason=reason,
+        blocked_by=admin_email
+    )
+    
+    await db.user_blacklist.insert_one(blacklist_entry.dict())
+
 async def create_admin_log(admin_email: str, action: str, target_user_id: str = None, details: dict = {}, ip_address: str = None):
     """Cria log de ação administrativa"""
     admin = await db.admin_users.find_one({"email": admin_email})
