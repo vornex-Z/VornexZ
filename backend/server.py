@@ -762,6 +762,9 @@ async def get_admin_dashboard(current_admin: AdminUser = Depends(get_current_adm
         limit=10
     ).to_list(10)
     
+    # Convert ObjectIds to strings
+    logs_recentes = convert_objectid_to_str(logs_recentes)
+    
     # Atividades suspeitas (tentativas de login falharam)
     atividades_suspeitas = await db.admin_logs.count_documents({
         "action": "LOGIN_FAILED",
