@@ -945,6 +945,46 @@ async def get_admin_logs(
         "pages": (total + limit - 1) // limit
     }
 
+@api_router.post("/reset-system")
+async def reset_system():
+    """Reset completo do sistema - APENAS PARA DESENVOLVIMENTO"""
+    try:
+        # Remover todos os usuários
+        users_deleted = await db.users.delete_many({})
+        
+        # Remover todas as transações
+        transactions_deleted = await db.transactions.delete_many({})
+        
+        # Remover todos os cartões
+        cards_deleted = await db.cards.delete_many({})
+        
+        # Remover todos os logs admin
+        admin_logs_deleted = await db.admin_logs.delete_many({})
+        
+        # Remover códigos de verificação
+        verification_codes_deleted = await db.verification_codes.delete_many({})
+        
+        # Manter apenas o admin principal
+        admin_kept = await db.admin_users.count_documents({"email": "julio@vornexzpay.com"})
+        
+        return {
+            "message": "Sistema resetado com sucesso!",
+            "deleted_data": {
+                "users": users_deleted.deleted_count,
+                "transactions": transactions_deleted.deleted_count,
+                "cards": cards_deleted.deleted_count,
+                "admin_logs": admin_logs_deleted.deleted_count,
+                "verification_codes": verification_codes_deleted.deleted_count,
+            },
+            "admin_preserved": admin_kept,
+            "status": "clean_database_ready_for_testing"
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, 
+            detail=f"Erro ao resetar sistema: {str(e)}"
+        )
+
 # Initialize demo data
 @api_router.post("/init-demo")
 async def init_demo():
