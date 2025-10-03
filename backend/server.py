@@ -936,6 +936,9 @@ async def get_admin_logs(
     logs = await db.admin_logs.find(query).skip(skip).limit(limit).sort("timestamp", -1).to_list(limit)
     total = await db.admin_logs.count_documents(query)
     
+    # Convert ObjectIds to strings
+    logs = convert_objectid_to_str(logs)
+    
     return {
         "logs": logs,
         "total": total,
