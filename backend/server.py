@@ -145,10 +145,21 @@ class AdminCreateUser(BaseModel):
     senha: str
     permissoes: List[str] = []
 
+class UserBlacklist(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    cpf: str
+    email: str
+    rg: Optional[str] = None
+    telefone: Optional[str] = None
+    reason: str
+    blocked_by: str  # Email do admin
+    blocked_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 class UserManagementAction(BaseModel):
     user_id: str
     action: str  # "block", "unblock", "delete", "reset_password"
     reason: Optional[str] = None
+    new_password: Optional[str] = None  # Para reset de senha
 
 class AdminLog(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
