@@ -945,6 +945,32 @@ async def get_admin_logs(
         "pages": (total + limit - 1) // limit
     }
 
+@api_router.get("/system-status")
+async def system_status():
+    """Verificar status do sistema e contadores"""
+    try:
+        total_users = await db.users.count_documents({})
+        total_transactions = await db.transactions.count_documents({})
+        total_admins = await db.admin_users.count_documents({})
+        total_logs = await db.admin_logs.count_documents({})
+        
+        return {
+            "database_status": "online",
+            "counters": {
+                "users": total_users,
+                "transactions": total_transactions,
+                "admins": total_admins,
+                "admin_logs": total_logs
+            },
+            "ready_for_testing": total_users == 0,
+            "admin_panel_available": total_admins > 0
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro ao verificar status: {str(e)}"
+        )
+
 @api_router.post("/reset-system")
 async def reset_system():
     """Reset completo do sistema - APENAS PARA DESENVOLVIMENTO"""
