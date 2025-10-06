@@ -340,7 +340,7 @@ const Dashboard = () => {
                 {/* Cartão Físico usando a imagem oficial */}
                 <div className="relative mx-auto w-80 h-48 rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300">
                   <img 
-                    src="https://customer-assets.emergentagent.com/job_account-manager-33/artifacts/f10zc9hk_Imagem%20do%20WhatsApp%20de%202025-09-22%20%C3%A0%28s%29%2021.10.17_9a961369.jpg"
+                    src="https://customer-assets.emergentagent.com/job_vornex-pay/artifacts/dpolmbdq_Imagem%20do%20WhatsApp%20de%202025-10-06%20%C3%A0%28s%29%2017.12.39_a09b68bc.jpg"
                     alt="Cartão VornexZPay Físico"
                     className="w-full h-full object-cover"
                   />
