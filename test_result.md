@@ -249,10 +249,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Testar espaçamento do símbolo R$ nos valores monetários"
-    - "Validar se o espaçamento de 6px está visualmente adequado"
-    - "Verificar formatação nos preços dos cartões premium"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
