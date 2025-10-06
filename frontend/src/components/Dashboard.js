@@ -302,7 +302,7 @@ const Dashboard = () => {
                     Cartão exclusivo com benefícios únicos e design diferenciado
                   </p>
                   <div className="inline-flex items-center justify-center px-3 py-1 bg-yellow-100 text-yellow-800 text-sm font-medium rounded-full mb-4">
-                    👑 R$ 12/mês
+                    👑 R$12/mês
                   </div>
                   <button 
                     onClick={() => setShowPremiumCard(true)}
