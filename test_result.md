@@ -297,6 +297,18 @@ frontend:
         agent: "main"
         comment: "SecurityProtection integrado no App.js com inicialização automática. Proteções ativadas: anti-screenshot CSS, bloqueio de impressão, meta tags de segurança, classes de proteção aplicadas"
 
+  - task: "Atualizar imagens dos cartões físico e premium"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Substituídas as URLs das imagens dos cartões. Cartão físico: design azul/roxo. Cartão premium: design dourado/preto. Precisa testar se as imagens estão carregando corretamente na interface."
+
 agent_communication:
   - agent: "main"
     message: "Implementadas todas as funcionalidades solicitadas: link esqueci senha, página de ajuda, configurações de dados pessoais com confirmação de senha, 2FA (aplicativo + email), biometria. Backend e frontend prontos para teste."
