@@ -489,7 +489,7 @@ const Dashboard = () => {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900">Limites Aumentados</p>
-                      <p className="text-sm text-gray-600">PIX de até R$ 50.000 por dia (vs R$ 20.000)</p>
+                      <p className="text-sm text-gray-600">PIX de até R$50.000 por dia (vs R$20.000)</p>
                     </div>
                   </div>
 
