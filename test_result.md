@@ -306,6 +306,18 @@ frontend:
         agent: "testing"
         comment: "✅ TESTADO E APROVADO: Novas imagens dos cartões funcionando perfeitamente. RESULTADOS: Cartão físico (azul/roxo) - URL correta e carregando (✅), Cartão premium (dourado/preto) - URL correta e carregando (✅). URLs testadas: Physical: https://customer-assets.emergentagent.com/job_vornex-pay/artifacts/dpolmbdq_Imagem%20do%20WhatsApp%20de%202025-10-06%20%C3%A0%28s%29%2017.12.39_a09b68bc.jpg, Premium: https://customer-assets.emergentagent.com/job_vornex-pay/artifacts/0nrigyxs_Imagem%20do%20WhatsApp%20de%202025-10-06%20%C3%A0%28s%29%2017.12.39_9fd3ca8f.jpg. Ambas as imagens são acessíveis externamente e carregam corretamente. Código implementado corretamente no Dashboard.js nas linhas 343 e 454. Atualização visual dos cartões concluída com sucesso."
 
+  - task: "Ajustar espaçamento do símbolo R$ nos valores monetários"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/Dashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implementado espaçamento controlado de 6px entre R$ e valores numéricos. Mudanças: função formatCurrency usando spans separados, CSS com margin-right controlado, ajuste em textos estáticos (cartões premium). Precisa validar se o espaçamento visual está adequado."
+
 agent_communication:
   - agent: "main"
     message: "Implementadas todas as funcionalidades solicitadas: link esqueci senha, página de ajuda, configurações de dados pessoais com confirmação de senha, 2FA (aplicativo + email), biometria. Backend e frontend prontos para teste."
