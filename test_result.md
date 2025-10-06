@@ -250,14 +250,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Painel administrativo VornexZPay - CONCLUÍDO ✅"
-    - "Testar fluxo completo desde login até configurações"
-    - "Testar funcionalidade de 2FA com aplicativo e email"
-    - "Testar atualização de dados pessoais"
-    - "Testar configuração de biometria"
-    - "Testar página de ajuda"
+    - "Testar novas imagens dos cartões físico e premium no Dashboard"
+    - "Validar se as imagens estão carregando corretamente"
+    - "Testar navegação entre seção de cartões e detalhes"
+    - "Verificar responsividade das novas imagens"
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
   - task: "Implementar rate limiting completo em endpoints críticos"
