@@ -180,7 +180,7 @@ const Dashboard = () => {
 
   const formatCurrency = (value) => {
     const absValue = Math.abs(value);
-    return `R$ ${absValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `R$${absValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   const formatDate = (dateString) => {
