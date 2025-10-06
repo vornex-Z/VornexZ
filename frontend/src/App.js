@@ -53,7 +53,9 @@ const AuthProvider = ({ children }) => {
 
   const login = async (cpf, senha) => {
     try {
-      const response = await axios.post(`${API}/auth/login`, { cpf, senha });
+      // Clean CPF - remove dots and dashes
+      const cleanCpf = cpf.replace(/\D/g, '');
+      const response = await axios.post(`${API}/auth/login`, { cpf: cleanCpf, senha });
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
       
