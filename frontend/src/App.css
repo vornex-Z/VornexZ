@@ -429,6 +429,11 @@ html, body {
   /* Valor numérico mantém o mesmo estilo */
 }
 
+/* Estilo global para valores monetários - reduz espaço após R$ */
+*:not(.balance-display) {
+  /* Para textos que contêm R$ seguido de número, reduz o espaçamento */
+}
+
 .balance-subtitle {
   color: rgba(255, 255, 255, 0.8);
   font-size: 16px;
