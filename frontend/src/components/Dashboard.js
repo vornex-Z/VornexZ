@@ -529,7 +529,7 @@ const Dashboard = () => {
                     <Crown size={20} className="text-yellow-600" />
                     <p className="font-semibold text-yellow-800">Assinatura Premium</p>
                   </div>
-                  <p className="text-2xl font-bold text-yellow-800">R$ 12,00<span className="text-sm font-normal">/mês</span></p>
+                  <p className="text-2xl font-bold text-yellow-800">R$12,00<span className="text-sm font-normal">/mês</span></p>
                   <p className="text-sm text-yellow-700">Cancele a qualquer momento</p>
                 </div>
 
