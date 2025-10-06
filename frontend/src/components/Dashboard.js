@@ -451,7 +451,7 @@ const Dashboard = () => {
                 {/* Cartão Premium usando a imagem oficial */}
                 <div className="relative mx-auto w-80 h-48 rounded-2xl overflow-hidden shadow-2xl transform rotate-6 hover:rotate-0 transition-transform duration-300">
                   <img 
-                    src="https://customer-assets.emergentagent.com/job_account-manager-33/artifacts/7p9rmayl_Imagem%20do%20WhatsApp%20de%202025-09-22%20%C3%A0%28s%29%2021.11.31_1a85181b.jpg"
+                    src="https://customer-assets.emergentagent.com/job_vornex-pay/artifacts/0nrigyxs_Imagem%20do%20WhatsApp%20de%202025-10-06%20%C3%A0%28s%29%2017.12.39_9fd3ca8f.jpg"
                     alt="Cartão VornexZPay Premium"
                     className="w-full h-full object-cover"
                   />
