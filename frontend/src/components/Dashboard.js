@@ -537,7 +537,7 @@ const Dashboard = () => {
                   onClick={() => alert('Funcionalidade em desenvolvimento - Assinatura Premium será implementada em breve')}
                   className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 px-6 rounded-lg font-bold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg"
                 >
-                  Assinar Premium - R$ 12/mês
+                  Assinar Premium - R$12/mês
                 </button>
               </div>
             </div>
