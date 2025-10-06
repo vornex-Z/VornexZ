@@ -1,7 +1,7 @@
 import requests
 import json
 
-base_url = "https://pix-wallet.preview.emergentagent.com/api"
+base_url = "https://vornex-pay.preview.emergentagent.com/api"
 
 print("🔍 Testing Demo User Setup and Login...")
 

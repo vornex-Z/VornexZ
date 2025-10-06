@@ -3,7 +3,7 @@ import time
 import json
 
 class FocusedSecurityTester:
-    def __init__(self, base_url="https://pix-wallet.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://vornex-pay.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
 

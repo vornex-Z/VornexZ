@@ -5,7 +5,7 @@ def test_ip_detection():
     """Test what IP addresses are being detected by the rate limiter"""
     print("🔍 Testing IP Detection for Rate Limiting...")
     
-    base_url = "https://pix-wallet.preview.emergentagent.com/api"
+    base_url = "https://vornex-pay.preview.emergentagent.com/api"
     
     # Make several requests and see if we can detect patterns
     for i in range(5):
@@ -34,7 +34,7 @@ def test_rapid_requests():
     """Test with very rapid requests to trigger rate limiting"""
     print("\n🔍 Testing Rapid Requests...")
     
-    base_url = "https://pix-wallet.preview.emergentagent.com/api"
+    base_url = "https://vornex-pay.preview.emergentagent.com/api"
     
     # Make 10 very rapid requests
     for i in range(10):

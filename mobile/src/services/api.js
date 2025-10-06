@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // URL do backend (mesmo do web)
-const BACKEND_URL = 'https://pix-wallet.preview.emergentagent.com/api';
+const BACKEND_URL = 'https://vornex-pay.preview.emergentagent.com/api';
 
 export const api = axios.create({
   baseURL: BACKEND_URL,

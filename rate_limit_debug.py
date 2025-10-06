@@ -24,7 +24,7 @@ def test_concurrent_rate_limiting():
     """Test rate limiting with concurrent requests"""
     print("🔍 Testing Rate Limiting with Concurrent Requests...")
     
-    base_url = "https://pix-wallet.preview.emergentagent.com/api"
+    base_url = "https://vornex-pay.preview.emergentagent.com/api"
     login_url = f"{base_url}/auth/login"
     
     login_data = {
@@ -72,7 +72,7 @@ def test_sequential_rate_limiting():
     """Test rate limiting with sequential requests"""
     print("🔍 Testing Rate Limiting with Sequential Requests...")
     
-    base_url = "https://pix-wallet.preview.emergentagent.com/api"
+    base_url = "https://vornex-pay.preview.emergentagent.com/api"
     login_url = f"{base_url}/auth/login"
     
     login_data = {
