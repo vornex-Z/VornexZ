@@ -627,7 +627,12 @@ const Dashboard = () => {
                 <div className="balance-display security-protected" 
                      data-sensitive="balance"
                      style={{WebkitUserSelect: 'none', MozUserSelect: 'none', msUserSelect: 'none', userSelect: 'none'}}>
-                  {showBalance ? formatCurrency(user?.saldo || 0) : 'R$ •••••'}
+                  {showBalance ? formatCurrency(user?.saldo || 0) : (
+                    <>
+                      <span className="currency-symbol">R$</span>
+                      <span className="currency-value">•••••</span>
+                    </>
+                  )}
                 </div>
                 <button
                   onClick={() => setShowBalance(!showBalance)}
