@@ -180,7 +180,13 @@ const Dashboard = () => {
 
   const formatCurrency = (value) => {
     const absValue = Math.abs(value);
-    return `R$${absValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const formattedValue = absValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return (
+      <>
+        <span className="currency-symbol">R$</span>
+        <span className="currency-value">{formattedValue}</span>
+      </>
+    );
   };
 
   const formatDate = (dateString) => {
