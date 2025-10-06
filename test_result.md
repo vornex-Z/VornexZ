@@ -249,11 +249,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Testar novas imagens dos cartões físico e premium no Dashboard"
-    - "Validar se as imagens estão carregando corretamente"
-    - "Testar navegação entre seção de cartões e detalhes"
-    - "Verificar responsividade das novas imagens"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
