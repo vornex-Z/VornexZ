@@ -320,7 +320,7 @@ const Dashboard = () => {
               <ul className="text-sm text-gray-600 space-y-1">
                 <li>• Cartão virtual: Disponível imediatamente após criação</li>
                 <li>• Cartão físico: Entrega em 7-10 dias úteis</li>
-                <li>• Cartão premium: Benefícios exclusivos por R$ 12/mês</li>
+                <li>• Cartão premium: Benefícios exclusivos por R$12/mês</li>
                 <li>• Todos funcionam como débito na conta VornexZPay</li>
               </ul>
             </div>
