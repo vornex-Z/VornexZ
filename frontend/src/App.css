@@ -417,7 +417,16 @@ html, body {
   color: white;
   margin-bottom: 4px;
   letter-spacing: -0.02em;
-  word-spacing: 6px; /* Espaçamento pequeno entre R$ e o número */
+  display: flex;
+  align-items: baseline;
+}
+
+.balance-display .currency-symbol {
+  margin-right: 6px; /* Espaçamento pequeno e controlado entre R$ e o número */
+}
+
+.balance-display .currency-value {
+  /* Valor numérico mantém o mesmo estilo */
 }
 
 .balance-subtitle {
